@@ -58,10 +58,14 @@ class SplashPage(tk.Frame):
         initialPage.pack()
         initialPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/title2.jpg"))
+        titlePicture = ImageTk.PhotoImage(Image.open("GUI/pictures/title2.jpg"))
         lblTitlePicture = tk.Label(initialPage,height=800, width=1100,image=titlePicture)
         initialPage.image=titlePicture
         lblTitlePicture.place(x=0, y=0)
+
+        #if image doesnt work:
+        # lblTitlePicture = tk.Label(initialPage,height=800, width=1100,bg="black")
+        # lblTitlePicture.pack()
 
         lblGameName = tk.Label(initialPage, text="The Game", font="Arial 50", bg='#c5c5c5')
         lblGameName.place(relx=0.5, rely=0.1, anchor="center")
@@ -72,7 +76,7 @@ class SplashPage(tk.Frame):
         lblDate = tk.Label(initialPage, text="2024", font="Arial 36", bg="grey")
         lblDate.place(relx = .96, rely= .95, anchor="e")
 
-        btnBegin = tk.Button(initialPage, text="Click to Start", font="Arial 36", relief="solid", bg="grey", command=lambda: controller.show_frame(StartPage))
+        btnBegin = tk.Button(initialPage, text="Click to Start", font="Arial 36", relief="solid", bg="grey",cursor="hand2", command=lambda: controller.show_frame(StartPage))
         btnBegin.place(relx=.5, rely=.6, anchor="center")
 
 
@@ -83,42 +87,70 @@ class StartPage(tk.Frame):
         startPage.pack()
         startPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        lblGameName = tk.Label(startPage, text="Enter your characters information", font="Arial 30", bg='black', fg="white")
-        lblGameName.place(relx=0.5, rely=0.07, anchor="center")
+        lblTitle1 = tk.Label(startPage, text="Enter your characters information", font="Arial 30", bg='black', fg="gold")
+        lblTitle1.place(relx=0.5, rely=0.07, anchor="center")
 
         # self.lblCreatorName = ttk.Label(self.startPage, text="By: Calvin Murray", font="Arial 36", bg="grey")
         # self.lblCreatorName.place(relx=0.01,rely= .95, anchor="w")
 
         # self.lblDate = ttk.Label(self.startPage, text="2024", font="Arial 36", bg="grey")
         # self.lblDate.place(relx = .96, rely= .95, anchor="e")
-        lblName = tk.Label(startPage, text="Name: ", font="Arial 20", fg="white", bg="black")
-        lblName.place(relx=.075, rely=.15)
+        lblName = tk.Label(startPage, text="Name: ", font="Arial 20", fg="gold", bg="black")
+        lblName.place(relx=.075, rely=.175)
         entName = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
-        entName.place(relx=.22, rely=.15)
+        entName.place(relx=.22, rely=.175)
 
-        lblSkinColor = tk.Label(startPage, text="Skin Color: ", font="Arial 20", fg="white", bg="black")
-        lblSkinColor.place(relx=.075, rely=.25)
+        lblSkinColor = tk.Label(startPage, text="Skin Color: ", font="Arial 20", fg="gold", bg="black")
+        lblSkinColor.place(relx=.075, rely=.325)
         entSkinColor = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
-        entSkinColor.place(relx=.22, rely=.25)
+        entSkinColor.place(relx=.22, rely=.325)
 
         rbValue = IntVar()
-        lblSex = tk.Label(startPage, text="Sex: ", font="Arial 20", fg="white", bg="black")
-        lblSex.place(relx=.075, rely=.35)
-        rbMale = tk.Radiobutton(startPage, text="Male", variable=rbValue, value=1, font="Arial 20", bg="black", fg="white", )
-        rbMale.place(relx=.22, rely=.345)
-        rbFemale = tk.Radiobutton(startPage, text="Female", variable=rbValue, value=2, font="Arial 20", bg="black", fg="white", )
-        rbFemale.place(relx=.22, rely=.405)
+        lblSex = tk.Label(startPage, text="Sex: ", font="Arial 20", fg="gold", bg="black")
+        lblSex.place(relx=.075, rely=.475)
+        lblBtnMale = LabelFrame(startPage, bd=2, bg="gold")
+        lblBtnMale.place(relx=.22, rely=.47)
+        rbMale = tk.Radiobutton(lblBtnMale, text="Male", variable=rbValue, value=1, font="Arial 18", bg="black", fg="gold",indicatoron=0,width=15,activebackground="black",activeforeground="gold",selectcolor="#022678",cursor="hand2")
+        
+        rbMale.pack()
+        lblBtnFemale = LabelFrame(startPage, bd=2, bg="gold")
+        lblBtnFemale.place(relx=.22, rely=.54)
+        rbFemale = tk.Radiobutton(lblBtnFemale, text="Female", variable=rbValue, value=2, font="Arial 18", bg="black", fg="gold", indicatoron=0, width=15,activebackground="black",activeforeground="gold",selectcolor="#61023e",cursor="hand2")
+        rbFemale.pack()
+        #023b14
 
+        lblAge = tk.Label(startPage, text="Age: ", font="Arial 20", fg="gold", bg="black")
+        lblAge.place(relx=.585, rely=.175)
+        entAge = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entAge.place(relx=.7, rely=.175)
 
-        btnStory = tk.Button(startPage, text="Story Mode", font="Arial 36", relief="solid", bg="grey", width=15)
-        btnStory.place(relx=.27, rely=.75, anchor="center")
-        btnTest = tk.Button(startPage, text="Quick Play", font="Arial 36", relief="solid", bg="grey", width=15)
-        btnTest.place(relx=.73, rely=.75, anchor="center")
+        lblHeight = tk.Label(startPage, text="Height: ", font="Arial 20", fg="gold", bg="black")
+        lblHeight.place(relx=.585, rely=.325)
+        entHeight = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entHeight.place(relx=.7, rely=.325)
+
+        lblWeight = tk.Label(startPage, text="Weight: ", font="Arial 20", fg="gold", bg="black")
+        lblWeight.place(relx=.585, rely=.475)
+        entWeight = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entWeight.place(relx=.7, rely=.475)
+
+        lblTitle2 = tk.Label(startPage, text="Choose your mode", font="Arial 30", bg='black', fg="gold")
+        lblTitle2.place(relx=0.5, rely=0.7, anchor="center")
+
+        lblBtnStory = LabelFrame(startPage, bd=5, bg="gold")
+        lblBtnStory.place(relx=.1, rely=.8)
+        btnStory = tk.Button(lblBtnStory, text="Story Mode", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2")
+        # btnStory.place(relx=.27, rely=.75, anchor="center")
+        btnStory.pack()
+        lblBtnQuick = LabelFrame(startPage, bd=5, bg="gold")
+        lblBtnQuick.place(relx=.565, rely=.8)
+        btnQuick = tk.Button(lblBtnQuick, text="Quick Play", font="Arial 30", relief="solid", bg="black",fg="gold", width=15)
+        # btnQuick.place(relx=.73, rely=.75, anchor="center")
+        btnQuick.pack()
 
 
 
 
 game = GameApp()
-
 
 game.mainloop()
