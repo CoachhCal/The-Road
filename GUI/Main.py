@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
+import math
+import operator
 
 class player:
     def __init__(self, name, age, color, height, weight, sex, armor, max_health, health, stamina, max_stamina):
@@ -95,17 +97,19 @@ class StartPage(tk.Frame):
 
         # self.lblDate = ttk.Label(self.startPage, text="2024", font="Arial 36", bg="grey")
         # self.lblDate.place(relx = .96, rely= .95, anchor="e")
+        nameVar = StringVar()
         lblName = tk.Label(startPage, text="Name: ", font="Arial 20", fg="gold", bg="black")
         lblName.place(relx=.075, rely=.175)
-        entName = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entName = tk.Entry(startPage, bg="white", font="Arial 20", width=15, textvariable=nameVar)
         entName.place(relx=.22, rely=.175)
 
+        skinVar = StringVar()
         lblSkinColor = tk.Label(startPage, text="Skin Color: ", font="Arial 20", fg="gold", bg="black")
         lblSkinColor.place(relx=.075, rely=.325)
-        entSkinColor = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entSkinColor = tk.Entry(startPage, bg="white", font="Arial 20", width=15, textvariable=skinVar)
         entSkinColor.place(relx=.22, rely=.325)
 
-        rbValue = IntVar()
+        rbValue = StringVar()
         lblSex = tk.Label(startPage, text="Sex: ", font="Arial 20", fg="gold", bg="black")
         lblSex.place(relx=.075, rely=.475)
         lblBtnMale = LabelFrame(startPage, bd=2, bg="gold")
@@ -119,19 +123,22 @@ class StartPage(tk.Frame):
         rbFemale.pack()
         #023b14
 
+        ageVar = StringVar()
         lblAge = tk.Label(startPage, text="Age: ", font="Arial 20", fg="gold", bg="black")
         lblAge.place(relx=.585, rely=.175)
-        entAge = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entAge = tk.Entry(startPage, bg="white", font="Arial 20", width=15, textvariable=ageVar)
         entAge.place(relx=.7, rely=.175)
 
+        heightVar = StringVar()
         lblHeight = tk.Label(startPage, text="Height: ", font="Arial 20", fg="gold", bg="black")
         lblHeight.place(relx=.585, rely=.325)
-        entHeight = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entHeight = tk.Entry(startPage, bg="white", font="Arial 20", width=15, textvariable=heightVar)
         entHeight.place(relx=.7, rely=.325)
 
+        weightVar = StringVar()
         lblWeight = tk.Label(startPage, text="Weight: ", font="Arial 20", fg="gold", bg="black")
         lblWeight.place(relx=.585, rely=.475)
-        entWeight = tk.Entry(startPage, bg="white", font="Arial 20", width=15)
+        entWeight = tk.Entry(startPage, bg="white", font="Arial 20", width=15, textvariable=weightVar)
         entWeight.place(relx=.7, rely=.475)
 
         lblTitle2 = tk.Label(startPage, text="Choose your mode", font="Arial 30", bg='black', fg="gold")
@@ -139,16 +146,37 @@ class StartPage(tk.Frame):
 
         lblBtnStory = LabelFrame(startPage, bd=5, bg="gold")
         lblBtnStory.place(relx=.1, rely=.8)
-        btnStory = tk.Button(lblBtnStory, text="Story Mode", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2")
+        btnStory = tk.Button(lblBtnStory, text="Story Mode", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2", command= lambda: self.storyModeValidation(startPage,nameVar.get(), skinVar.get(), rbValue.get(), ageVar.get(), heightVar.get(), weightVar.get()))
         # btnStory.place(relx=.27, rely=.75, anchor="center")
         btnStory.pack()
         lblBtnQuick = LabelFrame(startPage, bd=5, bg="gold")
         lblBtnQuick.place(relx=.565, rely=.8)
-        btnQuick = tk.Button(lblBtnQuick, text="Quick Play", font="Arial 30", relief="solid", bg="black",fg="gold", width=15)
+        btnQuick = tk.Button(lblBtnQuick, text="Quick Play", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2")
         # btnQuick.place(relx=.73, rely=.75, anchor="center")
         btnQuick.pack()
 
-
+        # errorAge = tk.Label(startPage, bg="red",text="error",font="Arial 15")
+        # errorAge.place(rely=.5, relx=.5)
+    def storyModeValidation(self, frame, nameVar, skinVar, rbValue, ageVar, heightVar, weightVar):
+        errorAge = tk.Label(frame, bg="red",text="error",font="Arial 15")
+        errorAge.place(rely=.5, relx=.5)
+        
+        if ageVar.isdigit():
+            print("hello")
+            errorAge.configure(bg="black")
+        else:
+            pass
+            
+           
+            
+            
+        
+        # print(nameVar)
+        # print(skinVar)
+        # print(rbValue)
+        # print(ageVar)
+        # print(heightVar)
+        # print(weightVar)
 
 
 game = GameApp()
