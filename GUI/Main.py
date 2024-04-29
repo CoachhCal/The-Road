@@ -31,6 +31,9 @@ class inventory:
         self.health_potion = health_potion
         self.stamina_potion = stamina_potion
 
+p1 = player("", 0, "", 0, 0, "", "none", 100, 100, 100, 100)
+bag = inventory(100, 0, 0, 0, 0, 0, 0)
+
 class GameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -194,7 +197,17 @@ class StartPage(tk.Frame):
             if var[x].cget("fg") == "green": #if text is green (entry is correct)
                 count+=1 #add to counter
             if count == 5 and rbValue != "": # if all entrys correct
+                if rbValue == 1:
+                    p1.sex = "man"
+                elif rbValue == 2:
+                    p1.sex == "woman"
+                p1.name = nameVar
+                p1.age = int(ageVar)
+                p1.color = skinVar
+                p1.height = int(heightVar)
+                p1.weight = int(weightVar)
                 print("done")
+                
             
     def validInput(self, text, maxLength, type):
         if text:
