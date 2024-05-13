@@ -1,9 +1,12 @@
-import tkinter as tk
-# from tkinter import *
+try:
+    import tkinter as tk
+except ImportError:
+    import Tkinter as tk
 from PIL import ImageTk, Image
 import math
 import operator
 import time
+import random
 
 """
 IMPORTANT:
@@ -11,7 +14,7 @@ Splash Page button command has replaced StartPage with MainPage to skip the char
 
 """
 
-class player:
+class PlayerObject:
     def __init__(self, name, age, color, height, weight, sex, armor, max_health, health, stamina, max_stamina):
         self.name = name
         self.age = age
@@ -28,7 +31,7 @@ class player:
     def total_health(self):
         return self.armor + self.max_health
     
-class inventory:
+class Inventory:
     def __init__(self, gold, arrows, scaliber, lcaliber, grenades, health_potion, stamina_potion):
         self.gold = gold
         self.arrows = arrows
@@ -38,8 +41,65 @@ class inventory:
         self.health_potion = health_potion
         self.stamina_potion = stamina_potion
 
-p1 = player("", 0, "", 0, 0, "", "none", 100, 100, 100, 100)
-bag = inventory(100, 0, 0, 0, 0, 0, 0)
+class EnemyObject:
+    level = 0
+    name = "none"
+    health = 0
+    attack1 = ["name", 0,1]
+    attack2 = ["name", 0,1]
+    attack3 = ["name", 0,1]
+    finalMove = "none"
+
+    def attack(attackList):
+        return random.randint(attackList[1], attackList[2])
+
+def list_from_csv(file, access_mode):
+    import csv
+    with open(file, access_mode) as current_file:
+        list = []
+        full_list = csv.reader(current_file)
+        for row in full_list:
+            list.append(row)
+        del list[0]
+        for x in range(len(list)):
+            for y in range(len(list[x])):
+                if list[x][y].replace(".","").replace("-","").isnumeric():
+                    try:
+                        list[x][y] = int(list[x][y])
+                    except ValueError:
+                        list[x][y] = float(list[x][y])
+    return list
+
+def random_monster(p_monster_list):
+    """Chooses a random monster from a 2D list"""
+    import random
+    random_number = random.randint(1,len(p_monster_list)-1) #chooses a numbr between 1 and however many monsters there are in the list
+    return p_monster_list[random_number] #return the monsters index value
+
+def create_player_weapon_list():
+    """Creates 6 empty weapon slots (2D list) """
+    list = []
+    for x in range(6):
+        list.append([])
+        for y in range(8):
+            list[x].append("")
+    return list
+
+# try:
+monsterList = list_from_csv("csvFiles/monster_list.csv", "r")
+weapons_list = list_from_csv("csvFiles/weapons_list.csv", "r")
+ammo_list = list_from_csv("csvFiles/ammo_list.csv", "r")
+armor_list = list_from_csv("csvFiles/armor_list.csv", "r")
+potion_list = list_from_csv("csvFiles/potions_list.csv", "r")
+cards_list = list_from_csv("csvFiles/cards_list.csv", "r")
+# except:
+
+
+playerWeapons = create_player_weapon_list()
+Enemy = EnemyObject
+
+Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100)
+Bag = Inventory(100, 0, 0, 0, 0, 0, 0)
 
 class GameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -50,7 +110,7 @@ class GameApp(tk.Tk):
         window.pack(side="top", fill = "both", expand=True)
 
         self.frames = {}
-        for F in (SplashPage, StartPage, MainPage):
+        for F in (SplashPage, StartPage, MainPage, FightPage):
             frame = F(window, self)
             self.frames[F] = frame
             frame.place(height=800, width=1100)
@@ -63,9 +123,15 @@ class GameApp(tk.Tk):
         frame.tkraise()
     
     def start(self):
-        MainPage.updateText(self.frames[MainPage], "whats up fellers")
-        MainPage.updateText(self.frames[MainPage], "this is the second")
-    
+        self.frames[MainPage].snapBottom()
+        self.frames[MainPage].clearBox()
+        self.after(1000, lambda: self.frames[MainPage].updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n"))
+        self.after(10000, lambda: self.frames[MainPage].updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n"))
+        self.after(15000, lambda: self.frames[MainPage].updateText("Gradually finding your footing, you approach the source of the noise.\n"))
+        self.after(20000, lambda: self.frames[MainPage].updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n"))
+        self.after(27000, lambda: self.frames[MainPage].updateText("Looking around quickly, you pick up a stick to defend yourself.\n"))
+        playerWeapons[0] = weapons_list[0]
+
         
 class SplashPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -97,7 +163,10 @@ class SplashPage(tk.Frame):
         btnBegin.place(relx=.5, rely=.6, anchor="center")
 
     def yup(self, controller):
-        controller.showFrame(StartPage)
+        # controller.showFrame(StartPage)
+        controller.showFrame(FightPage) #Take this out to make it work
+        controller.frames[FightPage].enemySelector(1,2,"random")
+        # controller.start() #take this out to make it work
         # controller.trial(MainPage)
 
 
@@ -214,16 +283,16 @@ class StartPage(tk.Frame):
                 count+=1 #add to counter
             if count == 5 and rbValue != "": # if all entrys correct
                 if rbValue == 1:
-                    p1.sex = "man"
+                    Player.sex = "man"
                 elif rbValue == 2:
-                    p1.sex == "woman"
-                p1.name = nameVar
-                p1.age = int(ageVar)
-                p1.color = skinVar
-                p1.height = int(heightVar)
-                p1.weight = int(weightVar)
+                    Player.sex == "woman"
+                Player.name = nameVar
+                Player.age = int(ageVar)
+                Player.color = skinVar
+                Player.height = int(heightVar)
+                Player.weight = int(weightVar)
                 controller.showFrame(MainPage)
-                controller.frames[MainPage].mainText.after(10000, lambda: controller.frames[MainPage].updateText("whats up guys"))
+                controller.start()
                 # controller.start()
                 # controller.frames[MainPage].updateText()
                 
@@ -240,36 +309,111 @@ class StartPage(tk.Frame):
 class MainPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        self.mainPage = tk.Frame(self,width=1100, height=800, bg="black")
+        self.mainPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
         self.mainPage.pack()
         self.mainPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        self.mainText = tk.Text(self.mainPage, height=8, width=50, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white")
-        self.mainText.place(relx=.35, rely=.5)
-        self.value = "34"
-        self.trialLabel = tk.Label(self, bg="blue", width=50, height=10)
-        self.trialLabel.place(relx=.2,rely=.3)
-        # time.sleep(3)
-        # self.begin()
-        self.mainText.insert(tk.END, "Hello there")
-        # self.mainText.after(10000, lambda: self.updateText("whats up guys"))
-        self.mainText.insert(tk.END, "this is second")
-        self.mainText.insert(tk.END, "boo hi low fall")
-        
-    def updateText(self, text):
-        self.trialLabel.after(3000)
-        self.mainText.insert(tk.END, text)
-        # self.trialLabel.after(3000)
-        # self.begin()
-        # StartPage.trial1(
-        # GameApp.showFrame(SplashPage)
-        # self.mainText.configure(state="normal")
-        # MainPage.mainText.insert(tk.END, "hello")
+        self.mainText = tk.Text(self.mainPage, state="disabled", height=16, width=75, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 15", wrap="word")
+        self.mainText.place(relx=.5, rely=.4, anchor="center")
+
+        self.btnHealth = tk.Button(self.mainPage, height=6, width=16, relief="raised", cursor="hand2")
+        self.btnHealth.place(relx=.3, rely=.85, anchor="w")
+
+        self.lblHealth = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a",fg="white", font="Arial 20", text="Health : "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblHealth.place(relx=.2, rely=.1, anchor="center")
+
+        self.lblStamina = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a", fg="white", font="Arial 20", text = "Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblStamina.place(relx=.6, rely=.1, anchor="center")
        
-        # self.mainText.configure(state="disabled")
-    # def begin(self):
-    #     self.trialLabel.configure(text="hello", fg="yellow")
-    #     self.trialLabel.configure(text="whats up bithces")
+        
+    def updateText(self, text): #displays the text in the text box
+        self.mainText.configure(state="normal")
+        self.mainText.insert(tk.END, text)
+        self.mainText.configure(state="disabled")
+
+    # def story(self):
+        # self.after(2000, lambda: self.updateText("first"))
+        # self.after(3000, lambda: self.updateText("second")) 
+    def snapBottom(self):
+        self.mainText.see("end")
+        self.after(1000, self.snapBottom)
+    
+    def clearBox(self):
+        if self.mainText.yview == (0.0, 1.0):
+            print("hello")
+            self.mainText.configure(state="normal")
+            self.mainText.delete(0.0, "end")
+            self.mainText.configure(state="disabled")
+        self.after(1000, self.clearBox)
+        
+class FightPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.fightPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.fightPage.pack()
+        self.fightPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        lblEnemyPic = tk.Label(self.fightPage, height=18, width=40, bg="black")
+        lblEnemyPic.place(relx=.08, rely=.05)
+
+        lblInventory = tk.Label(self.fightPage, height=18, width=75, bg="black")
+        lblInventory.place(relx=.45, rely=.05)
+
+        lblFightText = tk.Text(self.fightPage, height=16, width=100, bg="black")
+        lblFightText.place(relx=.447, rely=.6, anchor="center")
+
+        btnMelee = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnMelee.place(relx=.08, rely=.81)
+
+        btnBow = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnBow.place(relx=.23, rely=.81)
+
+        btnSmallCal = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnSmallCal.place(relx=.38, rely=.81)
+
+        btnMedCal = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnMedCal.place(relx=.53, rely=.81)
+
+        btnSpecial = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnSpecial.place(relx=.68, rely=.81)
+
+        btnFlee = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnFlee.place(relx=.68, rely=.96)
+
+        btnHealth = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnHealth.place(relx=.85, rely=.44)
+
+        btnStamina = tk.Button(self.fightPage, width=15, height=6, bg="grey")
+        btnStamina.place(relx=.85, rely=.63)
+
+    def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, goldOrNone):
+        self.enemySelector(minEnemyLvl, maxEnemyLvl, nameOrRandom)
+
+
+    def enemySelector(self,minEnemyLvl, maxEnemyLvl, nameOrRandom):
+        """Chooses a monster from a 2D list"""
+        if nameOrRandom != "random":
+            for x in range(len(monsterList)): #Goes through the list looking for the correct monsters name. Once found, the details of the monster is assigned to the monster_index variable
+                if monsterList[x][1] == nameOrRandom: #If the correct enemy is found
+                    selectedEnemy = monsterList[x]
+                    self.updateEnemyObject(selectedEnemy)
+        else:
+            x = 0
+            while x < 100:
+                selectedEnemy = monsterList[random.randint(0, len(monsterList)-1)] #Chooses a random monster from the list
+                if minEnemyLvl <= selectedEnemy[0] <= maxEnemyLvl: #Checks to see of the chosen monster is the right level
+                    self.updateEnemyObject(selectedEnemy)
+                else:
+                    x += 1
+
+    def updateEnemyObject(self, enemy):
+        Enemy.level = enemy[0]
+        Enemy.name = enemy[1]
+        Enemy.health = enemy[2]
+        Enemy.attack1 = [enemy[3], enemy[4], enemy[5]]
+        Enemy.attack2 = [enemy[6], enemy[7], enemy[8]]
+        Enemy.attack3 = [enemy[9], enemy[10], enemy[11]]
+        Enemy.finalMove = enemy[12]
 
 game = GameApp()
 
