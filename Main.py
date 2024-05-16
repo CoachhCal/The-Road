@@ -32,14 +32,14 @@ class PlayerObject:
         return self.armor + self.max_health
     
 class Inventory:
-    def __init__(self, gold, arrows, scaliber, lcaliber, grenades, health_potion, stamina_potion):
+    def __init__(self, gold, arrows, scaliber, lcaliber, grenades, healthPotion, staminaPotion):
         self.gold = gold
         self.arrows = arrows
         self.scaliber = scaliber
         self.lcaliber = lcaliber
         self.grenades = grenades
-        self.health_potion = health_potion
-        self.stamina_potion = stamina_potion
+        self.healthPotion = healthPotion
+        self.staminaPotion = staminaPotion
 
 class EnemyObject:
     level = 0
@@ -90,16 +90,22 @@ monsterList = list_from_csv("csvFiles/monster_list.csv", "r")
 weapons_list = list_from_csv("csvFiles/weapons_list.csv", "r")
 ammo_list = list_from_csv("csvFiles/ammo_list.csv", "r")
 armor_list = list_from_csv("csvFiles/armor_list.csv", "r")
-potion_list = list_from_csv("csvFiles/potions_list.csv", "r")
+potionList = list_from_csv("csvFiles/potions_list.csv", "r")
 cards_list = list_from_csv("csvFiles/cards_list.csv", "r")
 # except:
 
 
 playerWeapons = create_player_weapon_list()
+playerWeapons[0] = weapons_list[0]
+playerWeapons[1] = weapons_list[8]
+playerWeapons[2] = weapons_list[14]
+playerWeapons[3] = weapons_list[20]
+playerWeapons[4] = weapons_list[21]
+playerWeapons[5] = weapons_list[22]
 Enemy = EnemyObject
 
 Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100)
-Bag = Inventory(100, 0, 0, 0, 0, 0, 0)
+Bag = Inventory(100, 0, 100, 0, 0, 0, 0)
 
 class GameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -165,7 +171,7 @@ class SplashPage(tk.Frame):
     def yup(self, controller):
         # controller.showFrame(StartPage)
         controller.showFrame(FightPage) #Take this out to make it work
-        controller.frames[FightPage].enemySelector(1,2,"random")
+        controller.frames[FightPage].enemyBattle(1,2,"random", "none")
         # controller.start() #take this out to make it work
         # controller.trial(MainPage)
 
@@ -353,41 +359,47 @@ class FightPage(tk.Frame):
         self.fightPage.pack()
         self.fightPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        lblEnemyPic = tk.Label(self.fightPage, height=18, width=40, bg="black")
-        lblEnemyPic.place(relx=.08, rely=.05)
+        self.lblEnemyPic = tk.Label(self.fightPage, height=18, width=40, bg="black")
+        self.lblEnemyPic.place(relx=.08, rely=.05)
 
-        lblInventory = tk.Label(self.fightPage, height=18, width=75, bg="black")
-        lblInventory.place(relx=.45, rely=.05)
+        self.lblInventory = tk.Label(self.fightPage, height=18, width=75, bg="black")
+        self.lblInventory.place(relx=.45, rely=.05)
 
-        lblFightText = tk.Text(self.fightPage, height=16, width=100, bg="black")
-        lblFightText.place(relx=.447, rely=.6, anchor="center")
+        self.lblFightText = tk.Text(self.fightPage, height=16, width=100, bg="black")
+        self.lblFightText.place(relx=.447, rely=.6, anchor="center")
 
-        btnMelee = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnMelee.place(relx=.08, rely=.81)
+        self.btnMelee = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(0))
+        self.btnMelee.place(relx=.08, rely=.81)
 
-        btnBow = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnBow.place(relx=.23, rely=.81)
+        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(1))
+        self.btnBow.place(relx=.21, rely=.81)
 
-        btnSmallCal = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnSmallCal.place(relx=.38, rely=.81)
+        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(2))
+        self.btnSmallCal.place(relx=.34, rely=.81)
 
-        btnMedCal = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnMedCal.place(relx=.53, rely=.81)
+        self.btnMedCal = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(3))
+        self.btnMedCal.place(relx=.47, rely=.81)
 
-        btnSpecial = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnSpecial.place(relx=.68, rely=.81)
+        self.btnGrenade = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(4))
+        self.btnGrenade.place(relx=.60, rely=.81)
 
-        btnFlee = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnFlee.place(relx=.68, rely=.96)
+        self.btnSpecial = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(5))
+        self.btnSpecial.place(relx=.73, rely=.81)
 
-        btnHealth = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnHealth.place(relx=.85, rely=.44)
+        self.btnFlee = tk.Button(self.fightPage, width=13, height=6, bg="grey")
+        self.btnFlee.place(relx=.86, rely=.81)
 
-        btnStamina = tk.Button(self.fightPage, width=15, height=6, bg="grey")
-        btnStamina.place(relx=.85, rely=.63)
+        self.btnHealth = tk.Button(self.fightPage, width=13, height=6, bg="grey", command= self.healthPotion)
+        self.btnHealth.place(relx=.86, rely=.44)
+
+        self.btnStamina = tk.Button(self.fightPage, width=13, height=6, bg="grey", command = self.staminaPotion)
+        self.btnStamina.place(relx=.86, rely=.63)
 
     def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, goldOrNone):
         self.enemySelector(minEnemyLvl, maxEnemyLvl, nameOrRandom)
+        self.enemyAttack()
+        self.buttonState("normal")
+        
 
 
     def enemySelector(self,minEnemyLvl, maxEnemyLvl, nameOrRandom):
@@ -414,6 +426,123 @@ class FightPage(tk.Frame):
         Enemy.attack2 = [enemy[6], enemy[7], enemy[8]]
         Enemy.attack3 = [enemy[9], enemy[10], enemy[11]]
         Enemy.finalMove = enemy[12]
+    
+    def playerAttack(self, index):
+        if playerWeapons[index] == "":
+            print("empty weapon slot")
+        elif index == 0: #if weapon is melee
+            print("melee")
+            if Player.stamina < playerWeapons[index][5]:
+                print("not enough stamina")
+            else:
+                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                Player.stamina -= playerWeapons[index][5]
+                self.displayAttack(index, damage)
+        elif index == 1:
+            if Player.stamina < playerWeapons[index][5]:
+                print("not enough stamina")
+            elif Bag.arrows < playerWeapons[index][7]:
+                print("not enough arrows")
+            else:
+                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                Player.stamina -= playerWeapons[index][5]
+                Bag.arrows -= playerWeapons[index][7]
+                self.displayAttack(index, damage)
+        elif index == 2:
+            if Bag.scaliber < playerWeapons[index][7]:
+                print("not enough 9mm rounds")
+            else:
+                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                Bag.scaliber -= playerWeapons[index][7]
+                self.displayAttack(index, damage)
+        elif index == 3:
+            if Bag.lcaliber < playerWeapons[index][7]:
+                print("not enough 7.62mm rounds")
+            else:
+                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                Bag.lcaliber -= playerWeapons[index][7]
+                self.displayAttack(index, damage)
+        elif index == 4:
+            if Bag.grenades < 1:
+                print("not enough grenades")
+            else:
+                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                Bag.grenades -= playerWeapons[index][7]
+                self.displayAttack(index, damage)
+        elif index == 5:
+            if playerWeapons[5][1] == "": #does the player have a speical attack in their inventory?
+                print("not enough resources")
+            else:
+                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                self.displayAttack(index, damage)
+                playerWeapons[5] = ["", "", "", "", "", "", "", ""] #If the player does have a special attack, this will remove it after they use it - to ensure the player cant stack multiple special attacks
+            
+    def displayAttack(self, index, damage):
+        print("dmage: " + str(damage))
+        print("enemy old health: "+ str(Enemy.health))
+        Enemy.health -= damage
+        print("enemy new health: "+str(Enemy.health))
+        print(playerWeapons[index][1])
+        pass
+
+    def enemyAttack(self):
+        num = random.randint(1,3)
+        if num == 1:
+            damage = Enemy.attack(Enemy.attack1)
+            attack = Enemy.attack1[0]
+        elif num == 2:
+            damage = Enemy.attack(Enemy.attack2)
+            attack = Enemy.attack2[0]
+        elif num == 3:
+            damage = Enemy.attack(Enemy.attack3)
+            attack = Enemy.attack3[0]
+        
+        print(damage)
+        print(attack)
+        print("player old health: "+str(Player.health))
+        Player.health -= damage
+        if Player.health < 1:
+            Player.health == 0
+            print("player dead: " + Enemy.finalMove)
+            
+        print("player new health: "+str(Player.health))
+    
+    def healthPotion(self):
+        if Bag.healthPotion == 0:
+            print("No health potions")
+        elif Player.health == Player.max_health:
+            print("Already at max health")
+        else:
+            Player.health += potionList[0][1]
+            if Player.health > Player.max_health:
+                Player.health == Player.max_health
+    
+    def staminaPotion(self):
+        if Bag.staminaPotion == 0:
+            print("No stamina potions")
+        elif Player.stamina == Player.maxStamina:
+            print("Already at max stamina")
+        else:
+            Player.stamina += potionList[1][1]
+            if Player.stamina > Player.maxStamina:
+                Player.stamina == Player.maxStamina
+
+    def enemyGold(enemyLevel):
+        """Choses a random amount of gold to give the player after the monsters is defeated"""
+        ranNum = random.randint(0, 30)
+        goldRecovered = ranNum*enemyLevel #Amount of gold recieved based on monsters level
+        Bag.gold += goldRecovered
+        return goldRecovered
+
+    def buttonState(self, text):
+        self.btnBow.configure(state=text)
+        self.btnMelee.configure(state=text)
+        self.btnSmallCal.configure(state=text)
+        self.btnMedCal.configure(state=text)
+        self.btnGrenade.configure(state=text)
+        self.btnSpecial.configure(state=text)
+        self.btnHealth.configure(state=text)
+        self.btnStamina.configure(state=text)
 
 game = GameApp()
 
