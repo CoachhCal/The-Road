@@ -107,6 +107,22 @@ Enemy = EnemyObject
 Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100)
 Bag = Inventory(100, 0, 100, 0, 0, 0, 0)
 
+class Helper:
+    __name__ = 'Helper'
+    def __init__(self, func, *args, **kwargs):
+        self.gen = func(self.sleep, *args, **kwargs)
+        self()
+
+    def __call__(self):
+        try:
+            next(self.gen)
+        except StopIteration:
+            pass
+
+    def sleep(self, ms):
+        game.after(ms, self)
+
+
 class GameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -128,15 +144,48 @@ class GameApp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
     
-    def start(self):
+    # def start(self):
+    #     self.frames[MainPage].snapBottom()
+    #     self.frames[MainPage].clearBox()
+    #     self.after(1000, lambda: self.frames[MainPage].updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n"))
+    #     self.after(8000, lambda: self.frames[MainPage].updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n"))
+    #     self.after(10000, lambda: self.frames[MainPage].updateText("Gradually finding your footing, you approach the source of the noise.\n"))
+    #     self.after(12000, lambda: self.frames[MainPage].updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n"))
+    #     self.after(14000, lambda: self.frames[MainPage].updateText("Looking around quickly, you pick up a stick to defend yourself.\n"))
+    #     playerWeapons[0] = weapons_list[0]
+    #     self.after(16000, lambda: self.showFrame(FightPage)) #Take this out to make it work
+    #     self.after(16001,lambda: self.frames[FightPage].enemyBattle(4,5,"random", "none"))
+    #     self.after(20000, lambda: print("hello"))
+
+    def popUp(self):
+        popWin = tk.Toplevel()
+        label = tk.Label(popWin, text="window")
+        label.grid()
+        btn = tk.Button(popWin, text="close", command=popWin.destroy)
+        btn.grid(row=1)
+
+    def start(self, sleep):
         self.frames[MainPage].snapBottom()
         self.frames[MainPage].clearBox()
-        self.after(1000, lambda: self.frames[MainPage].updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n"))
-        self.after(10000, lambda: self.frames[MainPage].updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n"))
-        self.after(15000, lambda: self.frames[MainPage].updateText("Gradually finding your footing, you approach the source of the noise.\n"))
-        self.after(20000, lambda: self.frames[MainPage].updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n"))
-        self.after(27000, lambda: self.frames[MainPage].updateText("Looking around quickly, you pick up a stick to defend yourself.\n"))
+
+        self.frames[MainPage].updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n")
+        yield sleep(2000)
+        # self.popUp()
+        self.frames[MainPage].updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n")
+        yield sleep(2000)
+        self.frames[MainPage].updateText("Gradually finding your footing, you approach the source of the noise.\n")
+        yield sleep(2000)
+        self.frames[MainPage].updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n")
+        yield sleep(2000)
+        self.frames[MainPage].updateText("Looking around quickly, you pick up a stick to defend yourself.\n")
+        yield sleep(2000)
         playerWeapons[0] = weapons_list[0]
+
+        self.showFrame(FightPage)
+        self.frames[FightPage].enemyBattle(4,5,"random", "none")
+        yield sleep(2000)
+        print("hello")
+        
 
         
 class SplashPage(tk.Frame):
@@ -169,9 +218,9 @@ class SplashPage(tk.Frame):
         btnBegin.place(relx=.5, rely=.6, anchor="center")
 
     def yup(self, controller):
-        # controller.showFrame(StartPage)
-        controller.showFrame(FightPage) #Take this out to make it work
-        controller.frames[FightPage].enemyBattle(1,2,"random", "none")
+        controller.showFrame(StartPage)
+        # controller.showFrame(FightPage) #Take this out to make it work
+        # controller.frames[FightPage].enemyBattle(4,5,"random", "none")
         # controller.start() #take this out to make it work
         # controller.trial(MainPage)
 
@@ -298,7 +347,7 @@ class StartPage(tk.Frame):
                 Player.height = int(heightVar)
                 Player.weight = int(weightVar)
                 controller.showFrame(MainPage)
-                controller.start()
+                Helper(controller.start)
                 # controller.start()
                 # controller.frames[MainPage].updateText()
                 
@@ -360,48 +409,98 @@ class FightPage(tk.Frame):
         self.fightPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
         self.lblEnemyPic = tk.Label(self.fightPage, height=18, width=40, bg="black")
-        self.lblEnemyPic.place(relx=.08, rely=.05)
+        self.lblEnemyPic.place(relx=.05, rely=.05)
+
+        self.lblEnemyHealth = tk.Label(self.fightPage, height=1, width=25, bg="#751515", fg="white", font="Arial 15")
+        self.lblEnemyHealth.place(relx=.05, rely=.359)
+
+        self.lblAddEH = tk.Label(self.fightPage, height=1, width=2, bg="#751515", font="Arial 15")
+        self.lblAddEH.place(relx=.2845, rely=.359)
+
+        self.lblEnemyName = tk.Label(self.fightPage, height=1, width=25, bg="black", fg="white", font="Arial 15")
+        self.lblEnemyName.place(relx=.05, rely=.05)
+
+        self.lblAddEN = tk.Label(self.fightPage, height=1, width=2, bg="black", font="Arial 15")
+        self.lblAddEN.place(relx=.2845, rely=.05)
+
+        # self.lblEnemyHealth = tk.Label(self.lblEnemyPic, height=1, width=25, bg="blue", fg="white", font="Arial 15")
+        # self.lblEnemyHealth.place(relx=.0000, rely=.9)
 
         self.lblInventory = tk.Label(self.fightPage, height=18, width=75, bg="black")
         self.lblInventory.place(relx=.45, rely=.05)
 
-        self.lblFightText = tk.Text(self.fightPage, height=16, width=100, bg="black")
-        self.lblFightText.place(relx=.447, rely=.6, anchor="center")
+        # canvas = tk.Canvas(self.fightPage, width=526, height=1)
+        # canvas.place(relx=.45, rely=.095)
 
-        self.btnMelee = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(0))
+        self.lblInvTitle = tk.Label(self.fightPage, height=1, width=32, bg="black", fg="white", font="Arial 20", text="  "+Player.name + "'s Inventory", anchor='center')
+        self.lblInvTitle.place(relx=.45, rely=.05)
+
+        self.lblArrow = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Arrows: "+str(Bag.arrows), anchor='w')
+        self.lblArrow.place(relx=.48, rely=.12)
+
+        self.lblSCal = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="9mm Rounds: "+str(Bag.scaliber), anchor='w',)
+        self.lblSCal.place(relx=.48, rely=.18)
+
+        self.lblMCal = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="7.62mm Rounds: "+str(Bag.lcaliber), anchor='w')
+        self.lblMCal.place(relx=.48, rely=.24)
+
+        self.lblGrenade = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Grenades: "+str(Bag.grenades), anchor='w')
+        self.lblGrenade.place(relx=.48, rely=.30)
+
+        self.lblSpecial = tk.Label(self.fightPage, height=3, width=20, bg="black", fg="white", font="Arial 15", text="Special:\n"+str(playerWeapons[5][1]), anchor='nw', justify="left", wraplength=250, )
+        self.lblSpecial.place(relx=.70, rely=.12)
+
+        self.lblHealthPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Health Potions: "+str(Bag.healthPotion), anchor='w')
+        self.lblHealthPot.place(relx=.70, rely=.24)
+
+        self.lblStaminaPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Stamina Potions: "+str(Bag.staminaPotion), anchor='w')
+        self.lblStaminaPot.place(relx=.70, rely=.30)
+
+        self.lblPHealth = tk.Label(self.fightPage, height=1, width=24, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblPHealth.place(relx=.45, rely=.359)
+
+        self.lblPStamina = tk.Label(self.fightPage, height=1, width=24, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblPStamina.place(relx=.687, rely=.359)
+
+        self.fightText = tk.Text(self.fightPage, height=9, width=60, state="disabled", bg="black", fg="white", font="Arial 18", padx=25)
+        self.fightText.tag_configure("center", justify='center', spacing1=5)
+        self.fightText.tag_add("center", 1.0, "end")
+        self.fightText.place(relx=.05, rely=.445)
+       
+
+        self.btnMelee = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0))
         self.btnMelee.place(relx=.08, rely=.81)
 
-        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(1))
+        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1))
         self.btnBow.place(relx=.21, rely=.81)
 
-        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(2))
+        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2))
         self.btnSmallCal.place(relx=.34, rely=.81)
 
-        self.btnMedCal = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(3))
+        self.btnMedCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3))
         self.btnMedCal.place(relx=.47, rely=.81)
 
-        self.btnGrenade = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(4))
+        self.btnGrenade = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4))
         self.btnGrenade.place(relx=.60, rely=.81)
 
-        self.btnSpecial = tk.Button(self.fightPage, width=13, height=6, bg="grey", command=lambda: self.playerAttack(5))
+        self.btnSpecial = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Special",cursor="hand2", command=lambda: self.playerAttack(5))
         self.btnSpecial.place(relx=.73, rely=.81)
 
-        self.btnFlee = tk.Button(self.fightPage, width=13, height=6, bg="grey")
+        self.btnFlee = tk.Button(self.fightPage, width=13, height=6,cursor="hand2",text="Flee", bg="grey")
         self.btnFlee.place(relx=.86, rely=.81)
 
-        self.btnHealth = tk.Button(self.fightPage, width=13, height=6, bg="grey", command= self.healthPotion)
+        self.btnHealth = tk.Button(self.fightPage, width=13, height=6,cursor="hand2",text="Health Pot", bg="grey", command= self.healthPotion)
         self.btnHealth.place(relx=.86, rely=.44)
 
-        self.btnStamina = tk.Button(self.fightPage, width=13, height=6, bg="grey", command = self.staminaPotion)
+        self.btnStamina = tk.Button(self.fightPage, width=13, height=6,cursor="hand2", bg="grey", text="Stamina Pot", command = self.staminaPotion)
         self.btnStamina.place(relx=.86, rely=.63)
 
     def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, goldOrNone):
         self.enemySelector(minEnemyLvl, maxEnemyLvl, nameOrRandom)
-        self.enemyAttack()
-        self.buttonState("normal")
+        self.lblEnemyName.configure(text = Enemy.name)
+        self.updateInfo()
+        self.buttonState("normal", "hand2")
         
-
-
     def enemySelector(self,minEnemyLvl, maxEnemyLvl, nameOrRandom):
         """Chooses a monster from a 2D list"""
         if nameOrRandom != "random":
@@ -428,88 +527,119 @@ class FightPage(tk.Frame):
         Enemy.finalMove = enemy[12]
     
     def playerAttack(self, index):
+        self.buttonState("disabled", "x_cursor")
+        successfulAttack = False
         if playerWeapons[index] == "":
-            print("empty weapon slot")
+            self.clearText()
+            self.updateText("Empty weapon slot")
         elif index == 0: #if weapon is melee
-            print("melee")
             if Player.stamina < playerWeapons[index][5]:
-                print("not enough stamina")
+                self.clearText()
+                self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
             else:
+                successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 Player.stamina -= playerWeapons[index][5]
                 self.displayAttack(index, damage)
         elif index == 1:
             if Player.stamina < playerWeapons[index][5]:
-                print("not enough stamina")
+                self.clearText()
+                self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
             elif Bag.arrows < playerWeapons[index][7]:
-                print("not enough arrows")
+                self.clearText()
+                self.updateText("\nInsufficient arrows\n\nYou have: "+str(Bag.arrows)+"\nRequired amount: "+str(playerWeapons[1][7]))
             else:
+                successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 Player.stamina -= playerWeapons[index][5]
                 Bag.arrows -= playerWeapons[index][7]
                 self.displayAttack(index, damage)
         elif index == 2:
             if Bag.scaliber < playerWeapons[index][7]:
-                print("not enough 9mm rounds")
+                self.clearText()
+                self.updateText("\nInsufficient 9mm rounds\n\nYou have: "+str(Bag.scaliber)+"\nRequired amount: "+str(playerWeapons[2][7]))
             else:
+                successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 Bag.scaliber -= playerWeapons[index][7]
                 self.displayAttack(index, damage)
         elif index == 3:
             if Bag.lcaliber < playerWeapons[index][7]:
-                print("not enough 7.62mm rounds")
+                self.clearText()
+                self.updateText("\nInsufficient 7.62mm rounds\n\nYou have: "+str(Bag.lcaliber)+"\nRequired amount: "+str(playerWeapons[3][7]))
             else:
+                successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 Bag.lcaliber -= playerWeapons[index][7]
                 self.displayAttack(index, damage)
         elif index == 4:
             if Bag.grenades < 1:
-                print("not enough grenades")
+                self.clearText()
+                self.updateText("\nInsufficient grenades\n\nYou have: "+str(Bag.grenades)+"\nRequired amount: "+str(playerWeapons[4][7]))
             else:
+                successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 Bag.grenades -= playerWeapons[index][7]
                 self.displayAttack(index, damage)
         elif index == 5:
             if playerWeapons[5][1] == "": #does the player have a speical attack in their inventory?
-                print("not enough resources")
+                self.clearText()
+                self.updateText("\n\nYou do not own a special attack")
             else:
+                successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 self.displayAttack(index, damage)
                 playerWeapons[5] = ["", "", "", "", "", "", "", ""] #If the player does have a special attack, this will remove it after they use it - to ensure the player cant stack multiple special attacks
-            
-    def displayAttack(self, index, damage):
-        print("dmage: " + str(damage))
-        print("enemy old health: "+ str(Enemy.health))
-        Enemy.health -= damage
-        print("enemy new health: "+str(Enemy.health))
-        print(playerWeapons[index][1])
-        pass
-
-    def enemyAttack(self):
-        num = random.randint(1,3)
-        if num == 1:
-            damage = Enemy.attack(Enemy.attack1)
-            attack = Enemy.attack1[0]
-        elif num == 2:
-            damage = Enemy.attack(Enemy.attack2)
-            attack = Enemy.attack2[0]
-        elif num == 3:
-            damage = Enemy.attack(Enemy.attack3)
-            attack = Enemy.attack3[0]
         
-        print(damage)
-        print(attack)
-        print("player old health: "+str(Player.health))
-        Player.health -= damage
-        if Player.health < 1:
-            Player.health == 0
-            print("player dead: " + Enemy.finalMove)
+        self.updateInfo()
+
+        if successfulAttack == False:
+            self.buttonState("normal", "hand2")
+
+        if Enemy.health > 0 and successfulAttack == True:
+            num = random.randint(1,3)
+            if num == 1:
+                eDamage = Enemy.attack(Enemy.attack1)
+                eAttack = Enemy.attack1[0]
+            elif num == 2:
+                eDamage = Enemy.attack(Enemy.attack2)
+                eAttack = Enemy.attack2[0]
+            elif num == 3:
+                eDamage = Enemy.attack(Enemy.attack3)
+                eAttack = Enemy.attack3[0]
             
-        print("player new health: "+str(Player.health))
-    
+            Player.health -= eDamage
+            if Player.health < 1:
+                Player.health = 0
+
+            self.fightText.after(5000, lambda: self.enemyAttack(eAttack, eDamage))
+
+            if Player.health > 0:
+                self.fightPage.after(8000, lambda: self.buttonState("normal", "hand2"))
+            else: 
+                self.fightText.after(9000, self.clearText)
+                self.fightText.after(10000, lambda: self.updateText("\n\nThe "+Enemy.name+" "+Enemy.finalMove))
+
+        elif Enemy.health < 1:
+            gold = self.enemyGold(Enemy.level)
+            Bag.gold += gold
+            self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and found "+str(gold)+" gold!"))
+
+    def displayAttack(self, index, damage):
+        Enemy.health -= damage
+        if Enemy.health < 1:
+            Enemy.health = 0
+        self.clearText()
+        self.updateText("\nYou dealt "+str(damage)+" damage with your "+playerWeapons[index][1]+"\nThe "+Enemy.name+" has "+str(Enemy.health)+" health remaining")
+        
+    def enemyAttack(self, att, dmg):
+          
+        self.updateText("\n\nThe "+Enemy.name+" "+att+" for "+str(dmg)+" damage\nYou have "+str(Player.health)+" health remaining")
+        self.updateInfo()
+
     def healthPotion(self):
         if Bag.healthPotion == 0:
-            print("No health potions")
+            self.updateText("no health potions")
         elif Player.health == Player.max_health:
             print("Already at max health")
         else:
@@ -527,22 +657,45 @@ class FightPage(tk.Frame):
             if Player.stamina > Player.maxStamina:
                 Player.stamina == Player.maxStamina
 
-    def enemyGold(enemyLevel):
+    def enemyGold(self, enemyLevel):
         """Choses a random amount of gold to give the player after the monsters is defeated"""
         ranNum = random.randint(0, 30)
-        goldRecovered = ranNum*enemyLevel #Amount of gold recieved based on monsters level
+        goldRecovered = ranNum*enemyLevel #Amount of gold received based on enemies level
         Bag.gold += goldRecovered
         return goldRecovered
 
-    def buttonState(self, text):
-        self.btnBow.configure(state=text)
-        self.btnMelee.configure(state=text)
-        self.btnSmallCal.configure(state=text)
-        self.btnMedCal.configure(state=text)
-        self.btnGrenade.configure(state=text)
-        self.btnSpecial.configure(state=text)
-        self.btnHealth.configure(state=text)
-        self.btnStamina.configure(state=text)
+    def buttonState(self, text, curs):
+        self.btnBow.configure(state=text, cursor=curs)
+        self.btnMelee.configure(state=text, cursor=curs)
+        self.btnSmallCal.configure(state=text, cursor=curs)
+        self.btnMedCal.configure(state=text, cursor=curs)
+        self.btnGrenade.configure(state=text, cursor=curs)
+        self.btnSpecial.configure(state=text, cursor=curs)
+        self.btnHealth.configure(state=text, cursor=curs)
+        self.btnStamina.configure(state=text, cursor=curs)
+
+    def updateInfo(self):
+        self.lblEnemyHealth.configure(text="Health: "+str(Enemy.health))
+        self.lblArrow.configure(text="Arrows: "+str(Bag.arrows))
+        self.lblSCal.configure(text="9mm Rounds: "+str(Bag.scaliber))
+        self.lblMCal.configure(text="7.62mm Rounds: "+str(Bag.lcaliber))
+        self.lblGrenade.configure(text="Grenades: "+str(Bag.grenades))
+        self.lblSpecial.configure(text="Special:\n"+str(playerWeapons[5][1]))
+        self.lblHealthPot.configure(text="Health Potions: "+str(Bag.healthPotion))
+        self.lblStaminaPot.configure(text="Stamina Potions: "+str(Bag.staminaPotion))
+        self.lblPHealth.configure(text="Health: "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblPStamina.configure(text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        
+
+    def updateText(self, text):
+        self.fightText.configure(state="normal")
+        self.fightText.insert(tk.END, text, "center")
+        self.fightText.configure(state="disabled")
+
+    def clearText(self):
+        self.fightText.configure(state="normal")
+        self.fightText.delete(0.0, "end")
+        self.fightText.configure(state="disabled")
 
 game = GameApp()
 
