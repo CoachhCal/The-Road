@@ -7,15 +7,19 @@ import math
 import operator
 import time
 import random
+import threading
 
 """
 IMPORTANT:
-Splash Page button command has replaced StartPage with MainPage to skip the character input
+
+https://deckofcardsapi.com/
 
 """
 
+
+
 class PlayerObject:
-    def __init__(self, name, age, color, height, weight, sex, armor, max_health, health, stamina, max_stamina):
+    def __init__(self, name, age, color, height, weight, sex, armor, max_health, health, stamina, max_stamina, mode):
         self.name = name
         self.age = age
         self.color = color
@@ -27,6 +31,7 @@ class PlayerObject:
         self.health = health
         self.stamina = stamina
         self.max_stamina = max_stamina
+        self.mode = mode
     
     def total_health(self):
         return self.armor + self.max_health
@@ -49,6 +54,7 @@ class EnemyObject:
     attack2 = ["name", 0,1]
     attack3 = ["name", 0,1]
     finalMove = "none"
+    reward = 0
 
     def attack(attackList):
         return random.randint(attackList[1], attackList[2])
@@ -104,8 +110,10 @@ playerWeapons[4] = weapons_list[21]
 playerWeapons[5] = weapons_list[22]
 Enemy = EnemyObject
 
-Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100)
-Bag = Inventory(100, 0, 100, 0, 0, 0, 0)
+Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100, 2)
+Bag = Inventory(1000, 0, 100, 0, 0, 0, 0)
+
+# gameMode = 0 #did they click "Story Mode" (1) or "Quick Play" (2)?
 
 class Helper:
     __name__ = 'Helper'
@@ -122,8 +130,12 @@ class Helper:
     def sleep(self, ms):
         game.after(ms, self)
 
+helper = Helper
 
 class GameApp(tk.Tk):
+    
+    
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         window = tk.Frame(self, height=800, width=1100, bg="black")
@@ -132,7 +144,7 @@ class GameApp(tk.Tk):
         window.pack(side="top", fill = "both", expand=True)
 
         self.frames = {}
-        for F in (SplashPage, StartPage, MainPage, FightPage):
+        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage):
             frame = F(window, self)
             self.frames[F] = frame
             frame.place(height=800, width=1100)
@@ -162,9 +174,10 @@ class GameApp(tk.Tk):
         label = tk.Label(popWin, text="window")
         label.grid()
         btn = tk.Button(popWin, text="close", command=popWin.destroy)
-        btn.grid(row=1)
+        btn.grid(row=1)       
 
     def start(self, sleep):
+        
         self.frames[MainPage].snapBottom()
         self.frames[MainPage].clearBox()
 
@@ -182,9 +195,12 @@ class GameApp(tk.Tk):
         playerWeapons[0] = weapons_list[0]
 
         self.showFrame(FightPage)
-        self.frames[FightPage].enemyBattle(4,5,"random", "none")
+        self.frames[FightPage].enemyBattle(4,5,"random", 0)
+        
+    def part2(self, sleep):
         yield sleep(2000)
-        print("hello")
+        self.frames[MainPage].updateText("\n\ntest\n")
+        print("noice")
         
 
         
@@ -218,11 +234,13 @@ class SplashPage(tk.Frame):
         btnBegin.place(relx=.5, rely=.6, anchor="center")
 
     def yup(self, controller):
-        controller.showFrame(StartPage)
+        # controller.showFrame(StartPage)
         # controller.showFrame(FightPage) #Take this out to make it work
         # controller.frames[FightPage].enemyBattle(4,5,"random", "none")
         # controller.start() #take this out to make it work
         # controller.trial(MainPage)
+
+        controller.showFrame(TownPage)
 
 
 class StartPage(tk.Frame):
@@ -303,16 +321,16 @@ class StartPage(tk.Frame):
 
         lblBtnStory = tk.LabelFrame(startPage, bd=5, bg="gold")
         lblBtnStory.place(relx=.1, rely=.8)
-        btnStory = tk.Button(lblBtnStory, text="Story Mode", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2", command= lambda: self.storyModeValidation(controller, nameVar.get(), skinVar.get(), rbValue.get(), ageVar.get(), heightVar.get(), weightVar.get()))
+        btnStory = tk.Button(lblBtnStory, text="Story Mode", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2", command= lambda: self.modeValidation(controller, nameVar.get(), skinVar.get(), rbValue.get(), ageVar.get(), heightVar.get(), weightVar.get(), 1))
         # btnStory.place(relx=.27, rely=.75, anchor="center")
         btnStory.pack()
         lblBtnQuick = tk.LabelFrame(startPage, bd=5, bg="gold")
         lblBtnQuick.place(relx=.565, rely=.8)
-        btnQuick = tk.Button(lblBtnQuick, text="Quick Play", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2")
+        btnQuick = tk.Button(lblBtnQuick, text="Quick Play", font="Arial 30", relief="solid", bg="black",fg="gold", width=15, activebackground="gold", cursor="hand2", command= lambda: self.modeValidation(controller, nameVar.get(), skinVar.get(), rbValue.get(), ageVar.get(), heightVar.get(), weightVar.get(), 2))
         # btnQuick.place(relx=.73, rely=.75, anchor="center")
         btnQuick.pack()
 
-    def storyModeValidation(self, controller, nameVar, skinVar, rbValue, ageVar, heightVar, weightVar):
+    def modeValidation(self, controller, nameVar, skinVar, rbValue, ageVar, heightVar, weightVar, btnValue):
         count = 0 #used to check how many entries are valid
         var = [self.validName, self.validSkin,self.validSex, self.validAge, self.validHeight, self.validWeight] # used for loop
         val = [nameVar, skinVar, rbValue, ageVar, heightVar, weightVar] #used for loop
@@ -346,8 +364,13 @@ class StartPage(tk.Frame):
                 Player.color = skinVar
                 Player.height = int(heightVar)
                 Player.weight = int(weightVar)
-                controller.showFrame(MainPage)
-                Helper(controller.start)
+                Player.mode = btnValue
+                if btnValue == 1:
+                    controller.showFrame(MainPage)
+                    helper(controller.start)
+                elif btnValue == 2:
+                    controller.showFrame(TownPage)
+    
                 # controller.start()
                 # controller.frames[MainPage].updateText()
                 
@@ -468,22 +491,22 @@ class FightPage(tk.Frame):
         self.fightText.place(relx=.05, rely=.445)
        
 
-        self.btnMelee = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0))
+        self.btnMelee = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, controller))
         self.btnMelee.place(relx=.08, rely=.81)
 
-        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1))
+        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, controller))
         self.btnBow.place(relx=.21, rely=.81)
 
-        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2))
+        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, controller))
         self.btnSmallCal.place(relx=.34, rely=.81)
 
-        self.btnMedCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3))
+        self.btnMedCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, controller))
         self.btnMedCal.place(relx=.47, rely=.81)
 
-        self.btnGrenade = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4))
+        self.btnGrenade = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, controller))
         self.btnGrenade.place(relx=.60, rely=.81)
 
-        self.btnSpecial = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Special",cursor="hand2", command=lambda: self.playerAttack(5))
+        self.btnSpecial = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, controller))
         self.btnSpecial.place(relx=.73, rely=.81)
 
         self.btnFlee = tk.Button(self.fightPage, width=13, height=6,cursor="hand2",text="Flee", bg="grey")
@@ -495,29 +518,30 @@ class FightPage(tk.Frame):
         self.btnStamina = tk.Button(self.fightPage, width=13, height=6,cursor="hand2", bg="grey", text="Stamina Pot", command = self.staminaPotion)
         self.btnStamina.place(relx=.86, rely=.63)
 
-    def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, goldOrNone):
-        self.enemySelector(minEnemyLvl, maxEnemyLvl, nameOrRandom)
+    def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, zeroOrGoldAmt):
+        self.enemySelector(minEnemyLvl, maxEnemyLvl, nameOrRandom, zeroOrGoldAmt)
+        
         self.lblEnemyName.configure(text = Enemy.name)
         self.updateInfo()
         self.buttonState("normal", "hand2")
         
-    def enemySelector(self,minEnemyLvl, maxEnemyLvl, nameOrRandom):
+    def enemySelector(self,minEnemyLvl, maxEnemyLvl, nameOrRandom, zeroOrGoldAmt):
         """Chooses a monster from a 2D list"""
         if nameOrRandom != "random":
             for x in range(len(monsterList)): #Goes through the list looking for the correct monsters name. Once found, the details of the monster is assigned to the monster_index variable
                 if monsterList[x][1] == nameOrRandom: #If the correct enemy is found
                     selectedEnemy = monsterList[x]
-                    self.updateEnemyObject(selectedEnemy)
+                    self.updateEnemyObject(selectedEnemy, zeroOrGoldAmt)
         else:
             x = 0
             while x < 100:
                 selectedEnemy = monsterList[random.randint(0, len(monsterList)-1)] #Chooses a random monster from the list
                 if minEnemyLvl <= selectedEnemy[0] <= maxEnemyLvl: #Checks to see of the chosen monster is the right level
-                    self.updateEnemyObject(selectedEnemy)
+                    self.updateEnemyObject(selectedEnemy, zeroOrGoldAmt)
                 else:
                     x += 1
 
-    def updateEnemyObject(self, enemy):
+    def updateEnemyObject(self, enemy, goldAmt):
         Enemy.level = enemy[0]
         Enemy.name = enemy[1]
         Enemy.health = enemy[2]
@@ -525,8 +549,10 @@ class FightPage(tk.Frame):
         Enemy.attack2 = [enemy[6], enemy[7], enemy[8]]
         Enemy.attack3 = [enemy[9], enemy[10], enemy[11]]
         Enemy.finalMove = enemy[12]
+        Enemy.reward = goldAmt
+
     
-    def playerAttack(self, index):
+    def playerAttack(self,index, controller):
         self.buttonState("disabled", "x_cursor")
         successfulAttack = False
         if playerWeapons[index] == "":
@@ -621,9 +647,22 @@ class FightPage(tk.Frame):
                 self.fightText.after(10000, lambda: self.updateText("\n\nThe "+Enemy.name+" "+Enemy.finalMove))
 
         elif Enemy.health < 1:
-            gold = self.enemyGold(Enemy.level)
-            Bag.gold += gold
-            self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and found "+str(gold)+" gold!"))
+            if Player.mode == 1: #If playing story mode
+                gold = self.enemyGold(Enemy.level)
+                Bag.gold += gold
+                self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and found "+str(gold)+" gold!"))
+                self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
+                self.fightPage.after(6999, self.clearText)
+                self.fightPage.after(7000, lambda: controller.showFrame(MainPage))
+            elif Player.mode == 2: #if playing quick play
+                gold = Enemy.reward
+                Bag.gold += gold
+                self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and earned "+str(gold)+" gold!"))
+                self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
+                self.fightPage.after(6999, self.clearText)
+                controller.frames[ArenaPage].updateInfo()
+                self.fightPage.after(7000, lambda: controller.showFrame(ArenaPage))
+            
 
     def displayAttack(self, index, damage):
         Enemy.health -= damage
@@ -639,9 +678,11 @@ class FightPage(tk.Frame):
 
     def healthPotion(self):
         if Bag.healthPotion == 0:
-            self.updateText("no health potions")
+            self.clearText()
+            self.updateText("\nInsufficient health potions\n\nYou have: "+str(Bag.healthPotion)+"\nRequired amount: 1")
         elif Player.health == Player.max_health:
-            print("Already at max health")
+            self.clearText()
+            self.updateText("\n\nAlready at max health")
         else:
             Player.health += potionList[0][1]
             if Player.health > Player.max_health:
@@ -649,9 +690,11 @@ class FightPage(tk.Frame):
     
     def staminaPotion(self):
         if Bag.staminaPotion == 0:
-            print("No stamina potions")
+            self.clearText()
+            self.updateText("\nInsufficient stamina potions\n\nYou have: "+str(Bag.staminaPotion)+"\nRequired amount: 1")
         elif Player.stamina == Player.maxStamina:
-            print("Already at max stamina")
+            self.clearText()
+            self.updateText("\n\nAlready at max stamina")
         else:
             Player.stamina += potionList[1][1]
             if Player.stamina > Player.maxStamina:
@@ -696,6 +739,120 @@ class FightPage(tk.Frame):
         self.fightText.configure(state="normal")
         self.fightText.delete(0.0, "end")
         self.fightText.configure(state="disabled")
+
+class TownPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.townPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.townPage.pack()
+        self.townPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        # self.lblTownPerson = tk.Label(self.townPage, height=5, width=12, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 25")
+        # self.lblTownPerson.place(relx=.075, rely=.05)
+
+        self.lblWelcome = tk.Label(self.townPage, height=1, width=25, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 25", text='"Welcome to the Town!"')
+        self.lblWelcome.place(relx=.5, rely=.1, anchor="center")
+
+        # self.lblExit = tk.Label(self.townPage, height=1, width=30, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 10", text="Exiting will return to main menu")
+        # self.lblExit.place(relx=.38, rely=.15)
+
+        btnArena = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Arena", font="Arial 25", command=lambda: controller.showFrame(ArenaPage))
+        btnArena.place(relx=.5, rely=.3, anchor="center")
+        lblArena = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Fight against enemies for gold")
+        lblArena.place(relx=.5, rely=.36, anchor="center")
+
+        btnCasino = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Casino", font="Arial 25")
+        btnCasino.place(relx=.5, rely=.47, anchor="center")
+        lblCasino = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Gamble your gold")
+        lblCasino.place(relx=.5, rely=.53, anchor="center")
+
+        btnShop = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Item Shop", font="Arial 25")
+        btnShop.place(relx=.5, rely=.64, anchor="center")
+        lblShop = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Shop weapons, armour, ammo, and potions")
+        lblShop.place(relx=.5, rely=.7, anchor="center")
+
+        btnSchool = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="School", font="Arial 25")
+        btnSchool.place(relx=.5, rely=.81, anchor="center")
+        lblSchool = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Answer math questions for gold")
+        lblSchool.place(relx=.5, rely=.87, anchor="center")
+
+class ArenaPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.arenaPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.arenaPage.pack()
+        self.arenaPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        lblWelcome = tk.Label(self.arenaPage, height=1, width=25, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 25", text='"Welcome to the Town!"')
+        lblWelcome.place(relx=.5, rely=.1, anchor="center")
+
+        self.lblInventory = tk.Label(self.arenaPage, height=18, width=75, bg="black")
+        self.lblInventory.place(relx=.05, rely=.5)
+
+        self.lblInvTitle = tk.Label(self.arenaPage, height=1, width=32, bg="black", fg="white", font="Arial 20", text="  "+Player.name + "'s Inventory", anchor='center')
+        self.lblInvTitle.place(relx=.05, rely=.525)
+
+        self.lblArrow = tk.Label(self.arenaPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Arrows: "+str(Bag.arrows), anchor='w')
+        self.lblArrow.place(relx=.08, rely=.6)
+
+        self.lblSCal = tk.Label(self.arenaPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="9mm Rounds: "+str(Bag.scaliber), anchor='w',)
+        self.lblSCal.place(relx=.08, rely=.66)
+
+        self.lblMCal = tk.Label(self.arenaPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="7.62mm Rounds: "+str(Bag.lcaliber), anchor='w')
+        self.lblMCal.place(relx=.08, rely=.72)
+
+        self.lblGrenade = tk.Label(self.arenaPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Grenades: "+str(Bag.grenades), anchor='w')
+        self.lblGrenade.place(relx=.08, rely=.78)
+
+        self.lblGold = tk.Label(self.arenaPage, height=1, width=12, bg="#6e6c01", fg="white", font="Arial 15", text="Gold: "+str(Bag.gold))
+        self.lblGold.place(relx=.05, rely=.84)
+
+        self.lblPHealth = tk.Label(self.arenaPage, height=1, width=18, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblPHealth.place(relx=.175, rely=.84)
+
+        self.lblPStamina = tk.Label(self.arenaPage, height=1, width=17, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblPStamina.place(relx=.3568, rely=.84)
+
+        self.lblSpecial = tk.Label(self.arenaPage, height=3, width=20, bg="black", fg="white", font="Arial 15", text="Special:\n"+str(playerWeapons[5][1]), anchor='nw', justify="left", wraplength=250, )
+        self.lblSpecial.place(relx=.30, rely=.6)
+
+        self.lblHealthPot = tk.Label(self.arenaPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Health Potions: "+str(Bag.healthPotion), anchor='w')
+        self.lblHealthPot.place(relx=.30, rely=.72)
+
+        self.lblStaminaPot = tk.Label(self.arenaPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Stamina Potions: "+str(Bag.staminaPotion), anchor='w')
+        self.lblStaminaPot.place(relx=.30, rely=.78)
+
+        btnEasy = tk.Button(self.arenaPage, bg="grey", fg="white", height=1, width=20, text="Easy", font="Arial 25", cursor="hand2", command=lambda: self.beginBattle(controller, 1, 2, 50))
+        btnEasy.place(relx=.6, rely=.5, anchor="w")
+        # lblCasino = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Gamble your gold")
+        # lblCasino.place(relx=.5, rely=.53, anchor="center")
+
+        btnMedium = tk.Button(self.arenaPage, bg="grey", fg="white", height=1, width=20, text="Medium", font="Arial 25", cursor="hand2", command=lambda: self.beginBattle(controller, 3, 5, 250))
+        btnMedium.place(relx=.6, rely=.65, anchor="w")
+        # lblShop = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Shop weapons, armour, ammo, and potions")
+        # lblShop.place(relx=.5, rely=.7, anchor="center")
+
+        btnHard = tk.Button(self.arenaPage, bg="grey", fg="white", height=1, width=20, text="Hard", font="Arial 25", cursor="hand2")
+        btnHard.place(relx=.6, rely=.8, anchor="w")
+        # lblSchool = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Answer math questions for gold")
+        # lblSchool.place(relx=.5, rely=.87, anchor="center")
+
+    def beginBattle(self, controller, minLevel, maxLevel, gold):
+
+        controller.showFrame(FightPage)
+        controller.frames[FightPage].enemyBattle(minLevel, maxLevel, "random", gold)
+
+    def updateInfo(self):
+        self.lblArrow.configure(text="Arrows: "+str(Bag.arrows))
+        self.lblSCal.configure(text="9mm Rounds: "+str(Bag.scaliber))
+        self.lblMCal.configure(text="7.62mm Rounds: "+str(Bag.lcaliber))
+        self.lblGrenade.configure(text="Grenades: "+str(Bag.grenades))
+        self.lblSpecial.configure(text="Special:\n"+str(playerWeapons[5][1]))
+        self.lblHealthPot.configure(text="Health Potions: "+str(Bag.healthPotion))
+        self.lblStaminaPot.configure(text="Stamina Potions: "+str(Bag.staminaPotion))
+        self.lblGold.configure(text="Gold: "+str(Bag.gold))
+        self.lblPHealth.configure(text="Health: "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblPStamina.configure(text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
 
 game = GameApp()
 
