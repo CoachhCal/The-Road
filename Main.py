@@ -102,12 +102,12 @@ cards_list = list_from_csv("csvFiles/cards_list.csv", "r")
 
 
 playerWeapons = create_player_weapon_list()
-playerWeapons[0] = weapons_list[0]
-playerWeapons[1] = weapons_list[8]
-playerWeapons[2] = weapons_list[14]
-playerWeapons[3] = weapons_list[20]
+playerWeapons[0] = weapons_list[7]
+playerWeapons[1] = weapons_list[10]
+playerWeapons[2] = weapons_list[16]
+playerWeapons[3] = weapons_list[19]
 playerWeapons[4] = weapons_list[21]
-playerWeapons[5] = weapons_list[22]
+playerWeapons[5] = weapons_list[23]
 Enemy = EnemyObject
 
 Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100, 2)
@@ -235,12 +235,13 @@ class SplashPage(tk.Frame):
 
     def yup(self, controller):
         # controller.showFrame(StartPage)
-        # controller.showFrame(FightPage) #Take this out to make it work
-        # controller.frames[FightPage].enemyBattle(4,5,"random", "none")
+        controller.showFrame(FightPage) #Take this out to make it work
+        controller.frames[FightPage].updateWeapons()
+        controller.frames[FightPage].enemyBattle(4,5,"random", 0)
         # controller.start() #take this out to make it work
         # controller.trial(MainPage)
 
-        controller.showFrame(TownPage)
+        # controller.showFrame(TownPage)
 
 
 class StartPage(tk.Frame):
@@ -490,32 +491,43 @@ class FightPage(tk.Frame):
         self.fightText.tag_add("center", 1.0, "end")
         self.fightText.place(relx=.05, rely=.445)
        
-
-        self.btnMelee = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, controller))
+        
+        self.btnMelee = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, controller))
         self.btnMelee.place(relx=.08, rely=.81)
 
-        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, controller))
+        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="#909090",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, controller))
         self.btnBow.place(relx=.21, rely=.81)
 
-        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, controller))
+        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, controller))
         self.btnSmallCal.place(relx=.34, rely=.81)
 
-        self.btnMedCal = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, controller))
+        self.btnMedCal = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, controller))
         self.btnMedCal.place(relx=.47, rely=.81)
 
-        self.btnGrenade = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, controller))
+        self.btnGrenade = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, controller))
         self.btnGrenade.place(relx=.60, rely=.81)
 
-        self.btnSpecial = tk.Button(self.fightPage, width=13, height=6, bg="grey",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, controller))
+        self.btnSpecial = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, controller))
         self.btnSpecial.place(relx=.73, rely=.81)
 
-        self.btnFlee = tk.Button(self.fightPage, width=13, height=6,cursor="hand2",text="Flee", bg="grey")
+        self.btnFlee = tk.Button(self.fightPage, width=13, height=5,cursor="hand2",text="Flee", bg="grey")
         self.btnFlee.place(relx=.86, rely=.81)
 
-        self.btnHealth = tk.Button(self.fightPage, width=13, height=6,cursor="hand2",text="Health Pot", bg="grey", command= self.healthPotion)
+        self.btnHealth = tk.Button(self.fightPage, width=13, height=5,cursor="hand2", bg="#909090", command= self.healthPotion)
+        try:
+            self.picHealth = ImageTk.PhotoImage(Image.open(potionList[0][3]))
+            self.btnHealth.configure(width=100, height=90, image=self.picHealth)
+        except:
+            self.btnHealth.configure(width=13, height=5, text="Health\nPotion")
         self.btnHealth.place(relx=.86, rely=.44)
 
-        self.btnStamina = tk.Button(self.fightPage, width=13, height=6,cursor="hand2", bg="grey", text="Stamina Pot", command = self.staminaPotion)
+
+        self.btnStamina = tk.Button(self.fightPage, width=13, height=5,cursor="hand2", bg="#909090", command = self.staminaPotion)
+        try:
+            self.picStamina = ImageTk.PhotoImage(Image.open(potionList[1][3]))
+            self.btnStamina.configure(width=100, height=90, image=self.picStamina)
+        except:
+            self.btnStamina.configure(width=13, height=5, text="Stamina\nPotion")
         self.btnStamina.place(relx=.86, rely=.63)
 
     def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, zeroOrGoldAmt):
@@ -730,6 +742,43 @@ class FightPage(tk.Frame):
         self.lblPStamina.configure(text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
         
 
+    def updateWeapons(self):
+        try:
+            self.picMelee = ImageTk.PhotoImage(Image.open(playerWeapons[0][9]))
+            self.btnMelee.configure(width=100, height=90, image=self.picMelee)
+        except:
+            self.btnMelee.configure(width=13, height=5, text=playerWeapons[0][1])
+        
+        try:
+            self.picBow = ImageTk.PhotoImage(Image.open(playerWeapons[1][9]))
+            self.btnBow.configure(width=100, height=90, image=self.picBow)
+        except:
+            self.btnBow.configure(width=13, height=5, text=playerWeapons[1][1])
+
+        try:
+            self.picSmallCal = ImageTk.PhotoImage(Image.open(playerWeapons[2][9]))
+            self.btnSmallCal.configure(width=100, height=90, image=self.picSmallCal)
+        except:
+            self.btnSmallCal.configure(width=13, height=5, text=playerWeapons[2][1])
+
+        try:
+            self.picMedCal = ImageTk.PhotoImage(Image.open(playerWeapons[3][9]))
+            self.btnMedCal.configure(width=100, height=90, image=self.picMedCal)
+        except:
+            self.btnMedCal.configure(width=13, height=5, text=playerWeapons[3][1])
+
+        try:
+            self.picGrenade = ImageTk.PhotoImage(Image.open(playerWeapons[4][9]))
+            self.btnGrenade.configure(width=100, height=90, image=self.picGrenade)
+        except:
+            self.btnGrenade.configure(width=13, height=5, text=playerWeapons[4][1])
+
+        try:
+            self.picSpecial = ImageTk.PhotoImage(Image.open(playerWeapons[5][9]))
+            self.btnSpecial.configure(width=100, height=90, image=self.picSpecial)
+        except:
+            self.btnSpecial.configure(width=13, height=5, text=playerWeapons[5][1])
+    
     def updateText(self, text):
         self.fightText.configure(state="normal")
         self.fightText.insert(tk.END, text, "center")

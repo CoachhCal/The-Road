@@ -1,26 +1,26 @@
-slot number,name,damage lower, damage upper,Stamina cost, cost stamina,ammo type, cost ammo,gold cost
-1,Stick,5,10,Stamina cost:,5,,,5
-1,Small knife,12,16,Stamina cost:,3,,,15
-1,Metal Bat,14,20,Stamina cost:,8,,,25
-1,Machete,17,23,Stamina cost:,8,,,45
-1,Spear,25,30,Stamina cost:,8,,,60
-1,Steel Axe,25,35,Stamina cost:,10,,,70
-1,Dual Swords,30,45,Stamina cost:,15,,,90
-1,Warhammer,50,70,Stamina cost:,40,,,150
-2,Compound Bow,40,50,Stamina cost:,5,Arrow cost:,1,60
-2,Recurve Bow,50,70,Stamina cost:,20,Arrow cost:,1,80
-2,Crossbow,60,90,Stamina cost:,8,Arrow cost:,1,120
-3,Sig Sauer P369,35,50,,,9mm cost:,5,70
-3,Glock 19,50,65,,,9mm cost:,10,80
-3,Ruger LC9,35,60,,,9mm cost:,8,90
-3,Beretta M12,80,100,,,9mm cost:,30,110
-3,MP5,100,120,,,9mm cost:,45,130
-3,UMP,80,90,,,9mm cost:,20,150
-4,SKS,90,110,,,7.62mm cost:,10,120
-4,SR-47,120,150,,,7.62mm cost:,30,180
-4,AK-47,150,180,,,7.62mm cost:,45,200
-4,RPK,180,225,,,7.62mm cost:,75,300
-5,Grenade,200,300,,,Grenade cost:,1,0
-6,Group of Mercenaries,300,375,,,Special cost:,1,350
-6,Tamed T-Rex,400,550,,,Special cost:,1,500
-6,Artillery Strike,750,1000,,,Special cost:,1,750
+slot number,name,damage lower, damage upper,Stamina cost, cost stamina,ammo type, cost ammo,gold cost,image
+1,Stick,5,10,Stamina cost:,5,,,5,pictures/stick.jpg
+1,Small knife,12,16,Stamina cost:,3,,,15,pictures/knife.jpg
+1,Metal Bat,14,20,Stamina cost:,8,,,25,pictures/bat.jpg
+1,Machete,17,23,Stamina cost:,8,,,45,pictures/machete.jpg
+1,Spear,25,30,Stamina cost:,8,,,60,pictures/spear.jpg
+1,Battle Axe,25,35,Stamina cost:,10,,,70,pictures/axe.jpg
+1,Dual Swords,30,45,Stamina cost:,15,,,90,pictures/swords.jpg
+1,Warhammer,50,70,Stamina cost:,40,,,150,pictures/hammer.jpg
+2,Compound Bow,40,50,Stamina cost:,5,Arrow cost:,1,60,pictures/compound.jpg
+2,Recurve Bow,50,70,Stamina cost:,20,Arrow cost:,1,80,pictures/recurve.jpg
+2,Crossbow,60,90,Stamina cost:,8,Arrow cost:,1,120,pictures/crossbow.jpg
+3,Sig Sauer P369,35,50,,,9mm cost:,5,70,pictures/sig.jpg
+3,Glock 19,50,65,,,9mm cost:,10,80,pictures/glock.jpg
+3,Ruger LC9,35,60,,,9mm cost:,8,90,pictures/revolver.jpg
+3,Beretta M12,80,100,,,9mm cost:,30,110,pictures/beretta.jpg
+3,MP5,100,120,,,9mm cost:,45,130,pictures/mp5.jpg
+3,UMP,80,90,,,9mm cost:,20,150,pictures/ump.jpg
+4,SKS,90,110,,,7.62mm cost:,10,120,pictures/sks.jpg
+4,SR-47,120,150,,,7.62mm cost:,30,180,pictures/sr47.jpg
+4,AK-47,150,180,,,7.62mm cost:,45,200,pictures/ak47.jpg
+4,RPK,180,225,,,7.62mm cost:,75,300,pictures/rpk.jpg
+5,Grenade,200,300,,,Grenade cost:,1,0,pictures/grenade.jpg
+6,Group of Mercenaries,300,375,,,Special cost:,1,350,pictures/mercs.jpg
+6,VX Nerve Agent,400,550,,,Special cost:,1,500,pictures/gas.jpg
+6,Artillery Strike,750,1000,,,Special cost:,1,750,pictures/artillery.jpg
