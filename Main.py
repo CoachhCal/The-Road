@@ -105,9 +105,9 @@ playerWeapons = create_player_weapon_list()
 playerWeapons[0] = weapons_list[7]
 playerWeapons[1] = weapons_list[10]
 playerWeapons[2] = weapons_list[16]
-playerWeapons[3] = weapons_list[19]
+# playerWeapons[3] = weapons_list[19]
 playerWeapons[4] = weapons_list[21]
-playerWeapons[5] = weapons_list[23]
+playerWeapons[5] = weapons_list[22]
 Enemy = EnemyObject
 
 Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100, 2)
@@ -447,14 +447,8 @@ class FightPage(tk.Frame):
         self.lblAddEN = tk.Label(self.fightPage, height=1, width=2, bg="black", font="Arial 15")
         self.lblAddEN.place(relx=.2845, rely=.05)
 
-        # self.lblEnemyHealth = tk.Label(self.lblEnemyPic, height=1, width=25, bg="blue", fg="white", font="Arial 15")
-        # self.lblEnemyHealth.place(relx=.0000, rely=.9)
-
         self.lblInventory = tk.Label(self.fightPage, height=18, width=75, bg="black")
         self.lblInventory.place(relx=.45, rely=.05)
-
-        # canvas = tk.Canvas(self.fightPage, width=526, height=1)
-        # canvas.place(relx=.45, rely=.095)
 
         self.lblInvTitle = tk.Label(self.fightPage, height=1, width=32, bg="black", fg="white", font="Arial 20", text="  "+Player.name + "'s Inventory", anchor='center')
         self.lblInvTitle.place(relx=.45, rely=.05)
@@ -471,8 +465,11 @@ class FightPage(tk.Frame):
         self.lblGrenade = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Grenades: "+str(Bag.grenades), anchor='w')
         self.lblGrenade.place(relx=.48, rely=.30)
 
-        self.lblSpecial = tk.Label(self.fightPage, height=3, width=20, bg="black", fg="white", font="Arial 15", text="Special:\n"+str(playerWeapons[5][1]), anchor='nw', justify="left", wraplength=250, )
-        self.lblSpecial.place(relx=.70, rely=.12)
+        self.lblSpecialWord = tk.Label(self.fightPage, height=1, width = 20, bg="black", fg="white", font="Arial 15", text="Special: ", justify="left", anchor='nw')
+        self.lblSpecialWord.place(relx=.7, rely=.12)
+
+        self.lblSpecial = tk.Label(self.fightPage, height=2, width=20, bg="black", fg="white", font="Arial 15", text=str(playerWeapons[5][1]), anchor='nw', justify="left", wraplength=250, )
+        self.lblSpecial.place(relx=.72, rely=.17)
 
         self.lblHealthPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Health Potions: "+str(Bag.healthPotion), anchor='w')
         self.lblHealthPot.place(relx=.70, rely=.24)
@@ -489,46 +486,61 @@ class FightPage(tk.Frame):
         self.fightText = tk.Text(self.fightPage, height=9, width=60, state="disabled", bg="black", fg="white", font="Arial 18", padx=25)
         self.fightText.tag_configure("center", justify='center', spacing1=5)
         self.fightText.tag_add("center", 1.0, "end")
-        self.fightText.place(relx=.05, rely=.445)
+        self.fightText.place(relx=.05, rely=.42)
        
         
-        self.btnMelee = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, controller))
-        self.btnMelee.place(relx=.08, rely=.81)
+        self.btnMelee = tk.Button(self.fightPage, bg="#909090",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, controller))
+        self.btnMelee.place(relx=.05, rely=.76)
+        self.lblMelee = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
+        self.lblMelee.place(relx=.037, rely=.88)
 
-        self.btnBow = tk.Button(self.fightPage, width=13, height=6, bg="#909090",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, controller))
-        self.btnBow.place(relx=.21, rely=.81)
+        self.btnBow = tk.Button(self.fightPage, bg="#909090",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, controller))
+        self.btnBow.place(relx=.188, rely=.76)
+        self.lblBow = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
+        self.lblBow.place(relx=.179, rely=.8925)
 
-        self.btnSmallCal = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, controller))
-        self.btnSmallCal.place(relx=.34, rely=.81)
+        self.btnSmallCal = tk.Button(self.fightPage, bg="#909090",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, controller))
+        self.btnSmallCal.place(relx=.318, rely=.76)
+        self.lblSmallCal = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
+        self.lblSmallCal.place(relx=.309, rely=.88)
 
-        self.btnMedCal = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, controller))
-        self.btnMedCal.place(relx=.47, rely=.81)
+        self.btnMedCal = tk.Button(self.fightPage, bg="#909090",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, controller))
+        self.btnMedCal.place(relx=.448, rely=.76)
+        self.lblMedCal = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
+        self.lblMedCal.place(relx=.439, rely=.88)
 
-        self.btnGrenade = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, controller))
-        self.btnGrenade.place(relx=.60, rely=.81)
+        self.btnGrenade = tk.Button(self.fightPage, bg="#909090",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, controller))
+        self.btnGrenade.place(relx=.578, rely=.76)
+        self.lblGren = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
+        self.lblGren.place(relx=.569, rely=.88)
 
-        self.btnSpecial = tk.Button(self.fightPage, width=13, height=5, bg="#909090",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, controller))
-        self.btnSpecial.place(relx=.73, rely=.81)
+        self.btnSpecial = tk.Button(self.fightPage, bg="#909090",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, controller))
+        self.btnSpecial.place(relx=.712, rely=.76)
+        self.lblSpec = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
+        self.lblSpec.place(relx=.703, rely=.88)
 
         self.btnFlee = tk.Button(self.fightPage, width=13, height=5,cursor="hand2",text="Flee", bg="grey")
-        self.btnFlee.place(relx=.86, rely=.81)
+        self.btnFlee.place(relx=.845, rely=.76)
 
         self.btnHealth = tk.Button(self.fightPage, width=13, height=5,cursor="hand2", bg="#909090", command= self.healthPotion)
         try:
             self.picHealth = ImageTk.PhotoImage(Image.open(potionList[0][3]))
-            self.btnHealth.configure(width=100, height=90, image=self.picHealth)
+            self.btnHealth.configure(width=95, height=80, image=self.picHealth)
         except:
             self.btnHealth.configure(width=13, height=5, text="Health\nPotion")
-        self.btnHealth.place(relx=.86, rely=.44)
-
+        self.btnHealth.place(relx=.845, rely=.42)
+        self.lblAddHealth = tk.Label(self.fightPage, width = 10, height=1, bg="#1a1a1a", fg="white",font="Arial 12", text="+"+str(potionList[0][1])+" Health")
+        self.lblAddHealth.place(relx=.846, rely=.53)
 
         self.btnStamina = tk.Button(self.fightPage, width=13, height=5,cursor="hand2", bg="#909090", command = self.staminaPotion)
         try:
             self.picStamina = ImageTk.PhotoImage(Image.open(potionList[1][3]))
-            self.btnStamina.configure(width=100, height=90, image=self.picStamina)
+            self.btnStamina.configure(width=95, height=80, image=self.picStamina)
         except:
             self.btnStamina.configure(width=13, height=5, text="Stamina\nPotion")
-        self.btnStamina.place(relx=.86, rely=.63)
+        self.btnStamina.place(relx=.845, rely=.58)
+        self.lblAddStamina = tk.Label(self.fightPage, width = 10, height=1, bg="#1a1a1a", fg="white",font="Arial 12", text="+"+str(potionList[1][1])+" Stamina")
+        self.lblAddStamina.place(relx=.846, rely=.69)
 
     def enemyBattle(self, minEnemyLvl, maxEnemyLvl, nameOrRandom, zeroOrGoldAmt):
         self.enemySelector(minEnemyLvl, maxEnemyLvl, nameOrRandom, zeroOrGoldAmt)
@@ -567,9 +579,9 @@ class FightPage(tk.Frame):
     def playerAttack(self,index, controller):
         self.buttonState("disabled", "x_cursor")
         successfulAttack = False
-        if playerWeapons[index] == "":
+        if playerWeapons[index][1] == "":
             self.clearText()
-            self.updateText("Empty weapon slot")
+            self.updateText("\nEmpty weapon slot")
         elif index == 0: #if weapon is melee
             if Player.stamina < playerWeapons[index][5]:
                 self.clearText()
@@ -627,7 +639,7 @@ class FightPage(tk.Frame):
                 successfulAttack = True
                 damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
                 self.displayAttack(index, damage)
-                playerWeapons[5] = ["", "", "", "", "", "", "", ""] #If the player does have a special attack, this will remove it after they use it - to ensure the player cant stack multiple special attacks
+                playerWeapons[5] = ["", "", "", "", "", "", "", "", ""] #If the player does have a special attack, this will remove it after they use it - to ensure the player cant stack multiple special attacks
         
         self.updateInfo()
 
@@ -735,7 +747,7 @@ class FightPage(tk.Frame):
         self.lblSCal.configure(text="9mm Rounds: "+str(Bag.scaliber))
         self.lblMCal.configure(text="7.62mm Rounds: "+str(Bag.lcaliber))
         self.lblGrenade.configure(text="Grenades: "+str(Bag.grenades))
-        self.lblSpecial.configure(text="Special:\n"+str(playerWeapons[5][1]))
+        self.lblSpecial.configure(text=str(playerWeapons[5][1]))
         self.lblHealthPot.configure(text="Health Potions: "+str(Bag.healthPotion))
         self.lblStaminaPot.configure(text="Stamina Potions: "+str(Bag.staminaPotion))
         self.lblPHealth.configure(text="Health: "+str(Player.health)+"/"+str(Player.max_health))
@@ -747,38 +759,54 @@ class FightPage(tk.Frame):
             self.picMelee = ImageTk.PhotoImage(Image.open(playerWeapons[0][9]))
             self.btnMelee.configure(width=100, height=90, image=self.picMelee)
         except:
-            self.btnMelee.configure(width=13, height=5, text=playerWeapons[0][1])
+            self.btnMelee.configure(width=13, height=6, text=playerWeapons[0][1])
         
         try:
             self.picBow = ImageTk.PhotoImage(Image.open(playerWeapons[1][9]))
             self.btnBow.configure(width=100, height=90, image=self.picBow)
         except:
-            self.btnBow.configure(width=13, height=5, text=playerWeapons[1][1])
+            self.btnBow.configure(width=13, height=6, text=playerWeapons[1][1])
 
         try:
             self.picSmallCal = ImageTk.PhotoImage(Image.open(playerWeapons[2][9]))
             self.btnSmallCal.configure(width=100, height=90, image=self.picSmallCal)
         except:
-            self.btnSmallCal.configure(width=13, height=5, text=playerWeapons[2][1])
+            self.btnSmallCal.configure(width=13, height=6, text=playerWeapons[2][1])
 
         try:
             self.picMedCal = ImageTk.PhotoImage(Image.open(playerWeapons[3][9]))
             self.btnMedCal.configure(width=100, height=90, image=self.picMedCal)
         except:
-            self.btnMedCal.configure(width=13, height=5, text=playerWeapons[3][1])
+            self.btnMedCal.configure(width=13, height=6, text=playerWeapons[3][1])
 
         try:
             self.picGrenade = ImageTk.PhotoImage(Image.open(playerWeapons[4][9]))
             self.btnGrenade.configure(width=100, height=90, image=self.picGrenade)
         except:
-            self.btnGrenade.configure(width=13, height=5, text=playerWeapons[4][1])
+            self.btnGrenade.configure(width=13, height=6, text=playerWeapons[4][1])
 
         try:
             self.picSpecial = ImageTk.PhotoImage(Image.open(playerWeapons[5][9]))
             self.btnSpecial.configure(width=100, height=90, image=self.picSpecial)
         except:
-            self.btnSpecial.configure(width=13, height=5, text=playerWeapons[5][1])
-    
+            self.btnSpecial.configure(width=13, height=6, text=playerWeapons[5][1])
+        
+        if playerWeapons[0][1] != "":
+            self.lblMelee.configure(text=str(playerWeapons[0][2])+" - "+str(playerWeapons[0][3])+"\n\n"+playerWeapons[0][4]+": "+str(playerWeapons[0][5]))
+        if playerWeapons[1][1] != "":
+            self.lblBow.configure(text=str(playerWeapons[1][2])+" - "+str(playerWeapons[1][3])+"\n\n"+playerWeapons[1][4]+": "+str(playerWeapons[1][5])+"\n"+playerWeapons[1][6]+": "+str(playerWeapons[1][7]))
+        if playerWeapons[2][1] != "":    
+            self.lblSmallCal.configure(text=str(playerWeapons[2][2])+" - "+str(playerWeapons[2][3])+"\n\n"+playerWeapons[2][6]+": "+str(playerWeapons[2][7]))
+        if playerWeapons[3][1] != "":
+            self.lblMedCal.configure(text=str(playerWeapons[3][2])+" - "+str(playerWeapons[3][3])+"\n\n"+playerWeapons[3][6]+": "+str(playerWeapons[3][7]))
+        if playerWeapons[4][1] != "":
+            self.lblGren.configure(text=str(playerWeapons[4][2])+" - "+str(playerWeapons[4][3])+"\n\nCost: "+str(playerWeapons[4][7]))
+        if playerWeapons[5][1] != "":
+            self.lblSpec.configure(text=str(playerWeapons[5][2])+" - "+str(playerWeapons[5][3])+"\n\nCost: "+str(playerWeapons[5][7]))
+        else:
+            self.lblSpec.configure(text="")
+            self.btnSpecial.configure(image="")
+
     def updateText(self, text):
         self.fightText.configure(state="normal")
         self.fightText.insert(tk.END, text, "center")
@@ -889,6 +917,7 @@ class ArenaPage(tk.Frame):
     def beginBattle(self, controller, minLevel, maxLevel, gold):
 
         controller.showFrame(FightPage)
+        controller.frames[FightPage].updateWeapons()
         controller.frames[FightPage].enemyBattle(minLevel, maxLevel, "random", gold)
 
     def updateInfo(self):
