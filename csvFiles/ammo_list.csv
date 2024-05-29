@@ -1,5 +1,5 @@
-ammo,quantity,gold cost
-Arrows,10,30
-9mm bullets,100,75
-7.62mm bullets,100,125
-Grenade,1,200
+ammo,quantity,gold cost,image
+Arrows,10,30,pictures/arrows.jpg
+9mm bullets,100,75,pictures/ninemm.jpg
+7.62mm bullets,100,125,pictures/sevenmm.jpg
+Grenade,1,200,pictures/grenade.jpg

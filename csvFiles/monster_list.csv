@@ -1,50 +1,45 @@
-Level,Name,Health,Attack 1,Min Damage,Max Damage,Attack 2,Min Damage,Max Damage,Attack 3,Min Damage,Max Damage,Finishing Move
-1,Squirrel,10,bites your leg,1,3,scratches your face,2,5,bites your finger,0,2,scratches out both of your eyes
-1,Small Dog,30,bites your ankle,5,8,sinks its teeth into your leg,10,15,latches onto your arm,10,15,tears out your juggular
-1,Orphaned Child,60,breaks a bottle over your head,12,18,attacks you with its sadness,8,14,jumps on you and pulls out your hair,10,17,stuffs you with straw and treats you like a parent figure
-1,Buzzdroid,50,zaps your foot,15,18,stabs you with its legs,18,22,scratches up your leg,15,18,electrocutes you until your skin is burned black
-1,Goose,25,bites your calf,8,10,pulls on your hair,7,9,pecks your eye,10,16,holds your head under the water until you drown
-1,Womp Rat,45,nibbles on your leg,12,15,scratches you,13,18,claws your face,18,20,slowly eats you alive
-2,Stray Dog,50,bites your arm,18,25,bites your leg,20,24,bites your face,24,28,chews through your face
-2,Dwarven Spider,50,zaps you,19,23,stabs you in the foot,20,25,scratches your abdomin,18,23,impales you repeatately until you bleed out
-2,Skeleton,70,hits you across the face,20,27,bites your neck,28,32,back hands you,23,26,tears off your flesh and keeps it as its own
-2,Anorexic Crackwhore,65,stabs you with a needle,25,32,bites your face,21,27,vomits on your shoes,20,24,harvests your kidney for crack money
-2,Mudcrab,75,crushes your arm in its claw,15,20,bites your leg,25,30,stabs you with its leg,18,22,breaks your legs and drags you into the river
-2,Skeever,60,gnaws on your leg,15,22,scratches you,17,24,bites your arm,20,29,chews through your torso
-3,Wolf,90,bites your arm,35,40,bites your thigh,40,43,bites your face,35,45,rips through your guts
-3,Jawa,80,shoots you with a stun gun,45,50,hits you with the stock of its gun,30,38,throws rocks at you,25,30,stuns you unconcious and sells you to Watto as a slave
-3,Draugr,100,bashes you with their shield,30,40,slices you with a sword,50,60,stabs you in the arm,40,50,slices your neck open
-3,Homeless Man,110,hits you with a hammer,40,48,tackles you to the ground,30,35,tells you about how hard their life is,30,35,throws you into his barrel fire
-3,Anaconda,105,bites your face,40,45,wraps itself around your body,45,55,bites your arm,35,40,swallows you whole
-3,Wild Boar,120,charges you,40,50,bites you,45,50,tramples you,30,40,impales your heart with its tusk
-4,Dilophosaurus,110,spits acid at your face,60,75,rips out some flesh,70,75,whips you with its tail,40,55,melts your face with its acid
-4,Thug,130,stabs you with a knife,50,65,clips you with a 9mm bullet,60,75,knocks you on the ground,40,50,curb stomps you
-4,Novice Ice Mage,140,sprays you with ice spikes,60,70,gives you frostbite,50,65,freezes your body,70,80,buries you in a mountain of ice
-4,Falmer,170,stabs you with its sword,80,90,shoots you with an arrow,75,80,bashes you with its shield,60,65,hacks your body into pieces
-4,Mountain Lion,190,digs its claws into your back,60,80,sinks its teeth into your leg,70,80,slices your arm open,60,75,rips out your juggular
-4,Battle Droid,150,shoots you with its blaster,50,70,throws a genade your way,30,100,shoots you with its blaster,50,70,blasts several holes into your body
-5,Viking,200,impales you with a spear,80,90,throws an axe at you,80,90,hacks at you with a sword,90,100,crushes your skull with his shield
-5,Velociraptor,205,Digs its talons into you,70,90,bites your side,90,100,claws your torse,70,85,starts eating your face
-5,Black Bear,250,bats you with its paw,90,110,crushes your arm with its mouth,85,105,bites your neck,100,120,pins you down and eats you alive
-5,Frost Troll,275,throws you across the ground,60,90,clobbers you with its fists,80,110,bites your arm,80,100,rips off your arms
-5,Pack of Coyotes,290,take turns nibbling on your ankles,40,60,maul you,90,120,jump on you taken chunks of flesh,80,110,tear you limb from limb
-5,Witch,250,drains your health,90,100,throws an unusual potion at you,20,150,spontaneously catches your clothes on fire ,90,100,drains the life out of you
-6,Group of Spartans,350,throw their spears at you,120,140,attack starategically with their swords,130,150,bash you with their shields,80,110,cut off your head and mount it on a spike
-6,Wampa,300,bashes you across the face,100,115,bites a chunk out of your arm,100,130,rips into your flesh with its claws,130,140,drags you into their ice cave for a future meal
-6,Group of Tusken Raiders,250,shoot at you with precision,100,160,club you repeatedly,100,112,sic their dogs on you,120,140,take you back to their base to keep as a slave
-6,Draugr Deathlord,400,sends you flying across the ground,80,120,crack your ribs with their warhammer,120,125,sweep out your legs with their warhammer,50,100,crushes your skull with their warhammer
-6,Saber-Tooth Tiger,425,takes a chunk of flesh out of your shoulder,80,90,rips its claws down your back,95,120,impales your arm with its teeth,100,120,lunges at your neck and breaks it
-6,Werewolf,450,throws you across the ground,100,110,slashes at your body with its claws,130,150,sinks its fangs into your torso,130,150,snaps your body in two
-7,Reek,550,charges at you,20,180,tramples you,80,120,impales you with its tusk,90,170,crushes your skull
-7,Cyclopes,700,smashes you with its bone club,120,200,kicks you across the ground,50,110,wacks you in the body,70,130,rips your head of its shoulders
-7,Carnotaurus,650,,,,,,,,,,
-7,Xenomorphs,,,,,,,,,,,
-7,Mammoth,,,,,,,,,,,
-7,Pack of Gundarks,,,,,,,,,,,
-8,Spinosaurus,,,,,,,,,,,
-8,Minotaur,,,,,,,,,,,
-8,Rancor,,,,,,,,,,,
-8,Dragon,,,,,,,,,,,
-9,Hydra,,,,,,,,,,,
-9,King Kong,,,,,,,,,,,
-9,Godzilla,,,,,,,,,,,
+Level,Name,Health,Attack 1,Min Damage,Max Damage,Attack 2,Min Damage,Max Damage,Attack 3,Min Damage,Max Damage,Finishing Move,image
+1,Squirrel,10,bites your leg,1,3,scratches your face,2,5,bites your finger,0,2,scratches out both of your eyes,pictures/squirrel.jpg
+1,Small Dog,30,bites your ankle,5,8,sinks its teeth into your leg,10,15,latches onto your arm,10,15,tears out your juggular,pictures/smalldog.jpg
+1,Orphaned Child,60,breaks a bottle over your head,12,18,attacks you with its sadness,8,14,jumps on you and pulls out your hair,10,17,stuffs you with straw and treats you like a parent figure,pictures/child.jpg
+1,Buzzdroid,50,zaps your foot,15,18,stabs you with its legs,18,22,scratches up your leg,15,18,electrocutes you until your skin is burned black,pictures/buzzdroid.jpg
+1,Goose,25,bites your calf,8,10,pulls on your hair,7,9,pecks your eye,10,16,holds your head under the water until you drown,pictures/goose.jpg
+1,Racoon,45,nibbles on your leg,12,15,grabs a chunk of flesh,13,18,claws your face,18,20,slowly eats you alive,pictures/racoon.jpg
+2,Stray Dog,50,bites your arm,18,25,bites your leg,20,24,bites your face,24,28,chews through your face,pictures/dog.jpg
+2,Dwarven Spider,50,zaps you,19,23,stabs you in the foot,20,25,scratches your abdomin,18,23,impales you repeatately until you bleed out,pictures/dwarven.jpg
+2,Zombie,70,hits you across the face,20,27,bites your neck,28,32,chews on your arm,23,26,tears out your intestines,pictures/zombie.jpg
+2,Anorexic Crackwhore,65,stabs you with a needle,25,32,bites your face,21,27,vomits on your shoes,20,24,harvests your kidney for crack money,pictures/anorexic.jpg
+2,Mudcrab,75,crushes your arm in its claw,15,20,bites your leg,25,30,stabs you with its leg,18,22,breaks your legs and drags you into the river,pictures/mudcrab.jpg
+2,Tasmanian devil,60,gnaws on your leg,15,22,scratches you,17,24,bites your arm,20,29,chews through your torso,pictures/devil.jpg
+3,Wolf,90,bites your arm,35,40,bites your thigh,40,43,bites your face,35,45,rips through your guts,pictures/wolf.jpg
+3,Jawa,80,electrocutes you,45,50,hits you with its gun,30,38,throws rocks at you,25,30,stuns you unconcious and sells you to Watto as a slave,pictures/jawa.jpg
+3,Draugr,100,kicks you back,30,40,slices you with its axe,50,60,impales your leg,40,50,slices your neck open,pictures/draugr.jpg
+3,Homeless Man,110,hits you with a hammer,40,48,tackles you to the ground,30,35,tells you about how hard their life is,30,35,throws you into his barrel fire,pictures/homeless.jpg
+3,Anaconda,105,bites your face,40,45,wraps itself around your body,45,55,bites your arm,35,40,swallows you whole,pictures/anaconda.jpg
+3,Wild Boar,120,charges you,40,50,bites you,45,50,tramples you,30,40,impales your heart with its tusk,pictures/boar.jpg
+4,Dilophosaurus,110,spits acid at your face,60,75,rips out some flesh,70,75,whips you with its tail,40,55,melts your face with its acid,pictures/dilo.jpg
+4,Thug,130,stabs you with a knife,50,65,clips you with a 9mm bullet,60,75,knocks you on the ground,40,50,curb stomps you,pictures/thug.jpg
+4,Ice Mage,140,sprays you with ice spikes,60,70,gives you frostbite,50,65,freezes your body,70,80,buries you in a mountain of ice,pictures/mage.jpg
+4,Falmer,170,stabs you with its sword,80,90,shoots you with an arrow,75,80,bashes you with its shield,60,65,hacks your body into pieces,pictures/falmer.jpg
+4,Mountain Lion,190,digs its claws into your back,60,80,sinks its teeth into your leg,70,80,slices your arm open,60,75,rips out your juggular,pictures/mountainlion.jpg
+4,Super Battle Droid,150,shoots you with its blaster,50,70,throws a genade your way,30,100,shoots you with its blaster,50,70,blasts several holes into your body,pictures/battledroid.jpg
+5,Viking,200,impales you with a spear,80,90,throws an axe at you,80,90,punches you in the head,90,100,crushes your skull with his shield,pictures/viking.jpg
+5,Velociraptor,205,Digs its talons into you,70,90,bites your side,90,100,claws your torse,70,85,starts eating your face,pictures/raptor.jpg
+5,Black Bear,250,bats you with its paw,90,110,crushes your arm with its mouth,85,105,bites your neck,100,120,pins you down and eats you alive,pictures/blackbear.jpg
+5,Frost Troll,275,throws you across the ground,60,90,clobbers you with its fists,80,110,bites your arm,80,100,rips off your arms,pictures/frosttroll.jpg
+5,Pack of Coyotes,290,take turns nibbling on your ankles,40,60,maul you,90,120,jump on you taken chunks of flesh,80,110,tear you limb from limb,pictures/coyotes.jpg
+5,Witch,250,drains your health,90,100,throws an unusual potion at you,20,150,spontaneously catches your clothes on fire ,90,100,drains the life out of you,pictures/witch.jpg
+6,Group of Vikings,350,throw their spears at you,120,140,attacks with their axes,130,150,bash you with their shields,80,110,cut off your head and mount it on a spike,pictures/vikings.jpg
+6,Wampa,300,bashes you across the face,100,115,bites a chunk out of your arm,100,130,rips into your flesh with its claws,130,140,drags you into their ice cave for a future meal,pictures/wampa.jpg
+6,Tusken Raiders,250,shoot at you with precision,100,160,club you repeatedly,100,112,sic their dogs on you,120,140,take you back to their base to keep as a slave,pictures/tusken.jpg
+6,Saber-Toothed Tiger,425,takes a chunk of flesh out of your shoulder,80,90,rips its claws down your back,95,120,impales your arm with its teeth,100,120,lunges at your neck and breaks it,pictures/tiger.jpg
+6,Werewolf,450,throws you across the ground,100,110,slashes at your body with its claws,130,150,sinks its fangs into your torso,130,150,snaps your body in two,pictures/werewolf.jpg
+7,Reek,550,charges at you,20,180,tramples you,80,120,impales you with its tusk,90,170,crushes your skull,pictures/reek.jpg
+7,Cyclopes,700,smashes you with its bone club,120,200,kicks you across the ground,50,110,wacks you in the body,70,130,rips your head off its shoulders,pictures/cyclopes.jpg
+7,Carnotaurus,650,,,,,,,,,,,
+7,Xenomorphs,,,,,,,,,,,,
+7,Mammoth,,,,,,,,,,,,
+7,Pack of Gundarks,,,,,,,,,,,,
+8,Spinosaurus,,,,,,,,,,,,
+8,Rancor,,,,,,,,,,,,
+8,Dragon,,,,,,,,,,,,
