@@ -19,7 +19,7 @@ https://deckofcardsapi.com/
 
 
 class PlayerObject:
-    def __init__(self, name, age, color, height, weight, sex, armor, max_health, health, stamina, max_stamina, mode):
+    def __init__(self, name, age, color, height, weight, sex, armor, maxHealth, health, stamina, maxStamina, mode):
         self.name = name
         self.age = age
         self.color = color
@@ -27,15 +27,21 @@ class PlayerObject:
         self.weight = weight
         self.sex = sex
         self.armor = armor
-        self.max_health = max_health
+        self.maxHealth = maxHealth
         self.health = health
         self.stamina = stamina
-        self.max_stamina = max_stamina
+        self.maxStamina = maxStamina
         self.mode = mode
     
-    def total_health(self):
-        return self.armor + self.max_health
+    def totalHealth(self):
+        return self.armor + 100
     
+class ArmorObject:
+    name = "None"
+    healthBonus = 0
+    goldCost = 0
+    image = "None"
+
 class Inventory:
     def __init__(self, gold, arrows, scaliber, lcaliber, grenades, healthPotion, staminaPotion):
         self.gold = gold
@@ -96,9 +102,9 @@ def create_player_weapon_list():
 monsterList = list_from_csv("csvFiles/monster_list.csv", "r")
 weapons_list = list_from_csv("csvFiles/weapons_list.csv", "r")
 ammoList = list_from_csv("csvFiles/ammo_list.csv", "r")
-armor_list = list_from_csv("csvFiles/armor_list.csv", "r")
+armorList = list_from_csv("csvFiles/armor_list.csv", "r")
 potionList = list_from_csv("csvFiles/potions_list.csv", "r")
-cards_list = list_from_csv("csvFiles/cards_list.csv", "r")
+cardsList = list_from_csv("csvFiles/cards_list.csv", "r")
 # except:
 
 
@@ -110,6 +116,7 @@ playerWeapons[2] = weapons_list[11]
 playerWeapons[4] = weapons_list[21]
 playerWeapons[5] = weapons_list[22]
 Enemy = EnemyObject
+Armor = ArmorObject
 
 Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100, 2)
 Bag = Inventory(1000, 0, 100, 0, 0, 2, 2)
@@ -145,7 +152,7 @@ class GameApp(tk.Tk):
         window.pack(side="top", fill = "both", expand=True)
 
         self.frames = {}
-        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage):
+        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage, ArmorPage):
             frame = F(window, self)
             self.frames[F] = frame
             frame.place(height=800, width=1100)
@@ -399,10 +406,10 @@ class MainPage(tk.Frame):
         self.btnHealth = tk.Button(self.mainPage, height=6, width=16, relief="raised", cursor="hand2")
         self.btnHealth.place(relx=.3, rely=.85, anchor="w")
 
-        self.lblHealth = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a",fg="white", font="Arial 20", text="Health : "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblHealth = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a",fg="white", font="Arial 20", text="Health : "+str(Player.health)+"/"+str(Player.maxHealth))
         self.lblHealth.place(relx=.2, rely=.1, anchor="center")
 
-        self.lblStamina = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a", fg="white", font="Arial 20", text = "Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblStamina = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a", fg="white", font="Arial 20", text = "Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
         self.lblStamina.place(relx=.6, rely=.1, anchor="center")
        
         
@@ -478,10 +485,10 @@ class FightPage(tk.Frame):
         self.lblStaminaPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Stamina Potions: "+str(Bag.staminaPotion), anchor='w')
         self.lblStaminaPot.place(relx=.70, rely=.30)
 
-        self.lblPHealth = tk.Label(self.fightPage, height=1, width=24, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblPHealth = tk.Label(self.fightPage, height=1, width=24, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.maxHealth))
         self.lblPHealth.place(relx=.45, rely=.359)
 
-        self.lblPStamina = tk.Label(self.fightPage, height=1, width=24, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblPStamina = tk.Label(self.fightPage, height=1, width=24, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
         self.lblPStamina.place(relx=.687, rely=.359)
 
         self.fightText = tk.Text(self.fightPage, height=9, width=60, state="disabled", bg="black", fg="white", font="Arial 18", padx=25, wrap="word")
@@ -708,28 +715,28 @@ class FightPage(tk.Frame):
         if Bag.healthPotion == 0:
             self.clearText()
             self.updateText("\nInsufficient health potions\n\nYou have: "+str(Bag.healthPotion)+"\nRequired amount: 1")
-        elif Player.health == Player.max_health:
+        elif Player.health == Player.maxHealth:
             self.clearText()
             self.updateText("\n\nAlready at max health")
         else:
             Bag.healthPotion -= 1
             Player.health += potionList[0][1]
-            if Player.health > Player.max_health:
-                Player.health = Player.max_health
+            if Player.health > Player.maxHealth:
+                Player.health = Player.maxHealth
             self.updateInfo()
     
     def staminaPotion(self):
         if Bag.staminaPotion == 0:
             self.clearText()
             self.updateText("\nInsufficient stamina potions\n\nYou have: "+str(Bag.staminaPotion)+"\nRequired amount: 1")
-        elif Player.stamina == Player.max_stamina:
+        elif Player.stamina == Player.maxStamina:
             self.clearText()
             self.updateText("\n\nAlready at max stamina")
         else:
             Player.stamina += potionList[1][1]
             Bag.staminaPotion -= 1
-            if Player.stamina > Player.max_stamina:
-                Player.stamina = Player.max_stamina
+            if Player.stamina > Player.maxStamina:
+                Player.stamina = Player.maxStamina
             self.updateInfo()
 
     def enemyGold(self, enemyLevel):
@@ -758,8 +765,8 @@ class FightPage(tk.Frame):
         self.lblSpecial.configure(text=str(playerWeapons[5][1]))
         self.lblHealthPot.configure(text="Health Potions: "+str(Bag.healthPotion))
         self.lblStaminaPot.configure(text="Stamina Potions: "+str(Bag.staminaPotion))
-        self.lblPHealth.configure(text="Health: "+str(Player.health)+"/"+str(Player.max_health))
-        self.lblPStamina.configure(text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblPHealth.configure(text="Health: "+str(Player.health)+"/"+str(Player.maxHealth))
+        self.lblPStamina.configure(text="Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
         
 
     def updateWeapons(self):
@@ -892,10 +899,10 @@ class ArenaPage(tk.Frame):
         self.lblGold = tk.Label(self.arenaPage, height=1, width=12, bg="#6e6c01", fg="white", font="Arial 15", text="Gold: "+str(Bag.gold))
         self.lblGold.place(relx=.05, rely=.84)
 
-        self.lblPHealth = tk.Label(self.arenaPage, height=1, width=18, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.max_health))
+        self.lblPHealth = tk.Label(self.arenaPage, height=1, width=18, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.maxHealth))
         self.lblPHealth.place(relx=.175, rely=.84)
 
-        self.lblPStamina = tk.Label(self.arenaPage, height=1, width=17, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.max_stamina))
+        self.lblPStamina = tk.Label(self.arenaPage, height=1, width=17, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
         self.lblPStamina.place(relx=.3568, rely=.84)
 
         self.lblSpecial = tk.Label(self.arenaPage, height=3, width=20, bg="black", fg="white", font="Arial 15", text="Special:\n"+str(playerWeapons[5][1]), anchor='nw', justify="left", wraplength=250, )
@@ -956,12 +963,12 @@ class ShopPage(tk.Frame):
         # self.lblExit = tk.Label(self.townPage, height=1, width=30, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 10", text="Exiting will return to main menu")
         # self.lblExit.place(relx=.38, rely=.15)
 
-        btnAmmo = tk.Button(self.shopPage, bg="grey", fg="white", height=1, width=20, text="Ammo", font="Arial 25", command=lambda: controller.showFrame(AmmoPage))
+        btnAmmo = tk.Button(self.shopPage, bg="grey", fg="white", height=1, width=20, text="Ammo", font="Arial 25", command=lambda: self.ammoFunction(controller))
         btnAmmo.place(relx=.5, rely=.3, anchor="center")
         lblAmmo = tk.Label(self.shopPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Fight against enemies for gold")
         lblAmmo.place(relx=.5, rely=.36, anchor="center")
 
-        btnArmour = tk.Button(self.shopPage, bg="grey", fg="white", height=1, width=20, text="Armour", font="Arial 25")
+        btnArmour = tk.Button(self.shopPage, bg="grey", fg="white", height=1, width=20, text="Armour", font="Arial 25", command=lambda: self.armorFunction(controller))
         btnArmour.place(relx=.5, rely=.47, anchor="center")
         lblArmour = tk.Label(self.shopPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Gamble your gold")
         lblArmour.place(relx=.5, rely=.53, anchor="center")
@@ -975,6 +982,14 @@ class ShopPage(tk.Frame):
         btnWeapons.place(relx=.5, rely=.81, anchor="center")
         lblWeapons = tk.Label(self.shopPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Answer math questions for gold")
         lblWeapons.place(relx=.5, rely=.87, anchor="center")
+    
+    def ammoFunction(self, controller):
+        controller.frames[AmmoPage].updateInfo()
+        controller.showFrame(AmmoPage)
+
+    def armorFunction(self, controller):
+        # controller.frames[ArmourPage].updateInfo()
+        controller.showFrame(ArmorPage)
 
 class AmmoPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -983,14 +998,14 @@ class AmmoPage(tk.Frame):
         self.ammoPage.pack()
         self.ammoPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        self.btnBack = tk.Button(self.ammoPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2")
+        self.btnBack = tk.Button(self.ammoPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(ShopPage))
         self.btnBack.place(relx=.03, rely=.03)
 
         self.shopTitle = tk.Label(self.ammoPage, width=15, height=1, font="Arial 25", fg="white", bg="#1a1a1a", text="Ammo Shop")
         self.shopTitle.place(relx=.5, rely=.05, anchor="center")
 
-        self.productTitle = tk.Label(self.ammoPage, width = 32,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="black",highlightthickness=3, text="Gold: "+str(Bag.gold))
-        self.productTitle.place(relx=.03, rely=.12)
+        self.goldTitle = tk.Label(self.ammoPage, width = 32,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="black",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle.place(relx=.03, rely=.12)
 
         self.shopBorder = tk.Label(self.ammoPage, width = 32,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
         self.shopBorder.place(relx=.03, rely=.17)
@@ -1057,6 +1072,7 @@ class AmmoPage(tk.Frame):
         self.inventory = tk.Label(self.ammoPage, width = 32,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
         self.inventory.place(relx=.49, rely=.17)
 
+    def updateInfo(self):
         self.lblBowPic = tk.Label(self.ammoPage, bg="#909090")
         self.lblBowPic.place(relx=.57, rely=.2)
         try:
@@ -1121,6 +1137,164 @@ class AmmoPage(tk.Frame):
         self.lblGrenadesGun.place(relx=.70, rely=.795)
         self.lblGrenadesGunName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text="Grenade")
         self.lblGrenadesGunName.place(relx=.55, rely=.920)
+
+
+class ArmorPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.armorPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.armorPage.pack()
+        self.armorPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        self.btnBack = tk.Button(self.armorPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(ShopPage))
+        self.btnBack.place(relx=.03, rely=.03)
+
+        self.shopTitle = tk.Label(self.armorPage, width=15, height=1, font="Arial 25", fg="white", bg="#1a1a1a", text="Armor Shop")
+        self.shopTitle.place(relx=.5, rely=.05, anchor="center")
+
+        self.goldTitle = tk.Label(self.armorPage, width = 46,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="black",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle.place(relx=.03, rely=.12)
+
+        self.shopBorder = tk.Label(self.armorPage, width = 46,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.shopBorder.place(relx=.03, rely=.17)
+
+        self.inventoryTitle = tk.Label(self.armorPage, width = 18,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle.place(relx=.695, rely=.12)
+
+        self.inventoryBorder = tk.Label(self.armorPage, width = 18,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.inventoryBorder.place(relx=.695, rely=.17)
+
+        self.btnHide = tk.Button(self.armorPage, bg="#909090", cursor="hand2", command=lambda: self.buyArmor(0))
+        self.btnHide.place(relx=.075, rely=.25)
+
+        try:
+            self.picHide = ImageTk.PhotoImage(Image.open(armorList[0][3]))
+            self.btnHide.configure(width=150, height=160, image=self.picHide)
+        except:
+            self.btnHide.configure(width=13, height=6, font="Arial 15", text="Image")
+
+        self.lblHideName = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Hide")
+        self.lblHideName.place(relx=.074, rely=.2)
+        self.lblHideHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(armorList[0][1])+" Health")
+        self.lblHideHealth.place(relx=.0675, rely=.47)
+        self.lblHideCost = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="Cost: "+str(armorList[0][2])+" gold")
+        self.lblHideCost.place(relx=.0675, rely=.51)
+        
+
+
+        self.btnLeather = tk.Button(self.armorPage, bg="#909090", cursor="hand2", command=lambda: self.buyArmor(1))
+        self.btnLeather.place(relx=.2855, rely=.25)
+
+        try:
+            self.picLeather = ImageTk.PhotoImage(Image.open(armorList[1][3]))
+            self.btnLeather.configure(width=150, height=160, image=self.picLeather)
+        except:
+            self.btnLeather.configure(width=13, height=6, font="Arial 15", text="Image")
+        self.lblLeatherName = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Leather")
+        self.lblLeatherName.place(relx=.282, rely=.2)
+        self.lblLeatherHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(armorList[1][1])+" Health")
+        self.lblLeatherHealth.place(relx=.278, rely=.47)
+        self.lblLeatherCost = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="Cost: "+str(armorList[1][2])+" gold")
+        self.lblLeatherCost.place(relx=.278, rely=.51)
+
+        self.btnChain = tk.Button(self.armorPage, bg="#909090", cursor="hand2", command=lambda: self.buyArmor(2))
+        self.btnChain.place(relx=.495, rely=.25)
+
+        try:
+            self.picChain = ImageTk.PhotoImage(Image.open(armorList[2][3]))
+            self.btnChain.configure(width=150, height=160, image=self.picChain)
+        except:
+            self.btnChain.configure(width=13, height=6,font="Arial 15", text="Image")
+        self.lblChainName = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Chainmail")
+        self.lblChainName.place(relx=.492, rely=.2)
+        self.lblChainHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(armorList[2][1])+" Health")
+        self.lblChainHealth.place(relx=.488, rely=.47)
+        self.lblChainCost = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="Cost: "+str(armorList[2][2])+" gold")
+        self.lblChainCost.place(relx=.488, rely=.51)
+
+
+        self.btnSteel = tk.Button(self.armorPage, bg="#909090", cursor="hand2", command=lambda: self.buyArmor(3))
+        self.btnSteel.place(relx=.075, rely=.66)
+        try:
+            self.picSteel = ImageTk.PhotoImage(Image.open(armorList[3][3]))
+            self.btnSteel.configure(width=150, height=160, image=self.picSteel)
+        except:
+            self.btnSteel.configure(width=13, height=6,font="Arial 15", text="Image")
+        self.lblSteelName = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Steel")
+        self.lblSteelName.place(relx=.074, rely=.61)
+        self.lblSteelHealth = tk.Label(self.armorPage, width = 15, height=1, bg="#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(armorList[3][1])+" Health")
+        self.lblSteelHealth.place(relx=.0675, rely=.88)
+        self.lblSteelCost = tk.Label(self.armorPage, width = 15, height=1, bg="#1a1a1a", fg="white", font="Arial 15",justify="left", text="Cost: "+str(armorList[3][2])+" gold")
+        self.lblSteelCost.place(relx=.0675, rely=.92)
+
+        self.btnKevlar = tk.Button(self.armorPage, bg="#909090", cursor="hand2", command=lambda: self.buyArmor(4))
+        self.btnKevlar.place(relx=.2855, rely=.66)
+
+        try:
+            self.picKevlar = ImageTk.PhotoImage(Image.open(armorList[4][3]))
+            self.btnKevlar.configure(width=150, height=160, image=self.picKevlar)
+        except:
+            self.btnKevlar.configure(width=13, height=6,font="Arial 15", text="Image")
+        self.lblKevlarName = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Light Kevlar")
+        self.lblKevlarName.place(relx=.282, rely=.61)
+        self.lblKevlarHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(armorList[4][1])+" Health")
+        self.lblKevlarHealth.place(relx=.278, rely=.88)
+        self.lblKevlarCost = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="Cost: "+str(armorList[4][2])+" gold")
+        self.lblKevlarCost.place(relx=.278, rely=.92)
+
+        self.btnHeavyKevlar = tk.Button(self.armorPage, bg="#909090", cursor="hand2", command=lambda: self.buyArmor(5))
+        self.btnHeavyKevlar.place(relx=.495, rely=.66)
+
+        try:
+            self.picHeavyKevlar = ImageTk.PhotoImage(Image.open(armorList[5][3]))
+            self.btnHeavyKevlar.configure(width=150, height=160, image=self.picHeavyKevlar)
+        except:
+            self.btnHeavyKevlar.configure(width=13, height=6,font="Arial 15", text="Image")
+        self.lblHeavyKevlarName = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Heavy Kevlar")
+        self.lblHeavyKevlarName.place(relx=.492, rely=.61)
+        self.lblHeavyKevlarHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(armorList[5][1])+" Health")
+        self.lblHeavyKevlarHealth.place(relx=.488, rely=.88)
+        self.lblHeavyKevlarCost = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="Cost: "+str(armorList[5][2])+" gold")
+        self.lblHeavyKevlarCost.place(relx=.488, rely=.92)
+
+        self.lblPlayer = tk.Button(self.armorPage, bg="#909090", cursor="hand2")
+        self.lblPlayer.place(relx=.765, rely=.25)
+
+        try:
+            self.picPlayer = ImageTk.PhotoImage(Image.open(Armor.image))
+            self.lblPlayer.configure(width=150, height=160, image=self.picPlayer)
+        except:
+            self.lblPlayer.configure(width=13, height=6,font="Arial 15")
+        self.lblPlayerArmor = tk.Label(self.armorPage, width = 12, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text=Armor.name)
+        self.lblPlayerArmor.place(relx=.762, rely=.2)
+        self.lblPlayerArmorHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(Armor.healthBonus)+" Health")
+        self.lblPlayerArmorHealth.place(relx=.758, rely=.47)
+        self.lblHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text=Player.name+"'s Health: ")
+        self.lblHealth.place(relx=.758, rely=.7)
+        self.lblPHealth = tk.Label(self.armorPage, height=1, width=20, bg="#751515", fg="white", font="Arial 15", text=str(Player.health)+" / "+str(Player.maxHealth))
+        self.lblPHealth.place(relx=.73, rely=.75)
+    
+    def buyArmor(self, index):
+        Armor.name = armorList[index][0]
+        Armor.healthBonus = armorList[index][1]
+        Armor.goldCost = armorList[index][2]
+        Armor.image = armorList[index][3]
+        Player.armor = Armor.healthBonus
+        Player.maxHealth = Player.totalHealth()
+        Player.health = Player.maxHealth
+        self.updateInfo()
+
+    def updateInfo(self):
+        self.goldTitle.configure(text="Gold: "+str(Bag.gold))
+        try:
+            self.picPlayer = ImageTk.PhotoImage(Image.open(Armor.image))
+            self.lblPlayer.configure(width=150, height=160, image=self.picPlayer)
+        except:
+            self.lblPlayer.configure(width=13, height=6,font="Arial 15")
+        self.lblPlayerArmor.configure(text=Armor.name)
+        self.lblPlayerArmorHealth.configure(text="+"+str(Armor.healthBonus)+" Health")
+        self.lblHealth.configure(text=Player.name+"'s Health: ")
+        self.lblPHealth.configure(text=str(Player.health)+" / "+str(Player.maxHealth))
 
 game = GameApp()
 

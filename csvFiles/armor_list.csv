@@ -1,7 +1,7 @@
-Armor Name,Health Bonus,Gold Cost
-Hide,50,100
-Leather,75,125
-Chainlink,100,175
-Steel,170,250
-Dragon Scale,250,350
-Obsidian,400,500
+Armor Name,Health Bonus,Gold Cost,image
+Hide,50,100,pictures/hide.jpg
+Leather,75,125,pictures/leather.jpg
+Chainmail,100,175,pictures/chainlink.jpg
+Steel,170,250,pictures/steel.jpg
+Light Kevlar,250,350,pictures/kevlar.jpg
+Heavy Kevlar,400,500,pictures/heavy.jpg
