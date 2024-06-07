@@ -152,7 +152,7 @@ class GameApp(tk.Tk):
         window.pack(side="top", fill = "both", expand=True)
 
         self.frames = {}
-        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage, ArmorPage, PotionPage):
+        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage, ArmorPage, PotionPage, WeaponPage, MeleePage, ArcheryPage):
             frame = F(window, self)
             self.frames[F] = frame
             frame.place(height=800, width=1100)
@@ -978,7 +978,7 @@ class ShopPage(tk.Frame):
         lblPotions = tk.Label(self.shopPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Shop weapons, armour, ammo, and potions")
         lblPotions.place(relx=.5, rely=.7, anchor="center")
 
-        btnWeapons = tk.Button(self.shopPage, bg="grey", fg="white", height=1, width=20, text="Weapons", font="Arial 25")
+        btnWeapons = tk.Button(self.shopPage, bg="grey", fg="white", height=1, width=20, text="Weapons", font="Arial 25", command=lambda: self.weaponFunction(controller))
         btnWeapons.place(relx=.5, rely=.81, anchor="center")
         lblWeapons = tk.Label(self.shopPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Answer math questions for gold")
         lblWeapons.place(relx=.5, rely=.87, anchor="center")
@@ -994,6 +994,9 @@ class ShopPage(tk.Frame):
     def potionFunction(self, controller):
         controller.frames[PotionPage].updateInfo()
         controller.showFrame(PotionPage)
+    
+    def weaponFunction(self, controller):
+        controller.showFrame(WeaponPage)
 
 class AmmoPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -1330,13 +1333,25 @@ class ArmorPage(tk.Frame):
         self.lblInvalid.place(relx=.71, rely=.57)
     
     def buyArmor(self, index):
+        self.updateClearColor()
         self.lblInvalid.configure(text="")
-        if Bag.gold < armorList[index][2]:
-            self.lblInvalid.configure(text="Not enough gold")
-        elif Armor.healthBonus > armorList[index][1]:
+        if Armor.healthBonus > armorList[index][1]:
             self.lblInvalid.configure(text="Current armour is superior")
         elif Armor.healthBonus == armorList[index][1]:
             self.lblInvalid.configure(text="Already equipped")
+        elif Bag.gold < armorList[index][2]:
+            if index == 0:
+                self.lblHideCost.configure(fg="gold")
+            if index == 1:
+                self.lblLeatherCost.configure(fg="gold")
+            if index == 2:
+                self.lblChainCost.configure(fg="gold")
+            if index == 3:
+                self.lblSteelCost.configure(fg="gold")
+            if index == 4:
+                self.lblKevlarCost.configure(fg="gold")
+            if index == 5:
+                self.lblHeavyKevlarCost.configure(fg="gold")
         else:
             Armor.name = armorList[index][0]
             Armor.healthBonus = armorList[index][1]
@@ -1348,8 +1363,16 @@ class ArmorPage(tk.Frame):
             Bag.gold -= Armor.goldCost
             self.updateInfo()
         
+    def updateClearColor(self):
+        self.lblHideCost.configure(fg="white")
+        self.lblLeatherCost.configure(fg="white")
+        self.lblChainCost.configure(fg="white")
+        self.lblSteelCost.configure(fg="white")
+        self.lblKevlarCost.configure(fg="white")
+        self.lblHeavyKevlarCost.configure(fg="white")
 
     def updateInfo(self):
+        self.updateClearColor()
         self.goldTitle.configure(text="Gold: "+str(Bag.gold))
         try:
             self.picPlayer = ImageTk.PhotoImage(Image.open(Armor.image))
@@ -1430,9 +1453,9 @@ class PotionPage(tk.Frame):
         self.updateClearRed()
         if Bag.gold < potionList[index][2]:
             if index == 0:
-                self.lblHealthCost.configure(fg="#fa6c61")
+                self.lblHealthCost.configure(fg="gold")
             elif index == 1: 
-                self.lblStaminaCost.configure(fg="#fa6c61")
+                self.lblStaminaCost.configure(fg="gold")
         else:
             Bag.gold -= potionList[index][2]
             if index == 0:
@@ -1451,7 +1474,532 @@ class PotionPage(tk.Frame):
         self.lblPlayerHealthPotion.configure(text="Health Potions:   "+str(Bag.healthPotion))
         self.lblPlayerStaminaPotion.configure(text="Stamina Potions:   "+str(Bag.staminaPotion))
 
+class WeaponPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.weaponPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.weaponPage.pack()
+        self.weaponPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        self.btnBack = tk.Button(self.weaponPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(ShopPage))
+        self.btnBack.place(relx=.03, rely=.03)
+
+        self.lblTitle = tk.Label(self.weaponPage, height=1, width=25, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 25", text='Weapon Shop')
+        self.lblTitle.place(relx=.5, rely=.1, anchor="center")
+
+        btnMelee = tk.Button(self.weaponPage, bg="grey", fg="white", height=1, width=20, text="Melee", font="Arial 25", command=lambda: self.meleeFunction(controller))
+        btnMelee.place(relx=.5, rely=.25, anchor="center")
+
+        btnArchery = tk.Button(self.weaponPage, bg="grey", fg="white", height=1, width=20, text="Archery", font="Arial 25", command=lambda: self.archeryFunction(controller))
+        btnArchery.place(relx=.5, rely=.40, anchor="center")
+
+        btnSCal = tk.Button(self.weaponPage, bg="grey", fg="white", height=1, width=20, text="Sidearms", font="Arial 25", command=lambda: self.sidearmFunction(controller))
+        btnSCal.place(relx=.5, rely=.55, anchor="center")
         
+        btnMCal = tk.Button(self.weaponPage, bg="grey", fg="white", height=1, width=20, text="Rifles", font="Arial 25")
+        btnMCal.place(relx=.5, rely=.70, anchor="center")
+
+        btnSpecial = tk.Button(self.weaponPage, bg="grey", fg="white", height=1, width=20, text="Special", font="Arial 25")
+        btnSpecial.place(relx=.5, rely=.85, anchor="center")
+    
+    def meleeFunction(self, controller):
+        controller.frames[MeleePage].updateInfo()
+        controller.showFrame(MeleePage)
+
+    def archeryFunction(self, controller):
+        controller.frames[ArcheryPage].updateInfo()
+        controller.showFrame(ArcheryPage)
+    
+    # def sidearmFunction(self, controller):
+    #     controller.frames[SidearmPage].updateInfo()
+    #     controller.showFrame(SidearmPage)
+        
+class MeleePage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.meleePage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.meleePage.pack()
+        self.meleePage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        self.btnBack = tk.Button(self.meleePage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(ShopPage))
+        self.btnBack.place(relx=.03, rely=.03)
+
+        self.shopTitle = tk.Label(self.meleePage, width=15, height=1, font="Arial 25", fg="white", bg="#1a1a1a", text="Melee Department")
+        self.shopTitle.place(relx=.5, rely=.05, anchor="center")
+
+        self.goldTitle = tk.Label(self.meleePage, width = 44,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="black",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle.place(relx=.03, rely=.12)
+
+        self.shopBorder = tk.Label(self.meleePage, width = 44,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.shopBorder.place(relx=.03, rely=.17)
+
+        self.btnStick = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(0))
+        self.btnStick.place(relx=.07, rely=.2)
+        try:
+            self.picStick = ImageTk.PhotoImage(Image.open(weapons_list[0][9]))
+            self.btnStick.configure(width=100, height=90, image=self.picStick)
+        except:
+            self.btnStick.configure(width=13, height=6, text=weapons_list[0][1])
+
+        self.lblStickDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[0][2])+" - "+str(weapons_list[0][3]))
+        self.lblStickDamage.place(relx=.19, rely=.203)
+        self.lblStickStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[0][5]))
+        self.lblStickStam.place(relx=.19, rely=.243)
+        self.lblStickCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[0][8])+" gold")
+        self.lblStickCost.place(relx=.19, rely=.283)
+        self.lblStickName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[0][1])
+        self.lblStickName.place(relx=.064, rely=.333)
+
+
+        self.btnKnife = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(1))
+        self.btnKnife.place(relx=.07, rely=.4)
+        try:
+            self.picKnife = ImageTk.PhotoImage(Image.open(weapons_list[1][9]))
+            self.btnKnife.configure(width=100, height=90, image=self.picKnife)
+        except:
+            self.btnKnife.configure(width=13, height=6, text=weapons_list[1][1])
+
+        self.lblKnifeDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[1][2])+" - "+str(weapons_list[1][3]))
+        self.lblKnifeDamage.place(relx=.19, rely=.403)
+        self.lblKnifeStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[1][5]))
+        self.lblKnifeStam.place(relx=.19, rely=.443)
+        self.lblKnifeCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[1][8])+" gold")
+        self.lblKnifeCost.place(relx=.19, rely=.483)
+        self.lblKnifeName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[1][1])
+        self.lblKnifeName.place(relx=.064, rely=.533)
+
+        self.btnBat = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(2))
+        self.btnBat.place(relx=.07, rely=.6)
+        try:
+            self.picBat = ImageTk.PhotoImage(Image.open(weapons_list[2][9]))
+            self.btnBat.configure(width=100, height=90, image=self.picBat)
+        except:
+            self.btnBat.configure(width=13, height=6, text=weapons_list[2][1])
+
+        self.lblBatDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[2][2])+" - "+str(weapons_list[2][3]))
+        self.lblBatDamage.place(relx=.19, rely=.603)
+        self.lblBatStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[2][5]))
+        self.lblBatStam.place(relx=.19, rely=.643)
+        self.lblBatCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[2][8])+" gold")
+        self.lblBatCost.place(relx=.19, rely=.683)
+        self.lblBatName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[2][1])
+        self.lblBatName.place(relx=.064, rely=.733)
+
+        self.btnMachete = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(3))
+        self.btnMachete.place(relx=.07, rely=.8)
+        try:
+            self.picMachete = ImageTk.PhotoImage(Image.open(weapons_list[3][9]))
+            self.btnMachete.configure(width=100, height=90, image=self.picMachete)
+        except:
+            self.btnMachete.configure(width=13, height=6, text=weapons_list[3][1])
+
+        self.lblMacheteDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[3][2])+" - "+str(weapons_list[3][3]))
+        self.lblMacheteDamage.place(relx=.19, rely=.803)
+        self.lblMacheteStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[3][5]))
+        self.lblMacheteStam.place(relx=.19, rely=.843)
+        self.lblMacheteCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[3][8])+" gold")
+        self.lblMacheteCost.place(relx=.19, rely=.883)
+        self.lblMacheteName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[3][1])
+        self.lblMacheteName.place(relx=.064, rely=.933)
+
+        self.btnSpear = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(4))
+        self.btnSpear.place(relx=.37, rely=.2)
+        try:
+            self.picSpear = ImageTk.PhotoImage(Image.open(weapons_list[4][9]))
+            self.btnSpear.configure(width=100, height=90, image=self.picSpear)
+        except:
+            self.btnSpear.configure(width=13, height=6, text=weapons_list[4][1])
+
+        self.lblSpearDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[4][2])+" - "+str(weapons_list[4][3]))
+        self.lblSpearDamage.place(relx=.49, rely=.203)
+        self.lblSpearStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[4][5]))
+        self.lblSpearStam.place(relx=.49, rely=.243)
+        self.lblSpearCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[4][8])+" gold")
+        self.lblSpearCost.place(relx=.49, rely=.283)
+        self.lblSpearName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[4][1])
+        self.lblSpearName.place(relx=.364, rely=.333)
+
+        self.btnAxe = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(5))
+        self.btnAxe.place(relx=.37, rely=.4)
+        try:
+            self.picAxe = ImageTk.PhotoImage(Image.open(weapons_list[5][9]))
+            self.btnAxe.configure(width=100, height=90, image=self.picAxe)
+        except:
+            self.btnAxe.configure(width=13, height=6, text=weapons_list[5][1])
+
+        self.lblAxeDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[5][2])+" - "+str(weapons_list[5][3]))
+        self.lblAxeDamage.place(relx=.49, rely=.403)
+        self.lblAxeStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[5][5]))
+        self.lblAxeStam.place(relx=.49, rely=.443)
+        self.lblAxeCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[5][8])+" gold")
+        self.lblAxeCost.place(relx=.49, rely=.483)
+        self.lblAxeName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[5][1])
+        self.lblAxeName.place(relx=.364, rely=.533)
+
+        self.btnSword = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(6))
+        self.btnSword.place(relx=.37, rely=.6)
+        try:
+            self.picSword = ImageTk.PhotoImage(Image.open(weapons_list[6][9]))
+            self.btnSword.configure(width=100, height=90, image=self.picSword)
+        except:
+            self.btnSword.configure(width=13, height=6, text=weapons_list[6][1])
+
+        self.lblSwordDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[6][2])+" - "+str(weapons_list[6][3]))
+        self.lblSwordDamage.place(relx=.49, rely=.603)
+        self.lblSwordStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[6][5]))
+        self.lblSwordStam.place(relx=.49, rely=.643)
+        self.lblSwordCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[6][8])+" gold")
+        self.lblSwordCost.place(relx=.49, rely=.683)
+        self.lblSwordName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[6][1])
+        self.lblSwordName.place(relx=.364, rely=.733)
+
+        self.btnHammer = tk.Button(self.meleePage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(7))
+        self.btnHammer.place(relx=.37, rely=.8)
+        try:
+            self.picHammer = ImageTk.PhotoImage(Image.open(weapons_list[7][9]))
+            self.btnHammer.configure(width=100, height=90, image=self.picHammer)
+        except:
+            self.btnHammer.configure(width=13, height=6, text=weapons_list[7][1])
+
+        self.lblHammerDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[7][2])+" - "+str(weapons_list[7][3]))
+        self.lblHammerDamage.place(relx=.49, rely=.803)
+        self.lblHammerStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[7][5]))
+        self.lblHammerStam.place(relx=.49, rely=.843)
+        self.lblHammerCost = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[7][8])+" gold")
+        self.lblHammerCost.place(relx=.49, rely=.883)
+        self.lblHammerName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[7][1])
+        self.lblHammerName.place(relx=.364, rely=.933)
+
+        self.inventoryTitle = tk.Label(self.meleePage, width = 20,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle.place(relx=.666, rely=.12)
+
+        self.inventory = tk.Label(self.meleePage, width = 20,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.inventory.place(relx=.666, rely=.17)
+
+        self.lblmeleePic = tk.Label(self.meleePage, bg="#909090")
+        self.lblmeleePic.place(relx=.77, rely=.3)
+        self.lblmeleeDamage = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblmeleeDamage.place(relx=.729, rely=.45)
+        self.lblmeleeStam = tk.Label(self.meleePage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblmeleeStam.place(relx=.729, rely=.5)
+        self.lblmeleeName = tk.Label(self.meleePage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 18")
+        self.lblmeleeName.place(relx=.73, rely=.23)
+
+        self.lblStamina = tk.Label(self.meleePage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text=Player.name+"'s Stamina: ")
+        self.lblStamina.place(relx=.745, rely=.7)
+        self.lblPStamina = tk.Label(self.meleePage, height=1, width=20, bg="#157528", fg="white", font="Arial 15")
+        self.lblPStamina.place(relx=.715, rely=.76)
+
+
+    def purchaseMelee(self, index):
+        self.updateClearColor()
+        if playerWeapons[0][1] == weapons_list[index][1]:
+            self.lblmeleeName.configure(fg="#157528")
+        elif Bag.gold < weapons_list[index][8]:
+            if index == 0:
+                self.lblStickCost.configure(fg="gold")
+            elif index == 1:
+                self.lblKnifeCost.configure(fg="gold")
+            elif index == 2:
+                self.lblBatCost.configure(fg="gold")
+            elif index == 3:
+                self.lblMacheteCost.configure(fg="gold")
+            elif index == 4:
+                self.lblSpearCost.configure(fg="gold")
+            elif index == 5:
+                self.lblAxeCost.configure(fg="gold")
+            elif index == 6:
+                self.lblSwordCost.configure(fg="gold")
+            elif index == 7:
+                self.lblHammerCost.configure(fg="gold")
+        else:
+            Bag.gold -= weapons_list[index][8]
+            playerWeapons[0] = weapons_list[index]
+            self.updateInfo()
+
+    def updateClearColor(self):
+        self.lblStickCost.configure(fg="white")
+        self.lblKnifeCost.configure(fg="white")
+        self.lblBatCost.configure(fg="white")
+        self.lblMacheteCost.configure(fg="white")
+        self.lblSpearCost.configure(fg="white")
+        self.lblAxeCost.configure(fg="white")
+        self.lblSwordCost.configure(fg="white")
+        self.lblHammerCost.configure(fg="white")
+        self.lblmeleeName.configure(fg="white")
+
+    def updateInfo(self):
+        self.goldTitle.configure(text="Gold: "+str(Bag.gold))
+        self.updateClearColor()
+        try:
+            self.picmelee = ImageTk.PhotoImage(Image.open(playerWeapons[0][9]))
+            self.lblmeleePic.configure(width=100, height=90, image=self.picmelee)
+        except:
+            if playerWeapons[1][1] == "":
+                self.lblmeleePic.configure(width=14, height=6, text="Empty Slot")
+            else:
+                self.lblmeleePic.configure(width=14, height=6, text="Image")
+
+        self.lblmeleeName.configure(text=playerWeapons[0][1])
+        self.lblmeleeDamage.configure(text="Damage: "+str(playerWeapons[0][2])+" - "+str(playerWeapons[0][3]))
+        self.lblmeleeStam.configure(text="Stamina: "+str(playerWeapons[0][5]))
+        self.lblPStamina.configure(text=str(Player.stamina)+" / "+str(Player.maxStamina))
+
+class ArcheryPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.archeryPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.archeryPage.pack()
+        self.archeryPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        self.btnBack = tk.Button(self.archeryPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(WeaponPage))
+        self.btnBack.place(relx=.03, rely=.03)
+
+        self.shopTitle = tk.Label(self.archeryPage, width=15, height=1, font="Arial 25", fg="white", bg="#1a1a1a", text="Archery Shop")
+        self.shopTitle.place(relx=.5, rely=.05, anchor="center")
+
+        self.goldTitle = tk.Label(self.archeryPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="black",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle.place(relx=.13, rely=.12)
+
+        self.shopBorder = tk.Label(self.archeryPage, width = 30,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.shopBorder.place(relx=.13, rely=.17)
+
+        self.btnCompound = tk.Button(self.archeryPage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseBow(8))
+        self.btnCompound.place(relx=.22, rely=.23)
+        try:
+            self.picCompound = ImageTk.PhotoImage(Image.open(weapons_list[8][9]))
+            self.btnCompound.configure(width=100, height=90, image=self.picCompound)
+        except:
+            self.btnCompound.configure(width=13, height=6, text=weapons_list[8][1])
+
+        self.lblCompoundDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[8][2])+" - "+str(weapons_list[8][3]))
+        self.lblCompoundDamage.place(relx=.34, rely=.218)
+        self.lblCompoundArrow = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Arrows: "+str(weapons_list[8][7]))
+        self.lblCompoundArrow.place(relx=.34, rely=.256)
+        self.lblCompoundStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[8][5]))
+        self.lblCompoundStam.place(relx=.34, rely=.295)
+        self.lblCompoundCost = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[8][8])+" gold")
+        self.lblCompoundCost.place(relx=.34, rely=.333)
+        self.lblCompoundName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[8][1])
+        self.lblCompoundName.place(relx=.203, rely=.373)
+
+        self.btnRecurve = tk.Button(self.archeryPage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseBow(9))
+        self.btnRecurve.place(relx=.22, rely=.497)
+        try:
+            self.picRecurve = ImageTk.PhotoImage(Image.open(weapons_list[9][9]))
+            self.btnRecurve.configure(width=100, height=90, image=self.picRecurve)
+        except:
+            self.btnRecurve.configure(width=13, height=6, text=weapons_list[9][1])
+
+        self.lblRecurveDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[9][2])+" - "+str(weapons_list[9][3]))
+        self.lblRecurveDamage.place(relx=.34, rely=.485)
+        self.lblRecurveArrow = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Arrows: "+str(weapons_list[8][7]))
+        self.lblRecurveArrow.place(relx=.34, rely=.523)
+        self.lblRecurveStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[9][5]))
+        self.lblRecurveStam.place(relx=.34, rely=.562)
+        self.lblRecurveCost = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[9][8])+" gold")
+        self.lblRecurveCost.place(relx=.34, rely=.6)
+        self.lblRecurveName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[9][1])
+        self.lblRecurveName.place(relx=.203, rely=.64)
+
+        self.btnCrossbow = tk.Button(self.archeryPage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseBow(10))
+        self.btnCrossbow.place(relx=.22, rely=.76)
+        try:
+            self.picCrossbow = ImageTk.PhotoImage(Image.open(weapons_list[10][9]))
+            self.btnCrossbow.configure(width=100, height=90, image=self.picCrossbow)
+        except:
+            self.btnCrossbow.configure(width=13, height=6, text=weapons_list[10][1])
+
+        self.lblCrossbowDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[10][2])+" - "+str(weapons_list[10][3]))
+        self.lblCrossbowDamage.place(relx=.34, rely=.748)
+        self.lblCompoundArrow = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Arrows: "+str(weapons_list[8][7]))
+        self.lblCompoundArrow.place(relx=.34, rely=.786)
+        self.lblCrossbowStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[10][5]))
+        self.lblCrossbowStam.place(relx=.34, rely=.825)
+        self.lblCrossbowCost = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[10][8])+" gold")
+        self.lblCrossbowCost.place(relx=.34, rely=.863)
+        self.lblCrossbowName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[10][1])
+        self.lblCrossbowName.place(relx=.203, rely=.903)
+
+        self.inventoryTitle = tk.Label(self.archeryPage, width = 20,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle.place(relx=.57, rely=.12)
+
+        self.inventory = tk.Label(self.archeryPage, width = 20, height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.inventory.place(relx=.57, rely=.17)
+
+        self.lblBowPic = tk.Label(self.archeryPage, bg="#909090")
+        self.lblBowPic.place(relx=.674, rely=.405)
+        self.lblBowDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblBowDamage.place(relx=.633, rely=.555)
+        self.lblBowArrow = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblBowArrow.place(relx=.633, rely=.605)
+        self.lblBowStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblBowStam.place(relx=.633, rely=.655)
+        self.lblBowName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 18")
+        self.lblBowName.place(relx=.634, rely=.335)
+
+    def purchaseBow(self, index):
+        self.updateClearColor()
+        if playerWeapons[1][1] == weapons_list[index][1]:
+            self.lblBowName.configure(fg="#157528")
+        elif Bag.gold < weapons_list[index][8]:
+            if index == 8:
+                self.lblCompoundCost.configure(fg="gold")
+            elif index == 9:
+                self.lblRecurveCost.configure(fg="gold")
+            elif index == 10:
+                self.lblCrossbowCost.configure(fg="gold")
+        else:
+            Bag.gold -= weapons_list[index][8]
+            playerWeapons[1] = weapons_list[index]
+            self.updateInfo()
+
+    def updateClearColor(self):
+        self.lblCompoundCost.configure(fg="white")
+        self.lblRecurveCost.configure(fg="white")
+        self.lblCrossbowCost.configure(fg="white")
+        self.lblBowName.configure(fg="white")
+
+    def updateInfo(self):
+        self.goldTitle.configure(text="Gold: "+str(Bag.gold))
+        self.updateClearColor()
+        try:
+            self.picBow = ImageTk.PhotoImage(Image.open(playerWeapons[1][9]))
+            self.lblBowPic.configure(width=100, height=90, image=self.picBow)
+        except:
+            if playerWeapons[1][1] == "":
+                self.lblBowPic.configure(width=14, height=6, text="Empty Slot")
+            else:
+                self.lblBowPic.configure(width=14, height=6, text="Image")
+
+        self.lblBowName.configure(text=playerWeapons[1][1])
+        self.lblBowDamage.configure(text="Damage: "+str(playerWeapons[1][2])+" - "+str(playerWeapons[1][3]))
+        self.lblBowArrow.configure(text="Arrows: "+str(playerWeapons[1][7]))
+        self.lblBowStam.configure(text="Stamina: "+str(playerWeapons[1][5]))
+
+class RiflePage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.archeryPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.archeryPage.pack()
+        self.archeryPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+
+        self.btnBack = tk.Button(self.archeryPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(WeaponPage))
+        self.btnBack.place(relx=.03, rely=.03)
+
+        self.shopTitle = tk.Label(self.archeryPage, width=15, height=1, font="Arial 25", fg="white", bg="#1a1a1a", text="Archery Shop")
+        self.shopTitle.place(relx=.5, rely=.05, anchor="center")
+
+        self.goldTitle = tk.Label(self.archeryPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="black",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle.place(relx=.13, rely=.12)
+
+        self.shopBorder = tk.Label(self.archeryPage, width = 30,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.shopBorder.place(relx=.13, rely=.17)
+
+        self.btnCompound = tk.Button(self.archeryPage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(4))
+        self.btnCompound.place(relx=.22, rely=.2)
+        try:
+            self.picCompound = ImageTk.PhotoImage(Image.open(weapons_list[8][9]))
+            self.btnCompound.configure(width=100, height=90, image=self.picCompound)
+        except:
+            self.btnCompound.configure(width=13, height=6, text=weapons_list[8][1])
+
+        self.lblCompoundDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[8][2])+" - "+str(weapons_list[8][3]))
+        self.lblCompoundDamage.place(relx=.34, rely=.203)
+        self.lblCompoundStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[8][5]))
+        self.lblCompoundStam.place(relx=.34, rely=.243)
+        self.lblCompoundCost = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[8][8])+" gold")
+        self.lblCompoundCost.place(relx=.34, rely=.283)
+        self.lblCompoundName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[8][1])
+        self.lblCompoundName.place(relx=.203, rely=.333)
+
+        self.btnRecurve = tk.Button(self.archeryPage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(5))
+        self.btnRecurve.place(relx=.22, rely=.4)
+        try:
+            self.picRecurve = ImageTk.PhotoImage(Image.open(weapons_list[9][9]))
+            self.btnRecurve.configure(width=100, height=90, image=self.picRecurve)
+        except:
+            self.btnRecurve.configure(width=13, height=6, text=weapons_list[9][1])
+
+        self.lblRecurveDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[9][2])+" - "+str(weapons_list[9][3]))
+        self.lblRecurveDamage.place(relx=.34, rely=.403)
+        self.lblRecurveStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[9][5]))
+        self.lblRecurveStam.place(relx=.34, rely=.443)
+        self.lblRecurveCost = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[9][8])+" gold")
+        self.lblRecurveCost.place(relx=.34, rely=.483)
+        self.lblRecurveName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[9][1])
+        self.lblRecurveName.place(relx=.203, rely=.533)
+
+        self.btnCrossbow = tk.Button(self.archeryPage, bg="#909090",text="Arrows", activebackground="#909090", cursor="hand2", relief="solid", borderwidth=5, command=lambda: self.purchaseMelee(6))
+        self.btnCrossbow.place(relx=.22, rely=.6)
+        try:
+            self.picCrossbow = ImageTk.PhotoImage(Image.open(weapons_list[10][9]))
+            self.btnCrossbow.configure(width=100, height=90, image=self.picCrossbow)
+        except:
+            self.btnCrossbow.configure(width=13, height=6, text=weapons_list[10][1])
+
+        self.lblCrossbowDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Damage: "+str(weapons_list[10][2])+" - "+str(weapons_list[10][3]))
+        self.lblCrossbowDamage.place(relx=.34, rely=.603)
+        self.lblCrossbowStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Stamina: "+str(weapons_list[10][5]))
+        self.lblCrossbowStam.place(relx=.34, rely=.643)
+        self.lblCrossbowCost = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(weapons_list[10][8])+" gold")
+        self.lblCrossbowCost.place(relx=.34, rely=.683)
+        self.lblCrossbowName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[10][1])
+        self.lblCrossbowName.place(relx=.203, rely=.733)
+
+        self.inventoryTitle = tk.Label(self.archeryPage, width = 20,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle.place(relx=.57, rely=.12)
+
+        self.inventory = tk.Label(self.archeryPage, width = 20, height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="black",highlightthickness=3)
+        self.inventory.place(relx=.57, rely=.17)
+
+        self.lblBowPic = tk.Label(self.archeryPage, bg="#909090")
+        self.lblBowPic.place(relx=.674, rely=.405)
+        self.lblBowDamage = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblBowDamage.place(relx=.633, rely=.555)
+        self.lblBowStam = tk.Label(self.archeryPage, width = 17, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
+        self.lblBowStam.place(relx=.633, rely=.605)
+        self.lblBowName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 18")
+        self.lblBowName.place(relx=.634, rely=.335)
+
+    def purchaseMelee(self, index):
+        self.updateClearColor()
+        if playerWeapons[0][1] == weapons_list[index][1]:
+            self.lblBowName.configure(fg="#157528")
+        elif Bag.gold < weapons_list[index][8]:
+            if index == 0:
+                self.lblCompoundCost.configure(fg="gold")
+            elif index == 1:
+                self.lblRecurveCost.configure(fg="gold")
+            elif index == 2:
+                self.lblCrossbowCost.configure(fg="gold")
+        else:
+            Bag.gold -= weapons_list[index][8]
+            playerWeapons[1] = weapons_list[index]
+            self.updateInfo()
+
+    def updateClearColor(self):
+        self.lblCompoundCost.configure(fg="white")
+        self.lblRecurveCost.configure(fg="white")
+        self.lblCrossbowCost.configure(fg="white")
+        self.lblBowName.configure(fg="white")
+
+    def updateInfo(self):
+        self.goldTitle.configure(text="Gold: "+str(Bag.gold))
+        self.updateClearColor()
+        try:
+            self.picBow = ImageTk.PhotoImage(Image.open(playerWeapons[1][9]))
+            self.lblBowPic.configure(width=100, height=90, image=self.picBow)
+        except:
+            if playerWeapons[1][1] == "":
+                self.lblBowPic.configure(width=14, height=6, text="Empty Slot")
+            else:
+                self.lblBowPic.configure(width=14, height=6, text="Image")
+
+        self.lblBowName.configure(text=playerWeapons[0][1])
+        self.lblBowDamage.configure(text="Damage: "+str(playerWeapons[1][2])+" - "+str(playerWeapons[1][3]))
+        self.lblBowStam.configure(text="Stamina: "+str(playerWeapons[1][5]))
+
 game = GameApp()
 
 game.mainloop()
