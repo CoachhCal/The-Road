@@ -21,6 +21,6 @@ slot number,name,damage lower, damage upper,Stamina cost, cost stamina,ammo type
 4,AK-47,150,180,,,7.62mm,45,200,pictures/ak47.jpg
 4,RPK,180,225,,,7.62mm,75,300,pictures/rpk.jpg
 5,Grenade,200,300,,,Grenade:,1,0,pictures/grenade.jpg
-6,Group of Mercenaries,300,375,,,Special,1,350,pictures/mercs.jpg
+6,Mercenaries,300,375,,,Special,1,350,pictures/mercs.jpg
 6,VX Nerve Agent,400,550,,,Special,1,500,pictures/gas.jpg
 6,Artillery Strike,750,1000,,,Special,1,750,pictures/artillery.jpg
