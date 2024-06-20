@@ -4,22 +4,24 @@ except ImportError:
     import Tkinter as tk
 from PIL import ImageTk, Image
 import math
-import operator
+
 import time
 import random
-import threading
+
 
 """
 IMPORTANT:
 
 https://deckofcardsapi.com/
 
+https://deckofcardsapi.com/static/img/AS.png
+
 """
 
 
 
 class PlayerObject:
-    def __init__(self, name, age, color, height, weight, sex, armor, maxHealth, health, stamina, maxStamina, mode):
+    def __init__(self, name, age, color, height, weight, sex, armor, maxHealth, health, stamina, maxStamina, mode, next):
         self.name = name
         self.age = age
         self.color = color
@@ -32,6 +34,7 @@ class PlayerObject:
         self.stamina = stamina
         self.maxStamina = maxStamina
         self.mode = mode
+        self.next = next
     
     def totalHealth(self):
         return self.armor + 100
@@ -109,16 +112,16 @@ cardsList = list_from_csv("csvFiles/cards_list.csv", "r")
 
 
 playerWeapons = create_player_weapon_list()
-playerWeapons[0] = weapons_list[0]
-playerWeapons[1] = weapons_list[10]
-playerWeapons[2] = weapons_list[11]
+# playerWeapons[0] = weapons_list[0]
+# playerWeapons[1] = weapons_list[10]
+# playerWeapons[2] = weapons_list[11]
 # playerWeapons[3] = weapons_list[19]
-playerWeapons[4] = weapons_list[21]
-playerWeapons[5] = weapons_list[22]
+# playerWeapons[4] = weapons_list[21]
+# playerWeapons[5] = weapons_list[22]
 Enemy = EnemyObject
 Armor = ArmorObject
 
-Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100, 2)
+Player = PlayerObject("Calvin", 0, "White", 178, 152, "Man", "none", 100, 100, 100, 100, 2, "none")
 Bag = Inventory(200, 0, 100, 0, 0, 2, 2)
 
 # gameMode = 0 #did they click "Story Mode" (1) or "Quick Play" (2)?
@@ -152,7 +155,7 @@ class GameApp(tk.Tk):
         window.pack(side="top", fill = "both", expand=True)
 
         self.frames = {}
-        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage, ArmorPage, PotionPage, WeaponPage, MeleePage, ArcheryPage, SidearmPage, RiflePage, SpecialPage):
+        for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage, ArmorPage, PotionPage, WeaponPage, MeleePage, ArcheryPage, SidearmPage, RiflePage, SpecialPage, BlackPage):
             frame = F(window, self)
             self.frames[F] = frame
             frame.place(height=800, width=1100)
@@ -184,33 +187,33 @@ class GameApp(tk.Tk):
         btn = tk.Button(popWin, text="close", command=popWin.destroy)
         btn.grid(row=1)       
 
-    def start(self, sleep):
+    # def start(self, sleep):
         
-        self.frames[MainPage].snapBottom()
-        self.frames[MainPage].clearBox()
+    #     self.frames[MainPage].snapBottom()
+    #     self.frames[MainPage].clearBox()
 
-        self.frames[MainPage].updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n")
-        yield sleep(2000)
-        # self.popUp()
-        self.frames[MainPage].updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n")
-        yield sleep(2000)
-        self.frames[MainPage].updateText("Gradually finding your footing, you approach the source of the noise.\n")
-        yield sleep(2000)
-        self.frames[MainPage].updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n")
-        yield sleep(2000)
-        self.frames[MainPage].updateText("Looking around quickly, you pick up a stick to defend yourself.\n")
-        yield sleep(2000)
-        playerWeapons[0] = weapons_list[0]
+    #     self.frames[MainPage].updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n")
+    #     yield sleep(2000)
+    #     self.frames[MainPage].updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n")
+    #     yield sleep(2000)
+    #     self.frames[MainPage].updateText("Gradually finding your footing, you approach the source of the noise.\n")
+    #     yield sleep(2000)
+    #     self.frames[MainPage].updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n")
+    #     yield sleep(2000)
+    #     self.frames[MainPage].updateText("Looking around quickly, you pick up a stick to defend yourself.\n")
+    #     yield sleep(2000)
+    #     playerWeapons[0] = weapons_list[0]
 
-        self.showFrame(FightPage)
-        self.frames[FightPage].enemyBattle(4,5,"random", 0)
+    #     self.frames[FightPage].updateWeapons()
+    #     self.showFrame(FightPage)
+    #     self.frames[FightPage].enemyBattle(1,2,"Goose", 0)
+    #     Player.next = self.part2
+
         
-    def part2(self, sleep):
-        yield sleep(2000)
-        self.frames[MainPage].updateText("\n\ntest\n")
-        print("noice")
+    # def part2(self):
         
-
+    #     self.after(3000, lambda: self.frames[MainPage].updateText("\n\nThis should pop up after 3 seconds"))
+    #     print("noice")
         
 class SplashPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -245,12 +248,14 @@ class SplashPage(tk.Frame):
         # controller.showFrame(StartPage)
         # controller.showFrame(FightPage) #Take this out to make it work
         # controller.frames[FightPage].updateWeapons()
+        # controller.frames[FightPage].updateInfo()
         # controller.frames[FightPage].enemyBattle(1,4,"Cyclopes", 0)
-        # controller.start() #take this out to make it work
+        controller.showFrame(MainPage)
+        # controller.frames[MainPage].start(controller)
         # controller.trial(MainPage)
 
-        controller.showFrame(TownPage)
-
+        # controller.showFrame(TownPage)
+        # controller.showFrame(BlackPage)
 
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -376,7 +381,7 @@ class StartPage(tk.Frame):
                 Player.mode = btnValue
                 if btnValue == 1:
                     controller.showFrame(MainPage)
-                    helper(controller.start)
+                    controller.frames[MainPage].start(controller)
                 elif btnValue == 2:
                     controller.showFrame(TownPage)
     
@@ -390,8 +395,6 @@ class StartPage(tk.Frame):
             elif type == "number":
                 return len(text) <= int(maxLength) and text.isdigit()
         return True
-    def trial1():
-        print("trial")
             
 class MainPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -400,38 +403,116 @@ class MainPage(tk.Frame):
         self.mainPage.pack()
         self.mainPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        self.mainText = tk.Text(self.mainPage, state="disabled", height=16, width=75, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 15", wrap="word")
-        self.mainText.place(relx=.5, rely=.4, anchor="center")
+        titlePicture = ImageTk.PhotoImage(Image.open("pictures/title2.jpg"))
+        lblTitlePicture = tk.Label(self.mainPage,height=800, width=1100,image=titlePicture)
+        self.mainPage.image=titlePicture
+        lblTitlePicture.place(x=0, y=0)
 
-        self.btnHealth = tk.Button(self.mainPage, height=6, width=16, relief="raised", cursor="hand2")
-        self.btnHealth.place(relx=.3, rely=.85, anchor="w")
+        self.lblHealth = tk.Label(self.mainPage, height=2, width=30,highlightbackground="white", highlightthickness=2, bg="black",fg="white", font="Arial 15",anchor="w",padx=20, pady=20, text="Health : "+str(Player.health)+"/"+str(Player.maxHealth)+"\n\nHealth potions: "+str(Bag.healthPotion)+" (+"+str(potionList[0][1])+")")
+        self.lblHealth.place(relx=.1045, rely=.63)
 
-        self.lblHealth = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a",fg="white", font="Arial 20", text="Health : "+str(Player.health)+"/"+str(Player.maxHealth))
-        self.lblHealth.place(relx=.2, rely=.1, anchor="center")
+        self.btnHealth = tk.Button(self.mainPage, bg="#909090", activebackground="#909090", cursor="hand2", relief="sunken", borderwidth=4, command=self.healthPotion)
+        self.btnHealth.place(relx=.35, rely=.637)
+        try:
+            self.picHealth = ImageTk.PhotoImage(Image.open(potionList[0][3]))
+            self.btnHealth.configure(width=70, height=70, image=self.picHealth)
+        except:
+            self.btnHealth.configure(width=11, height=4, text=potionList[0][0])
 
-        self.lblStamina = tk.Label(self.mainPage, height=3, width=20, bg="#1a1a1a", fg="white", font="Arial 20", text = "Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
-        self.lblStamina.place(relx=.6, rely=.1, anchor="center")
+        self.lblStamina = tk.Label(self.mainPage, height=2, width=30,highlightbackground="white", highlightthickness=2, bg="black",fg="white", font="Arial 15",anchor="w",padx=20, pady=20, text="Stamina : "+str(Player.stamina)+"/"+str(Player.maxStamina)+"\n\nStamina potions: "+str(Bag.staminaPotion)+" (+"+str(potionList[1][1])+")")
+        self.lblStamina.place(relx=.4465, rely=.63)
+
+        self.btnStamina = tk.Button(self.mainPage, bg="#909090", activebackground="#909090", cursor="hand2", relief="sunken", borderwidth=4, command=self.staminaPotion)
+        self.btnStamina.place(relx=.692, rely=.637)
+        try:
+            self.picStamina = ImageTk.PhotoImage(Image.open(potionList[1][3]))
+            self.btnStamina.configure(width=70, height=70, image=self.picStamina)
+        except:
+            self.btnStamina.configure(width=11, height=4, text=potionList[1][0])
+
+        self.lblGold = tk.Label(self.mainPage, height=2, width=7,highlightbackground="white", highlightthickness=2, bg="black",fg="gold", font="Arial 15",padx=20, pady=20, text="Gold:\n\n"+str(Bag.gold))
+        self.lblGold.place(relx=.783, rely=.63)
+
+        self.mainText = tk.Text(self.mainPage, state="disabled", height=16, width=75, bg="black", highlightbackground="white", highlightthickness=2, fg="white", font="Arial 15", wrap="word", padx=20)
+        self.mainText.place(relx=.5, rely=.397, anchor="center")
+
+        self.btnYes = tk.Button(self.mainPage, height=1, width=10,bg="grey",fg="white",state="disabled", relief="solid", cursor="hand2", font="Arial 20", text="Yes")
+        self.btnYes.place(relx=.32, rely=.85)
+
+        self.btnNo = tk.Button(self.mainPage, height=1, width=10,bg="grey",fg="white", state="normal", relief="solid", cursor="hand2", font="Arial 20", text="No")
+        self.btnNo.place(relx=.52, rely=.85)
+
        
         
+    def healthPotion(self):
+        print("hi")
+    #     if Bag.healthPotion == 0:
+    #         self.updateText("\nInsufficient health potions\n\nYou have: "+str(Bag.healthPotion)+"\nRequired amount: 1")
+    #     elif Player.health == Player.maxHealth:
+    #         self.clearText()
+    #         self.updateText("\n\nAlready at max health")
+    #     else:
+    #         Bag.healthPotion -= 1
+    #         Player.health += potionList[0][1]
+    #         if Player.health > Player.maxHealth:
+    #             Player.health = Player.maxHealth
+    #         self.updateInfo()
+
+    def staminaPotion(self):
+        print("no")
+    #     if Bag.staminaPotion == 0:
+    #         self.clearText()
+    #         self.updateText("\nInsufficient stamina potions\n\nYou have: "+str(Bag.staminaPotion)+"\nRequired amount: 1")
+    #     elif Player.stamina == Player.maxStamina:
+    #         self.clearText()
+    #         self.updateText("\n\nAlready at max stamina")
+    #     else:
+    #         Player.stamina += potionList[1][1]
+    #         Bag.staminaPotion -= 1
+    #         if Player.stamina > Player.maxStamina:
+    #             Player.stamina = Player.maxStamina
+    #         self.updateInfo()
+
     def updateText(self, text): #displays the text in the text box
         self.mainText.configure(state="normal")
         self.mainText.insert(tk.END, text)
         self.mainText.configure(state="disabled")
-
-    # def story(self):
-        # self.after(2000, lambda: self.updateText("first"))
-        # self.after(3000, lambda: self.updateText("second")) 
+ 
     def snapBottom(self):
         self.mainText.see("end")
         self.after(1000, self.snapBottom)
     
     def clearBox(self):
-        if self.mainText.yview == (0.0, 1.0):
-            print("hello")
-            self.mainText.configure(state="normal")
-            self.mainText.delete(0.0, "end")
-            self.mainText.configure(state="disabled")
-        self.after(1000, self.clearBox)
+        # if self.mainText.yview == (0.0, 1.0):
+        #     print("hello")
+        #     self.mainText.configure(state="normal")
+        #     self.mainText.delete(0.0, "end")
+        #     self.mainText.configure(state="disabled")
+        # self.after(1000, self.clearBox)
+        print("running")
+        self.mainText.configure(state="normal")
+        self.mainText.delete(0.0, "end")
+        self.mainText.configure(state="disabled")
+
+    def start(self, controller):
+        self.snapBottom()
+        # self.clearBox()
+        self.after(1000, lambda: self.updateText("\nYou awaken, laying face down on the forest floor.\nThere's a flipped Jeep to your left, completely charred.\n"))
+        self.after(8000, lambda: self.updateText("\nUnsure of your whereabouts, you hear something rustling only a few feet away.\n"))
+        self.after(10000, lambda: self.updateText("Gradually finding your footing, you approach the source of the noise.\n"))
+        self.after(12000, lambda: self.updateText("You see a Goose pecking at a familiar looking backpack. Within seconds, the goose sees you, flaring out its wings.\n"))
+        self.after(14000, lambda: self.updateText("Looking around quickly, you pick up a stick to defend yourself.\n"))
+        playerWeapons[0] = weapons_list[0]
+        self.after(16000, lambda: controller.showFrame(FightPage)) #Take this out to make it work
+        self.after(16001,lambda: controller.frames[FightPage].enemyBattle(1,2,"Goose", 0))
+        controller.frames[FightPage].updateWeapons()
+        Player.next = self.part2
+        self.after(17000, self.clearBox)
+
+    def part2(self):
+        
+        self.after(3000, lambda: self.updateText("\n\nThis should pop up after 3 seconds"))
+        print("noice")
         
 class FightPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -689,6 +770,7 @@ class FightPage(tk.Frame):
                 self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
                 self.fightPage.after(6999, self.clearText)
                 self.fightPage.after(7000, lambda: controller.showFrame(MainPage))
+                self.fightPage.after(7000, Player.next)
             elif Player.mode == 2: #if playing quick play
                 gold = Enemy.reward
                 Bag.gold += gold
@@ -696,8 +778,7 @@ class FightPage(tk.Frame):
                 self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
                 self.fightPage.after(6999, self.clearText)
                 controller.frames[ArenaPage].updateInfo()
-                self.fightPage.after(7000, lambda: controller.showFrame(ArenaPage))
-            
+                self.fightPage.after(7000, lambda: controller.showFrame(ArenaPage))     
 
     def displayAttack(self, index, damage):
         Enemy.health -= damage
@@ -854,7 +935,7 @@ class TownPage(tk.Frame):
         lblArena = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Fight against enemies for gold")
         lblArena.place(relx=.5, rely=.36, anchor="center")
 
-        btnCasino = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Casino", font="Arial 25")
+        btnCasino = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Casino", font="Arial 25",command=lambda: controller.showFrame(BlackPage)) #add reset() function for blackPage
         btnCasino.place(relx=.5, rely=.47, anchor="center")
         lblCasino = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Gamble your gold")
         lblCasino.place(relx=.5, rely=.53, anchor="center")
@@ -2348,6 +2429,421 @@ class SpecialPage(tk.Frame):
 
         self.lblSpecialName.configure(text=playerWeapons[5][1])
         self.lblSpecialDamage.configure(text="Damage: "+str(playerWeapons[5][2])+" - "+str(playerWeapons[5][3]))
+
+class BlackPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
+        self.blackPage = tk.Frame(self,width=1100, height=800, bg="#08451b")
+        self.blackPage.pack()
+        self.blackPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
+        textChecker = self.register(self.validInput)
+
+        self.btnBack = tk.Button(self.blackPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(TownPage))
+        self.btnBack.place(relx=.03, rely=.03)
+
+        self.lblTitle = tk.Label(self.blackPage, height=1, width=15, bg="black", highlightbackground="white", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 20", text='Black Jack')
+        self.lblTitle.place(relx=.27, rely=.055, anchor="center")
+
+        self.lblDealerTitle = tk.Label(self.blackPage, height=1, width=25, bg="black", highlightbackground="white", highlightthickness=3, fg="white", font="Arial 20", text="Dealers Hand: ")
+        self.lblDealerTitle.place(relx=.023, rely=.16)
+
+        self.lblCard1 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard1.place(relx=.022, rely=.25)
+
+        self.lblCard2 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard2.place(relx=.142, rely=.25)
+
+        self.lblCard3 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard3.place(relx=.262, rely=.25)
+
+        self.lblCard4 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard4.place(relx=.382, rely=.25)
+
+        self.lblCard5 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard5.place(relx=.502, rely=.25)
+
+        self.lblCard6 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard6.place(relx=.622, rely=.25)
+
+        self.lblCard7 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard7.place(relx=.742, rely=.25)
+
+        self.lblCard8 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard8.place(relx=.862, rely=.25)
+
+        self.lblPlayerTitle = tk.Label(self.blackPage, height=1, width=25, bg="black", highlightbackground="white", highlightthickness=3, fg="white", font="Arial 20", text=Player.name+"'s Hand: ")
+        self.lblPlayerTitle.place(relx=.023, rely=.56)
+
+        self.lblCard9 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard9.place(relx=.022, rely=.65)
+
+        self.lblCard10 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard10.place(relx=.142, rely=.65)
+
+        self.lblCard11 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard11.place(relx=.262, rely=.65)
+
+        self.lblCard12 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard12.place(relx=.382, rely=.65)
+
+        self.lblCard13 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard13.place(relx=.502, rely=.65)
+
+        self.lblCard14 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard14.place(relx=.622, rely=.65)
+
+        self.lblCard15 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard15.place(relx=.742, rely=.65)
+
+        self.lblCard16 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblCard16.place(relx=.862, rely=.65)
+
+        self.lblOutcome = tk.Label(self.blackPage, height=1, width=35, bg="black", fg="white", font="Arial 17",highlightthickness=2, highlightbackground="white", padx=33, pady=6)
+        self.lblOutcome.place(relx=.4596, rely=.155)
+
+        self.goldTitle = tk.Label(self.blackPage, width=35, height= 3, font="Arial 17", bg="black", fg="gold", text=Player.name+"'s Gold: "+str(Bag.gold), anchor="nw", padx=33, pady = 10, highlightthickness=2, highlightbackground="white")
+        self.goldTitle.place(relx=.46, rely=.025)
+
+        self.betVar = tk.StringVar()
+        entBet = tk.Entry(self.blackPage, width=10, bg="white", font="Arial 18", textvariable=self.betVar,validate="key", validatecommand=(textChecker,'%P', 5))
+        entBet.place(relx=.55, rely=.1)
+
+        self.btnPlaceBet = tk.Button(self.blackPage, height=1, width=20, font="Arial 15", bg="grey", fg="white", text="Place Bet", cursor="hand2", relief="solid", command=self.checkBet)
+        self.btnPlaceBet.place(relx=.7, rely=.095)
+
+        self.entLabel = tk.Label(self.blackPage, width = 4, height= 1, bg="black", fg="white",font="Arial 18", text="Bet:")
+        self.entLabel.place(relx=.486, rely=.1)
+
+        self.btnHit = tk.Button(self.blackPage, height=1, width=11, font="Arial 20", bg="grey", fg="white", cursor="hand2", state="disabled", text = "Hit", command=self.hitFunction)
+        self.btnHit.place(relx=.023, rely=.9)
+
+        self.btnStay = tk.Button(self.blackPage, height=1, width=11, font="Arial 20", bg="grey", fg="white", cursor="hand2", state="disabled", text = "Stay", command=self.stayFunction)
+        self.btnStay.place(relx=.23, rely=.9)
+
+        self.badBet = tk.Label(self.blackPage, width = 20, height=1, font="Arial 15", bg="black", fg="white", anchor="w")
+        self.badBet.place(relx=.7, rely=.043)
+
+        self.cardPlaces = (self.lblCard1,self.lblCard2,self.lblCard3,self.lblCard4,self.lblCard5,self.lblCard6,self.lblCard7,self.lblCard8,self.lblCard9,self.lblCard10,self.lblCard11,self.lblCard12,self.lblCard13,self.lblCard14,self.lblCard15, self.lblCard16)
+
+    def validInput(self, text, maxLength):
+        if text:
+            return len(text) <= int(maxLength) and text.isdigit()
+        return True
+
+    def checkBet(self):
+        if Bag.gold < 1:
+            self.badBet.configure(text="Please exit the Casino")
+        elif self.betVar.get() == "":
+            self.badBet.configure(text="Invalid bet amount")
+        else:
+            bet = int(self.betVar.get())
+            if bet < 1:
+                self.badBet.configure(text="Invalid bet amount")
+            elif Bag.gold < bet:
+                self.badBet.configure(text="Invalid bet amount")
+            else:
+                self.badBet.configure(text="Bet's good")
+                self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
+                self.playerCards = []
+                self.dealerCards = []
+                self.thePlay()
+
+    def thePlay(self):
+        self.resetPage()
+        self.btnBack.configure(state="disabled")
+        self.playerOutcome = ""
+        self.dealerOutcome = ""
+        self.tempDeck = cardsList[:]
+        self.playerCards.append(self.randomCard(self.tempDeck))
+        self.playerCards.append(self.randomCard(self.tempDeck))
+        self.dealerCards.append(self.randomCard(self.tempDeck))
+
+        self.blackPage.after(1000, lambda: self.displayCard(self.playerCards[0][5],9))
+        self.blackPage.after(2000, lambda: self.displayCard(self.playerCards[1][5],10))
+        self.blackPage.after(3000, lambda: self.displayCard(self.dealerCards[0][5],1))
+        self.manageAceValue(self.playerCards)
+        self.dealerSum = self.cardsSum(self.dealerCards)
+        self.playerSum = self.cardsSum(self.playerCards)
+        self.blackPage.after(2000, lambda: self.changePlayerTitle(Player.name+"'s Hand: "+str(self.playerSum)))
+        self.blackPage.after(3000, lambda: self.changeDealerTitle("Dealers Hand: "+str(self.dealerSum)))
+        if self.playerSum == 21:
+            self.blackPage.after(3100, lambda: self.changeOutcome("You have a Natural!"))
+            self.playerOutcome = 21
+            self.blackPage.after(4000, self.dealerTurn)
+        else:
+            self.blackPage.after(3500, lambda: self.btnState("normal"))
+
+    def hitFunction(self):
+        self.btnState("disabled")
+        self.playerCards.append(self.randomCard(self.tempDeck))
+        numPlayerCards = len(self.playerCards)
+        self.blackPage.after(1000, lambda: self.displayCard(self.playerCards[numPlayerCards-1][5],8+numPlayerCards))
+        self.manageAceValue(self.playerCards)
+        self.playerSum = self.cardsSum(self.playerCards)
+        self.blackPage.after(1000, lambda: self.changePlayerTitle(Player.name+"'s Hand: "+str(self.playerSum)))
+        if self.playerSum < 21:
+            self.blackPage.after(1500, lambda: self.btnState("normal"))
+
+        elif self.playerSum == 21:
+            self.playerOutcome = 21
+            self.dealerTurn()
+        else:
+            Bag.gold -= int(self.betVar.get())
+            self.blackPage.after(3001, lambda: self.changeOutcome("Bust! You lost "+self.betVar.get()+" gold"))
+            self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
+            self.btnBack.configure(state="normal")
+
+    def stayFunction(self):
+        self.btnState("disabled")
+        self.playerOutcome = self.playerSum
+        self.dealerTurn()
+
+    def dealerTurn(self):
+        self.dealerCards.append(self.randomCard(self.tempDeck))
+        numDealerCards2 = 2
+        displayTime = 2000
+        self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards2-1][5],numDealerCards2))
+        self.manageAceValue(self.dealerCards)
+        dealerSum2 = self.cardsSum(self.dealerCards)
+        self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum2)))
+
+        if dealerSum2 < 17:
+            self.dealerCards.append(self.randomCard(self.tempDeck))
+            numDealerCards3 = 3
+            displayTime+=2000
+            self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards3-1][5],numDealerCards3))
+            self.manageAceValue(self.dealerCards)
+            dealerSum3 = self.cardsSum(self.dealerCards)
+            self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum3)))
+
+            if dealerSum3 < 17:
+
+                self.dealerCards.append(self.randomCard(self.tempDeck))
+                numDealerCards4 = 4
+                displayTime+=2000
+                self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards4-1][5],numDealerCards4))
+                self.manageAceValue(self.dealerCards)
+                dealerSum4 = self.cardsSum(self.dealerCards)
+                self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum4)))
+
+                if dealerSum4 < 17:
+                    self.dealerCards.append(self.randomCard(self.tempDeck))
+                    numDealerCards5 = 5
+                    displayTime+=2000
+                    self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards5-1][5],numDealerCards5))
+                    self.manageAceValue(self.dealerCards)
+                    dealerSum5 = self.cardsSum(self.dealerCards)
+                    self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum5))) 
+
+                    if dealerSum5 < 17:
+                        self.dealerCards.append(self.randomCard(self.tempDeck))
+                        numDealerCards6 = 6
+                        displayTime+=2000
+                        self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards6-1][5],numDealerCards6))
+                        self.manageAceValue(self.dealerCards)
+                        dealerSum6 = self.cardsSum(self.dealerCards)
+                        self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum6)))  
+
+                        if dealerSum6 < 17:
+                            self.dealerCards.append(self.randomCard(self.tempDeck))
+                            numDealerCards7 = 7
+                            displayTime+=2000
+                            self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards7-1][5],numDealerCards7))
+                            self.manageAceValue(self.dealerCards)
+                            dealerSum7 = self.cardsSum(self.dealerCards)
+                            self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum7))) 
+
+                            if dealerSum7 < 17:
+                                self.dealerCards.append(self.randomCard(self.tempDeck))
+                                numDealerCards8 = 8
+                                displayTime+=2000
+                                self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards8-1][5],numDealerCards8))
+                                self.manageAceValue(self.dealerCards)
+                                dealerSum8 = self.cardsSum(self.dealerCards)
+                                self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum8)))
+        
+        self.dealerOutcome = self.cardsSum(self.dealerCards)
+        displayTime+=2000
+        self.blackPage.after(displayTime, self.computeOutcome)
+            
+
+    def dealerNewCard(self):
+        self.dealerCards.append(self.randomCard(self.tempDeck))
+        numDealerCards = len(self.dealerCards)
+        self.displayCard(self.dealerCards[numDealerCards-1][5],numDealerCards)
+        self.manageAceValue(self.dealerCards)
+        self.dealerSum = self.cardsSum(self.dealerCards)
+        self.changeDealerTitle("Dealer's Hand: "+str(self.dealerSum))
+
+    def computeOutcome(self):
+        bet = int(self.betVar.get())
+        if self.playerOutcome == 21 and len(self.playerCards) == 2 and self.dealerOutcome != 21: #if player has a natural, and dealer doesn't have 21
+            winning = (bet*1.5)
+            if winning % 1 != 0:
+                winning+= 0.5
+            winning = int(winning)
+            Bag.gold+=winning
+            self.lblOutcome.configure(text="You win "+str(winning)+" Gold!")
+        elif self.dealerOutcome > 21: # if dealer busts
+            Bag.gold+=bet
+            self.lblOutcome.configure(text="You win "+str(bet)+" Gold!")
+        elif self.playerOutcome < int(self.dealerOutcome) <= 21: #if dealer has higher sum than player, but not bust
+            Bag.gold -= bet
+            self.lblOutcome.configure(text="You lose "+str(bet)+" Gold")
+        elif self.playerOutcome == self.dealerOutcome:
+            self.lblOutcome.configure(text="Push")
+        else:
+            Bag.gold += bet
+            self.lblOutcome.configure(text="You win "+str(bet)+" Gold!")
+
+        self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
+        self.btnBack.configure(state="normal")
+
+    def cardsSum(self, userCards):
+        total = 0
+        for x in range(len(userCards)):
+            total += userCards[x][2]
+        return total    
+        
+    def manageAceValue(self, userCards):
+        aceIndex = -1
+        for x in range(len(userCards)):
+            if userCards[x][2] == 11:
+                aceIndex = x
+                print(aceIndex)
+                break
+        if self.cardsSum(userCards) > 21 and aceIndex != -1: # if players cards sum is over 21, and they have an ace with a value of 11
+            print("ace is changing. value is: "+str(self.cardsSum(userCards)))
+            userCards[aceIndex][2] = 1 #changes the value of an acce from an 11 to a 1
+    
+    def btnState(self, newState):
+        self.btnHit.configure(state=newState)
+        self.btnStay.configure(state=newState)
+
+    def resetPage(self):
+        for x in self.cardPlaces:
+            x.configure(image="", highlightbackground="#08451b")
+        self.goldTitle.configure(text=Player.name+"'s Gold: "+ str(Bag.gold))
+        self.lblDealerTitle.configure(text="Dealers Hand: ")
+        self.lblPlayerTitle.configure(text=Player.name+"'s Hand: ")
+        self.lblOutcome.configure(text="")
+
+    def changeOutcome(self, newText):
+        self.lblOutcome.configure(text=newText)
+    
+    def changePlayerTitle(self, newText):
+        self.lblPlayerTitle.configure(text=newText)
+    
+    def changeDealerTitle(self, newText):
+        self.lblDealerTitle.configure(text=newText)
+
+    def displayCard(self, cardImage, x):
+        if x == 1:
+            try:
+                self.picCard1 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard1.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard1)
+            except:
+                self.lblCard1.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==2:
+            try:
+                self.picCard2 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard2.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard2)
+            except:
+                self.lblCard2.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==3:
+            try:
+                self.picCard3 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard3.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard3)
+            except:
+                self.lblCard3.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==4:
+            try:
+                self.picCard4 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard4.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard4)
+            except:
+                self.lblCard4.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==5:
+            try:
+                self.picCard5 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard5.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard5)
+            except:
+                self.lblCard5.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==6:
+            try:
+                self.picCard6 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard6.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard6)
+            except:
+                self.lblCard6.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==7:
+            try:
+                self.picCard7 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard7.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard7)
+            except:
+                self.lblCard7.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==8:
+            try:
+                self.picCard8 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard8.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard8)
+            except:
+                self.lblCard8.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==9:
+            try:
+                self.picCard9 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard9.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard9)
+            except:
+                self.lblCard9.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==10:
+            try:
+                self.picCard10 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard10.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard10)
+            except:
+                self.lblCard10.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==11:
+            try:
+                self.picCard11 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard11.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard11)
+            except:
+                self.lblCard11.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==12:
+            try:
+                self.picCard12 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard12.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard12)
+            except:
+                self.lblCard12.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==13:
+            try:
+                self.picCard13 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard13.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard13)
+            except:
+                self.lblCard13.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==14:
+            try:
+                self.picCard14 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard14.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard14)
+            except:
+                self.lblCard14.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==15:
+            try:
+                self.picCard15 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard15.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard15)
+            except:
+                self.lblCard15.configure(width=11, height=7, font="Arial 15", text="Image")
+        elif x==16:
+            try:
+                self.picCard16 = ImageTk.PhotoImage(Image.open(cardImage))
+                self.lblCard16.configure(width=120, height=170, highlightbackground="black", highlightthickness=3, image=self.picCard16)
+            except:
+                self.lblCard16.configure(width=11, height=7, font="Arial 15", text="Image")
+
+        
+
+    def randomCard(self, listOfCards):
+        """Chooses a random card from a given deck"""
+
+        ranNum = random.randint(0, len(listOfCards)-1)
+        card = listOfCards[ranNum]
+        del listOfCards[ranNum]
+        return card #the index value of the selected card
 
 game = GameApp()
 

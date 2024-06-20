@@ -22,10 +22,10 @@ Level,Name,Health,Attack 1,Min Damage,Max Damage,Attack 2,Min Damage,Max Damage,
 4,Ice Mage,140,sprays you with ice spikes,60,70,gives you frostbite,50,65,freezes your body,70,80,buries you in a mountain of ice,pictures/mage.jpg
 4,Falmer,170,stabs you with its sword,80,90,shoots you with an arrow,75,80,bashes you with its shield,60,65,hacks your body into pieces,pictures/falmer.jpg
 4,Mountain Lion,190,digs its claws into your back,60,80,sinks its teeth into your leg,70,80,slices your arm open,60,75,rips out your juggular,pictures/mountainlion.jpg
-4,Super Battle Droid,150,shoots you with its blaster,50,70,throws a genade your way,30,100,shoots you with its blaster,50,70,blasts several holes into your body,pictures/battledroid.jpg
+4,Super Battle Droid,150,shoots you with its blaster,50,70,hits you with a wrist rocket,30,100,shoots you with its blaster,50,70,blasts several holes into your body,pictures/battledroid.jpg
 5,Viking,200,impales you with a spear,80,90,throws an axe at you,80,90,punches you in the head,90,100,crushes your skull with his shield,pictures/viking.jpg
 5,Velociraptor,205,Digs its talons into you,70,90,bites your side,90,100,claws your torse,70,85,starts eating your face,pictures/raptor.jpg
-5,Black Bear,250,bats you with its paw,90,110,crushes your arm with its mouth,85,105,bites your neck,100,120,pins you down and eats you alive,pictures/blackbear.jpg
+5,Black Bear,250,bats you with its paw,90,110,crushes your arm with its jaws,85,105,bites your neck,100,120,pins you down and eats you alive,pictures/blackbear.jpg
 5,Frost Troll,275,throws you across the ground,60,90,clobbers you with its fists,80,110,bites your arm,80,100,rips off your arms,pictures/frosttroll.jpg
 5,Pack of Coyotes,290,take turns nibbling on your ankles,40,60,maul you,90,120,jump on you taken chunks of flesh,80,110,tear you limb from limb,pictures/coyotes.jpg
 5,Witch,250,drains your health,90,100,throws an unusual potion at you,20,150,spontaneously catches your clothes on fire ,90,100,drains the life out of you,pictures/witch.jpg
