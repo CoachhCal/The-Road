@@ -6,7 +6,7 @@ Level,Name,Health,Attack 1,Min Damage,Max Damage,Attack 2,Min Damage,Max Damage,
 1,Goose,25,bites your calf,8,10,pulls on your hair,7,9,pecks your eye,10,16,holds your head under the water until you drown,pictures/goose.jpg
 1,Racoon,45,nibbles on your leg,12,15,grabs a chunk of flesh,13,18,claws your face,18,20,slowly eats you alive,pictures/racoon.jpg
 2,Stray Dog,50,bites your arm,18,25,bites your leg,20,24,bites your face,24,28,chews through your face,pictures/dog.jpg
-2,Dwarven Spider,50,zaps you,19,23,stabs you in the foot,20,25,scratches your abdomin,18,23,impales you repeatately until you bleed out,pictures/dwarven.jpg
+2,Dwarven Spider,50,zaps you,19,23,stabs your foot,20,25,slices your arm,18,23,impales you repeatately until you bleed out,pictures/dwarven.jpg
 2,Zombie,70,hits you across the face,20,27,bites your neck,28,32,chews on your arm,23,26,tears out your intestines,pictures/zombie.jpg
 2,Anorexic Crackwhore,65,stabs you with a needle,25,32,bites your face,21,27,vomits on your shoes,20,24,harvests your kidney for crack money,pictures/anorexic.jpg
 2,Mudcrab,75,crushes your arm in its claw,15,20,bites your leg,25,30,stabs you with its leg,18,22,breaks your legs and drags you into the river,pictures/mudcrab.jpg
