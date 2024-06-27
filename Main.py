@@ -21,7 +21,7 @@ https://deckofcardsapi.com/static/img/AS.png
 
 
 class PlayerClass:
-    def __init__(self, name, age, color, height, weight, sex, armor, maxHealth, health, stamina, maxStamina, mode, next):
+    def __init__(self, name, age, color, height, weight, sex, armor, maxHealth, health, stamina, maxStamina):
         self.name = name
         self.age = age
         self.color = color
@@ -33,8 +33,6 @@ class PlayerClass:
         self.health = health
         self.stamina = stamina
         self.maxStamina = maxStamina
-        self.mode = mode
-        self.next = next
     
     def totalHealth(self):
         return self.armor + 100
@@ -128,7 +126,7 @@ GameInfo = GameClass(1, "None", "road")
 Enemy = EnemyClass
 Armor = ArmorClass
 
-Player = PlayerClass("Calvin", 0, "White", 178, 152, "man", "none", 100, 100, 100, 100, 2, "none")
+Player = PlayerClass("Calvin", 26, "white", 70, 152, "man", "none", 100, 100, 100, 100)
 Bag = Inventory(0, 0, 100, 0, 0, 0, 0)
 
 class GameApp(tk.Tk):
@@ -317,9 +315,9 @@ class StartPage(tk.Frame):
             if var[x].cget("fg") == "green": #if text is green (entry is correct)
                 count+=1 #add to counter
             if count == 6 and rbValue != "": # if all entrys correct
-                if rbValue == 1:
+                if int(rbValue) == 1:
                     Player.sex = "man"
-                elif rbValue == 2:
+                elif int(rbValue) == 2:
                     Player.sex = "woman"
                 Player.name = nameVar
                 Player.age = int(ageVar)
@@ -498,7 +496,11 @@ class MainPage(tk.Frame):
         GameInfo.nextFunction = self.one4
 
     def one4(self, controller):
-        print("hi")
+        self.after(3000, lambda: self.updateText("\nMan: \"Well, I hope that holds you over for now.\""))
+        self.after(6000, lambda: self.updateText("\n\nMan: \"Anyways, that damned creature spooked my horses when it attacked, so I should go look for them.\""))
+        self.after(12000, lambda: self.updateText("\n\nMan: \"Safe journeys friend, and feel free to stop by my shop when you're in town!\""))
+        self.after(17000, self.clearBox)
+        self.after(18000, lambda: self.updateText("\n\nAs you continue down the road, "))
         
 class FightPage(tk.Frame):
     def __init__(self, parent, controller):
