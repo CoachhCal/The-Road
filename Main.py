@@ -116,7 +116,7 @@ cardsList = list_from_csv("csvFiles/cards_list.csv", "r")
 
 
 playerWeapons = create_player_weapon_list()
-# playerWeapons[0] = weapons_list[0]
+playerWeapons[0] = weapons_list[4]
 # playerWeapons[1] = weapons_list[10]
 # playerWeapons[2] = weapons_list[11]
 # playerWeapons[3] = weapons_list[19]
@@ -180,13 +180,13 @@ class SplashPage(tk.Frame):
         btnBegin.place(relx=.5, rely=.6, anchor="center")
 
     def yup(self, controller):
-        controller.showFrame(StartPage)
+        # controller.showFrame(StartPage)
         # controller.showFrame(FightPage) #Take this out to make it work
         # controller.frames[FightPage].updateWeapons()
         # controller.frames[FightPage].updateInfo()
         # controller.frames[FightPage].enemyBattle(1,4,"Cyclopes", 0)
-        # controller.showFrame(MainPage)
-        # controller.frames[MainPage].one1(controller)
+        controller.showFrame(MainPage)
+        controller.frames[MainPage].one4(controller)
         # controller.trial(MainPage)
 
         # controller.showFrame(TownPage)
@@ -328,7 +328,8 @@ class StartPage(tk.Frame):
                 if btnValue == 1:
                     GameInfo.location = "road"
                     controller.showFrame(MainPage)
-                    controller.frames[MainPage].one1(controller)
+                    # controller.frames[MainPage].one1(controller)
+                    controller.frames[MainPage].one4(controller)
                 elif btnValue == 2:
                     GameInfo.location = "town"
                     controller.showFrame(TownPage)
@@ -381,40 +382,32 @@ class MainPage(tk.Frame):
         self.mainText = tk.Text(self.mainPage, state="disabled", height=16, width=75, bg="black", highlightbackground="white", highlightthickness=2, fg="white", font="Arial 15", wrap="word", padx=20)
         self.mainText.place(relx=.5, rely=.397, anchor="center")
 
-        self.btnYes = tk.Button(self.mainPage, height=1, width=10,bg="grey",fg="white",state="disabled", relief="solid", cursor="hand2", font="Arial 20")
-        self.btnYes.place(relx=.32, rely=.85)
+        self.lblChoice = tk.Label(self.mainPage, height=3, width=78, bg="black", highlightbackground="white", highlightthickness=2, fg="white", font="Arial 15", pady=10)
+        self.lblChoice.place(relx=.5, rely=.9, anchor="center")
 
-        self.btnNo = tk.Button(self.mainPage, height=1, width=10,bg="grey",fg="white", state="disabled", relief="solid", cursor="hand2", font="Arial 20")
-        self.btnNo.place(relx=.52, rely=.85)
+        self.btnYes = tk.Button(self.mainPage, height=2, width=8,bg="grey",fg="white",state="disabled", relief="sunken", cursor="x_cursor", font="Arial 19")
+        self.btnYes.place(relx=.114, rely=.853)
+
+        self.btnNo = tk.Button(self.mainPage, height=2, width=8,bg="grey",fg="white", state="disabled", relief="sunken", cursor="x_cursor", font="Arial 19")
+        self.btnNo.place(relx=.765, rely=.853)
 
     def healthPotion(self):
         print("hi")
-    #     if Bag.healthPotion == 0:
-    #         self.updateText("\nInsufficient health potions\n\nYou have: "+str(Bag.healthPotion)+"\nRequired amount: 1")
-    #     elif Player.health == Player.maxHealth:
-    #         self.clearText()
-    #         self.updateText("\n\nAlready at max health")
-    #     else:
-    #         Bag.healthPotion -= 1
-    #         Player.health += potionList[0][1]
-    #         if Player.health > Player.maxHealth:
-    #             Player.health = Player.maxHealth
-    #         self.updateInfo()
+        if Bag.healthPotion > 0 and Player.health < Player.maxHealth:
+            Bag.healthPotion -= 1
+            Player.health += potionList[0][1]
+            if Player.health > Player.maxHealth:
+                Player.health = Player.maxHealth
+            self.updateInfo()
 
     def staminaPotion(self):
         print("no")
-    #     if Bag.staminaPotion == 0:
-    #         self.clearText()
-    #         self.updateText("\nInsufficient stamina potions\n\nYou have: "+str(Bag.staminaPotion)+"\nRequired amount: 1")
-    #     elif Player.stamina == Player.maxStamina:
-    #         self.clearText()
-    #         self.updateText("\n\nAlready at max stamina")
-    #     else:
-    #         Player.stamina += potionList[1][1]
-    #         Bag.staminaPotion -= 1
-    #         if Player.stamina > Player.maxStamina:
-    #             Player.stamina = Player.maxStamina
-    #         self.updateInfo()
+        if Bag.staminaPotion > 0 and Player.stamina < Player.maxStamina:
+            Bag.staminaPotion -= 1
+            Player.stamina += potionList[1][1]
+            if Player.stamina > Player.maxStamina:
+                Player.stamina = Player.maxStamina
+            self.updateInfo()
 
     def updateInfo(self):
         self.lblGold.configure(text="Gold:\n\n"+str(Bag.gold))
@@ -434,6 +427,139 @@ class MainPage(tk.Frame):
         self.mainText.configure(state="normal")
         self.mainText.delete(0.0, "end")
         self.mainText.configure(state="disabled")
+
+    def btnDisbaled(self):
+        self.btnYes.configure(state = "disabled", text="", cursor="x_cursor")
+        self.btnNo.configure(state = "disabled", text="", cursor="x_cursor")
+        self.lblChoice.configure(text="")
+
+    def newChoice(self, controller, btnOne, btnTwo, newText, cmdOne, cmdTwo):
+        self.lblChoice.configure(text=newText)
+        self.btnYes.configure(state = "normal", text=btnOne, cursor="hand2", command=lambda: cmdOne(controller))
+        self.btnNo.configure(state = "normal", text=btnTwo, cursor="hand2", command=lambda: cmdTwo(controller))
+
+#region Random Events
+
+    def eventRandom(self, lowerBound, upperBound, ammoQuant, size):
+        """Randomly chooses a good or bad event"""
+        num = random.randint(1,2,3)
+        if num == 1:
+            self.eventGood(lowerBound, upperBound, ammoQuant)
+        elif num == 2:
+            self.eventBad(size)
+        else:
+            self.after(1000, lambda: self.updateText("\n\nYou don't find anything of value in there."))
+
+    def eventGood(self, lowerBound, upperBound, ammoQuant):
+        """Chooses a random good event"""
+        eventType = random.randint(1,3)
+        if eventType == 1:
+            self.eventGold(lowerBound, upperBound)
+        elif eventType == 2:
+            self.eventPotion()
+        else:
+            self.eventAmmo(ammoQuant)
+
+    def eventGold(self, lowerBound, upperBound):
+        multiplier = 10
+        ranNum1 = random.randint(1,50)
+        ranNum2 = random.randint(1,50)
+        goldAmt = random.randint(lowerBound, upperBound)
+        if ranNum1 != ranNum2:
+            Bag.gold += goldAmt
+            self.after(1000, lambda: self.updateText("\n\nYou found "+str(goldAmt)+" gold!"))
+        else:
+            multiplierGold = goldAmt*multiplier
+            Bag.gold += multiplierGold
+            self.after(1000, lambda: self.updateText("\n\nYou found a stash of gold! You're now "+str(multiplierGold)+" gold richer!"))
+        
+    def eventPotion(self):
+        potionType = random.ranint(1,2)
+        if potionType == 1:
+            Bag.healthPotion += 1
+            self.after(1000, lambda: self.updateText("\n\nYou found a health potion!"))
+        else:
+            Bag.staminaPotion += 1
+            self.after(1000, lambda: self.updateText("\n\nYou found a stamina potion!"))
+    
+    def eventAmmo(self, ammoQuant):
+        """Random amount of ammo. ammoQuant is either 'small', 'medium', or 'large'"""
+        ammoType = random.randint(1,20)
+        ammoAmt = 1
+        if ammoQuant == "medium":
+            ammoAmt = 3
+        elif ammoQuant == "large":
+            ammoAmt = 5
+        if 1 <= ammoType < 8:
+            ranArrows = random.randint(1,3)
+            arrowAmt = ranArrows*ammoAmt
+            Bag.arrows += arrowAmt
+            self.after(1000, lambda: self.updateText("\n\nYou found "+str(arrowAmt)+" arrows!"))
+        elif 8 <= ammoType < 14:
+            ranSCal = random.randint(1,10)
+            sCalAmt = ranSCal*ammoAmt
+            Bag.scaliber += sCalAmt
+            self.after(1000, lambda: self.updateText("\n\nYou found "+str(sCalAmt)+"  9mm rounds!"))
+        elif 14 <= ammoType < 19:
+            ranMCal = random.randint(1,20)
+            mCalAmt = ranMCal*ammoAmt
+            Bag.lcaliber += mCalAmt
+            self.after(1000, lambda: self.updateText("\n\nYou found "+str(mCalAmt)+"  7.62mm rounds!"))
+        else:
+            if ammoAmt == 1:
+                Bag.grenades +=1
+                self.after(1000, lambda: self.updateText("\n\nYou found a grenade!"))
+            else:
+                Bag.grenades +=ammoAmt
+                self.after(1000, lambda: self.updateText("\n\nYou found "+str(ammoAmt)+" grenades!"))
+        
+    def eventGoblin(self):
+        """A goblin steals a random amount of gold from the player"""
+        theftNum = random.randint(25, 100) #How much the goblin could steal
+        if 0 < Bag.gold < theftNum: #If goblin tries to steal more gold than the player has, this makes it so that the goblin steals the players exact amount of gold
+            theftNum = Bag.gold
+            Bag.gold -= theftNum
+            self.after(1000, lambda: self.updateText("\nA goblin stole all of your gold!"))
+        elif Bag.gold == 0: #If player has no gold, the goblin cant steal anything
+            self.after(1000, lambda: self.updateText("\nA goblin tried to steal your gold, but you didnt have any for it to take."))
+        else:
+            Bag.gold -= theftNum
+            self.after(1000, lambda: self.updateText(f"\nA goblin stole {str(theftNum)} gold from you!"))
+
+    def eventDamage(self, size):
+        """Randomly chooses an animal (within specified size) to deal damage to the player"""
+        damageAmt = random.randint(1, 12)
+        Player.health -= damageAmt
+        if size == "small":
+            list = ["spider", "snake", "mutant rat"]
+            animalNum = random.randint(0,len(list)-1)
+            if Player.health <= 0: #Added incase the small amount of damage kills the player
+                self.after(1000, lambda: self.updateText(f"\nA {list[animalNum]} bites you for {str(damageAmt)} damage!\n"))
+                print("\nYou have no health remaining. This small yet fierece animal put an end to your journey. No one will sing songs about you.\n")
+                print("Game over")
+            else:
+                self.after(1000, lambda: self.updateText(f"\nA {list[animalNum]} bit you for {str(damageAmt)} damage!\n")) #Says what hurt them and for how much damage
+        else:
+            list = ["racoon bites you and runs off", "rabid chimpanzee barges by you", "debris falls ontop of you"]
+            sec_num = random.randint(0, len(list)-1)
+            if Player.health <= 0:
+                self.after(1000, lambda: self.updateText(f"\nA {list[sec_num]}, causing {str(damageAmt)} damage!\n"))
+                print("\nYou have no health remaining...This is the worst way ones journey could end. You dishonor your family.\n")
+                print("Game over")
+            else:
+                self.after(1000, lambda: self.updateText(f"\nA {list[sec_num]}, causing {str(damageAmt)} damage!\n"))
+
+    def eventBad(self, size): #Size is added in because if a player opens a small box, a big animal shouldn't be there
+        """Randomly chooses a bad event"""
+        num = random.randint(1,2)
+        if num == 1:
+            self.eventDamage(size)
+        elif num == 2 and size != "small":
+            self.eventGoblin()
+        elif num == 2 and size == "small":
+            self.eventDamage(size)
+
+#endregion
 
     def one1(self, controller):
         self.snapBottom()
@@ -497,11 +623,141 @@ class MainPage(tk.Frame):
 
     def one4(self, controller):
         self.after(3000, lambda: self.updateText("\nMan: \"Well, I hope that holds you over for now.\""))
-        self.after(6000, lambda: self.updateText("\n\nMan: \"Anyways, that damned creature spooked my horses when it attacked, so I should go look for them.\""))
+        self.after(6000, lambda: self.updateText("\n\nMan: \"Anyways, that damned creature spooked my horses when it attacked. I should go look for them.\""))
         self.after(12000, lambda: self.updateText("\n\nMan: \"Safe journeys friend, and feel free to stop by my shop when you're in town!\""))
         self.after(17000, self.clearBox)
-        self.after(18000, lambda: self.updateText("\n\nAs you continue down the road, "))
+        self.after(18000, lambda: self.updateText("\n\nAs you continue down the road, the midday sun amplifies the smell of rotting flesh."))
+        self.after(23000, lambda: self.updateText("\n\nHearing a low growling just off the road, you cautiously head toward the noise."))
+        self.after(29000, lambda: self.updateText("\n\nFollowing a beaten down path, you discover a rundown campsite."))
+        self.after(35000, lambda: self.updateText("\n\nThere lies a man half dragged out of his tent, with both legs chewed to the bone."))
+        self.after(41000, lambda: self.updateText("\n\nA rabid dog is inside, starting to chew away at the mans arms, unbothered by your presence."))
+        self.after(48000, lambda: self.updateText("\n\nLooking more closely, you notice an ammo case in the back of the tent."))
+        self.after(53000, lambda: self.newChoice(controller, "Yes", "No", "Do you fight the dog for the ammo case?", self.one4StrayDog, self.one4Exit))
+
+    def one4StrayDog(self, controller):
+        self.btnDisbaled()
+        self.after(1000, lambda: controller.showFrame(FightPage))
+        self.after(1001,lambda: controller.frames[FightPage].enemyBattle(1,3,"Stray Dog", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.one4StrayDogEnd
+        self.after(3000, self.clearBox)
+
+    def one4StrayDogEnd(self, controller):
+        self.after(3000, lambda: self.updateText("\nAfter cleaning the blood off yourself, you take a look inside the ammo case."))
+        self.after(10000, lambda: self.eventAmmo("medium"))
+        self.after(15000, lambda: self.updateText("\n\nYou don't see anything else of value around the campsite, and head back to the road"))
+        self.after(22000, self.clearBox)
+        self.after(22100, lambda: self.one5(controller))
         
+    def one4Exit(self, controller):
+        self.btnDisbaled()
+        self.after(3000, lambda: self.updateText("\n\nYou leave the campsite and head back to the road."))
+        self.after(9000, self.clearBox)
+        self.after(9100, lambda: self.one5(controller))
+
+    def one5(self, controller):
+        self.after(3000, lambda: self.updateText("\nAfter a few hours of walking, you notice alot of movement up ahead."))
+        self.after(9000, lambda: self.updateText("\n\nGetting closer, you can make out a pack of coyotes eating something on the road."))
+        self.after(16000, lambda: self.updateText("\n\nTheres no way you can fight them. You'll have to go around."))
+        self.after(21000, lambda: self.updateText("\n\nThere is a path close by that interescts the road."))
+        self.after(26000, lambda: self.updateText("\n\nOn your left, you can take the path into the woods, or go right towards the river."))
+        self.after(33000, lambda: self.newChoice(controller, "Woods", "River", "Which route do you take?", self.oneForest1, self.one4Exit))
+
+    def oneForest1(self, controller):
+        self.after(3000, lambda: self.updateText("\nYou leave the road and start following the path into the woods."))
+        self.after(10000, lambda: self.updateText("\n\nAbout a kilometer in, you come across an old cabin."))
+        self.after(15000, lambda: self.updateText("\n\nThe landscape is severly overgrown, yet the cabin looks intact."))
+        self.after(27000, lambda: self.updateText("\n\nA rain collector sits adjacent to the cabin, filled to the brim."))
+        self.after(32000, lambda: self.updateText("\n\nOther than a small shed, there isnt much else on the property."))
+        self.after(26000, lambda: self.updateText("\n\nIt's completley silent, other than the creeking of surrounding trees."))
+        self.after(33000, lambda: self.newChoice(controller, "Yes", "No", "Do you enter the cabin?", self.oneForestEnterCabin, self.oneForestGoToShed))
+
+    def oneForestEnterCabin(self, controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nYou gently push the door open, coughing as the musty smell hits."))
+        self.after(10000, lambda: self.updateText("\n\nThe furniture looks well taken care of, covered in light dust."))
+        self.after(16000, lambda: self.updateText("\n\nThe kitchen table has a single bowl on it, with some kind of moldy food still inside."))
+        self.after(23000, lambda: self.updateText("\n\nYou pack up some food stored in the pantry, and head to the cabinet."))
+        self.after(30000, lambda: self.newChoice(controller, "Yes", "No", "Do you open the cabinet?", self.oneForestCabinCabinet, self.oneForestCabinGoToSpareRoom))
+
+    def oneForestCabinCabinet(self, controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nYou open up the cabinet:"))
+        self.after(9000, self.eventGood(5, 30, "medium"))
+        self.after(16000, lambda: self.oneForestCabinSpareRoom(controller))
+
+    def oneForestCabinGoToSpareRoom(self, controller):
+        self.after(3000, lambda: self.updateText("\n\nNext, you make your way to the corner bedroom."))
+        self.after(10000, lambda: self.newChoice(controller, "Yes", "No", "Do you open the door?", self.oneForestCabinSpareRoom, self.oneForestCabinGoToMainRoom))
+
+    def oneForestCabinSpareRoom(self, controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(2000, lambda: self.eventBad("large"))
+        self.after(3000, self.updateInfo)
+        self.after(8000, lambda: self.updateText("\nIt's just a small bathroom. The medicine cabinet is open, with a few empty pill bottles."))
+        self.after(13000, lambda: self.oneForestCabinGoToMainRoom(controller))
+    
+    def oneForestCabinGoToMainRoom(self, controller):
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nThere's one room left to check. Theres a hole chewed out of the bottom of the door."))
+        self.after(10000, lambda: self.updateText("\nThe door seems to be jammed. You'll need to kick it open."))
+        self.after(10000, lambda: self.newChoice(controller, "Yes", "No", "Do you kick the door open?", self.oneForestCabinMainRoom1, self.oneForestCabinExitCabin))
+
+    def oneForestCabinMainRoom1(self, controller):
+        self.after(3000, lambda: self.updateText("\nYou take a couple steps back, kick the door open, tearing it away from one of the hinges."))
+        self.after(10000, lambda: self.updateText("\nAn animal jumps at you."))
+        self.after(15000, lambda: controller.showFrame(FightPage))
+        self.after(15001,lambda: controller.frames[FightPage].enemyBattle(1,3,"Tasmanian devil", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.oneForestCabinMainRoom2
+        self.after(16000, self.clearBox)
+
+    def oneForestCabinMainRoom2(self, controller):
+        self.after(3000, lambda: self.updateText("\nThe room is quite small. A wardrobe, a couple side tables, dresser, and a made bed."))
+        self.after(10000, lambda: self.updateText("\n\nYou find a health potion in the dresser, and a granola bar beside it."))
+        Bag.healthPotion+=1
+        self.after(15000, self.updateInfo)
+        self.after(15000, lambda: self.updateText("\n\nOn top of the right bedside table you find a note."))
+        self.after(21000, self.clearBox)
+        self.after(22000, lambda: self.updateText("\nDear Matthew,\n\n\tI'm sorry to end it this way. The area is getting too dangerous and I cant stay here any longer.\n\n\tJohn is taking me south where it's safer...He's well equipt, and will take good care of me.\n\n\tYou'll always be my first love. I hope you can find peace without me.\n\n\tLove, Annie"))
+        self.after(40000, self.clearBox)
+        self.after(41000, lambda: self.updateText("\nYou set the note back down leave the room."))
+        self.after(46000, lambda: self.oneForestCabinExitCabin(controller))
+        
+    def oneForestCabinExitCabin(self, controller):
+        self.after(3000, lambda: self.updateText("\n\nYou make your way out of the cabin."))
+        self.after(8000, lambda: self.oneForestGoToShed(controller))
+
+    def oneForestGoToShed(self, controller):
+        self.after(3000, lambda: self.updateText("\n\nMaking your way to the shed, a wretched odour fills your nose."))
+        self.after(10000, lambda: self.newChoice(controller, "Yes", "No", "Do you enter the shed?", self.oneForestShed1, self.oneForestLeaveCabinProperty))
+        
+    def oneForestShed1(self,controller):
+        self.after(3000, lambda: self.updateText("\n\nYou make your way out of the cabin."))
+
+
+
+        
+
+        
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
 class FightPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
@@ -846,7 +1102,6 @@ class FightPage(tk.Frame):
         self.lblPHealth.configure(text="Health: "+str(Player.health)+"/"+str(Player.maxHealth))
         self.lblPStamina.configure(text="Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
         
-
     def updateWeapons(self):
         try:
             self.picMelee = ImageTk.PhotoImage(Image.open(playerWeapons[0][9]))
