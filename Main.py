@@ -187,7 +187,7 @@ class SplashPage(tk.Frame):
         # controller.frames[FightPage].updateInfo()
         # controller.frames[FightPage].enemyBattle(1,4,"Cyclopes", 0)
         controller.showFrame(MainPage)
-        controller.frames[MainPage].one5(controller)
+        controller.frames[MainPage].one7(controller)
         # controller.trial(MainPage)
 
         # controller.showFrame(TownPage)
@@ -928,7 +928,7 @@ class MainPage(tk.Frame):
     def oneRiverFightChild(self, controller):
         self.btnDisbaled()
         self.after(1000, lambda: controller.showFrame(FightPage))
-        self.after(1001,lambda: controller.frames[FightPage].enemyBattle(1,3,"Orphaned Child", 0))
+        self.after(1001,lambda: controller.frames[FightPage].enemyBattle(1,2,"Orphaned Child", 0))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.oneRiverEnterBasement
         self.after(3000, self.clearBox)
@@ -962,7 +962,7 @@ class MainPage(tk.Frame):
         self.after(10000, lambda: self.updateText("\n\nOn your way towards the dock, light reflects off of something in the mud."))
         self.after(17000, lambda: self.updateText("\n\nAs you get closer a giant crab emerges from the mud."))
         self.after(23000, lambda: controller.showFrame(FightPage))
-        self.after(23001,lambda: controller.frames[FightPage].enemyBattle(1,3,"Mudcrab", 0))
+        self.after(23001,lambda: controller.frames[FightPage].enemyBattle(1,2,"Mudcrab", 0))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.oneRiverLeaveBackYard
         self.after(24000, self.clearBox)
@@ -981,9 +981,49 @@ class MainPage(tk.Frame):
 #endregion
 
     def one6(self, controller):
-            self.clearBox()
-            self.after(3000, lambda: self.updateText("\n\nYou finally get back to the road, just as the sun sets."))
-            
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nYou finally get back to the road, just as the sun sets."))
+        self.after(9000, lambda: self.updateText("\n\nThe town isn't much further, you'll rest once you get there."))
+        self.after(16000, lambda: self.updateText("\n\nA few minutes later, you see distant lights on the road ahead."))
+        self.after(22000, lambda: self.updateText("\n\nYou soon realize its a group of men. You get off the road and wait for them to pass."))
+        self.after(30000, self.clearBox)
+        self.after(31000, lambda: self.updateText("\nMan 1: \"The cabin is supposed to be a couple hours from here, we'll sleep once we get there.\""))
+        self.after(39000, lambda: self.updateText("\n\nMan 2: \"It's late, I'm sure we'll be fine to hold up here for the night.\""))
+        self.after(45000, lambda: self.updateText("\n\nMan 1: \"If getting your limbs chewed off by boars is considered fine, then yes, we'll be fine....\""))
+        self.after(53000, lambda: self.updateText("\n\nMan 3: \"I wouldn't worry about that. I'm sure they're well fed with all the soldiers getting sent up here.\""))
+        self.after(61000, lambda: self.updateText("\n\nMan 2: \"And The Union will keep sending more. Anything to get what they want.\""))
+        self.after(65000, lambda: self.updateText("\n\nMan 3: \"It's understandable though, what's in that facility will solve food scarcity... again.\""))
+        self.after(72000, lambda: self.updateText("\n\nMan 1: \"No, it will just give the Union more power. People like us will still have to fight to survive.\""))
+        self.after(80000, self.clearBox)
+        self.after(82000, lambda: self.updateText("\nThe men are too far away to listen any longer."))
+        self.after(86000, lambda: self.updateText("\n\nYou start to think about what the men were saying, but they dont know how bad it is back in The Union."))
+        self.after(94000, lambda: self.updateText("\n\nFood is runnning out. People are starved on the streets."))
+        self.after(100000, lambda: self.updateText("\n\nThat's why they've sent so many soldiers here recently, including yourself."))
+        self.after(106000, lambda: self.updateText("\n\nYour thoughts get interupted by something..."))
+        self.after(114000, lambda: controller.showFrame(FightPage))
+        self.after(114001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.one7
+        self.after(115000, self.clearBox)
+
+    def one7(self, controller):
+        self.after(3000, lambda: self.updateText("\nYou finally see the town ahead."))
+        self.after(8000, lambda: self.updateText("\n\nAs you get close, and man opens the gate for you."))
+        if Player.sex == "man":
+            self.after(14000, lambda: self.updateText("\n\nGatekeeper: \"Hello there mister... You look to be in rough shape.\""))
+        else: 
+            self.after(14000, lambda: self.updateText("\n\nGatekeeper: \"Hello there miss... You look to be in rough shape.\""))
+
+        self.after(21000, lambda: self.updateText("\n\nGatekeeper: \"You better come on in and get situated. There's lots to do in here!\""))
+        self.after(29000, self.clearBox)
+        GameInfo.location == "town"
+        self.after(29000, lambda: controller.showFrame(TownPage))
+        GameInfo.nextFunction = self.two1
+
+    def two1(self, controller):
+        print("hi")
+
+   
 
 class FightPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -1399,6 +1439,8 @@ class TownPage(tk.Frame):
         self.townPage.pack()
         self.townPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
+        self.btnBack = tk.Button(self.townPage, width=10, height=1, text="Exit", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: self.exit(controller))
+        self.btnBack.place(relx=.03, rely=.03)
 
         # self.lblTownPerson = tk.Label(self.townPage, height=5, width=12, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 25")
         # self.lblTownPerson.place(relx=.075, rely=.05)
@@ -1409,22 +1451,22 @@ class TownPage(tk.Frame):
         # self.lblExit = tk.Label(self.townPage, height=1, width=30, bg="black", highlightbackground="gold", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 10", text="Exiting will return to main menu")
         # self.lblExit.place(relx=.38, rely=.15)
 
-        btnArena = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Arena", font="Arial 25", command=lambda: self.arenaFunction(controller))
+        btnArena = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Arena", cursor="hand2", font="Arial 25", command=lambda: self.arenaFunction(controller))
         btnArena.place(relx=.5, rely=.3, anchor="center")
         lblArena = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Fight against enemies for gold")
         lblArena.place(relx=.5, rely=.36, anchor="center")
 
-        btnCasino = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Casino", font="Arial 25",command=lambda: controller.showFrame(BlackPage)) #add reset() function for blackPage
+        btnCasino = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Casino", cursor="hand2", font="Arial 25",command=lambda: controller.showFrame(BlackPage)) #add reset() function for blackPage
         btnCasino.place(relx=.5, rely=.47, anchor="center")
         lblCasino = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Gamble your gold")
         lblCasino.place(relx=.5, rely=.53, anchor="center")
 
-        btnShop = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Item Shop", font="Arial 25", command=lambda: controller.showFrame(ShopPage))
+        btnShop = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="Item Shop", cursor="hand2", font="Arial 25", command=lambda: controller.showFrame(ShopPage))
         btnShop.place(relx=.5, rely=.64, anchor="center")
         lblShop = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Shop weapons, armour, ammo, and potions")
         lblShop.place(relx=.5, rely=.7, anchor="center")
 
-        btnSchool = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="School", font="Arial 25")
+        btnSchool = tk.Button(self.townPage, bg="grey", fg="white", height=1, width=20, text="School", cursor="hand2", font="Arial 25")
         btnSchool.place(relx=.5, rely=.81, anchor="center")
         lblSchool = tk.Label(self.townPage, height=1, width=40, fg="white", bg="#1a1a1a", text="Answer math questions for gold")
         lblSchool.place(relx=.5, rely=.87, anchor="center")
@@ -1432,6 +1474,15 @@ class TownPage(tk.Frame):
     def arenaFunction(self, controller):
         controller.frames[ArenaPage].updateInfo()
         controller.showFrame(ArenaPage)
+
+    def exit(self, controller):
+        print("hi")
+        if GameInfo.mode == 1:
+            print("main")
+            controller.showFrame(MainPage)
+            controller.frames[MainPage].updateInfo()
+        else:
+            controller.showFrame(SplashPage)
 
 class ArenaPage(tk.Frame):
     def __init__(self, parent, controller):
