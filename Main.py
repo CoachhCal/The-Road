@@ -996,7 +996,7 @@ class MainPage(tk.Frame):
         self.after(45000, lambda: self.updateText("\n\nMan 1: \"If getting your limbs chewed off by boars is considered fine, then yes, we'll be fine....\""))
         self.after(53000, lambda: self.updateText("\n\nMan 3: \"I wouldn't worry about that. I'm sure they're well fed with all the soldiers getting sent up here.\""))
         self.after(61000, lambda: self.updateText("\n\nMan 2: \"And the Republic will keep sending more. Anything to get what they want.\""))
-        self.after(67000, lambda: self.updateText("\n\nMan 3: \"It's understandable though, what's in that facility will solve food scarcity... again.\""))
+        self.after(67000, lambda: self.updateText("\n\nMan 3: \"It's understandable though, what's in that facility will get society back on track.\""))
         self.after(75000, lambda: self.updateText("\n\nMan 1: \"No, it will just give the Republic more power. People like us will still have to fight to survive.\""))
         self.after(83000, self.clearBox)
         self.after(85000, lambda: self.updateText("\nThe men are too far away to listen any longer."))
@@ -1096,125 +1096,284 @@ class MainPage(tk.Frame):
     def two3(self,controller):
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou immediately run into the woods behind the gas station."))
-        self.after(3000, lambda: self.updateText("\n\nThe racists take a couple shots at you while they yell slurs."))
-        self.after(3000, lambda: self.updateText("\n\nYou make it away safe, and decide to travel into the woods a bit further just incase."))
-        self.after(3000, lambda: self.updateText("\n\nSoon after, you come across an overgrown field."))
-        self.after(3000, lambda: self.updateText("\n\nYou see a barn off in the distance."))
-        self.after(14000, lambda: self.newChoice(controller, "Yes", "No", "Do you go to the barn?", self.twoBarn, self.twoNoBarn))
+        self.after(9000, lambda: self.updateText("\n\nThe racists take a couple shots at you while they yell slurs."))
+        self.after(15000, lambda: self.updateText("\n\nYou make it away safe, and decide to travel into the woods a bit further just incase."))
+        self.after(22000, lambda: self.updateText("\n\nSoon after, you come across an overgrown field."))
+        self.after(24000, lambda: self.updateText("\n\nYou see a barn off in the distance."))
+        self.after(30000, lambda: self.newChoice(controller, "Yes", "No", "Do you go to the barn?", self.twoBarn, self.twoLeaveFarm))
 
     def twoBarn(self,controller):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nThe barn door is open. It looks like it used to house cattle."))
-        self.after(3000, lambda: self.updateText("\n\nNear the entrance, you see an opened firearm safe."))
-        self.after(3000, lambda: self.updateText("\n\nTheres nothing left inside, but you notice a footprint in the mud infront of it."))
-        self.after(3000, lambda: self.updateText("\n\nSomeone must have just looted this place."))
-        self.after(3000, lambda: self.updateText("\n\nSuddenly, you hear a loud banging noise."))
-        self.after(3000, lambda: self.updateText("\n\nYou exit the barn and head towards the noise. It's coming from the farm house."))
-        self.after(14000, lambda: self.newChoice(controller, "Yes", "No", "Do you go to the house?", self.twoFarmHouse, self.twoNoFarmHouse))
+        self.after(10000, lambda: self.updateText("\n\nNear the entrance, you see an opened firearm safe."))
+        self.after(16000, lambda: self.updateText("\n\nTheres nothing left inside, but you notice a footprint in the mud infront of it."))
+        self.after(24000, lambda: self.updateText("\n\nSomeone must have just looted this place."))
+        self.after(27000, lambda: self.updateText("\n\nSuddenly, you hear a loud banging noise."))
+        self.after(33000, lambda: self.updateText("\n\nYou exit the barn and head towards the noise. It's coming from the farm house."))
+        self.after(40000, lambda: self.newChoice(controller, "Yes", "No", "Do you go to the house?", self.twoFarmHouse, self.twoLeaveFarm))
         
     def twoFarmHouse(self,controller):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou see a deformed human-like creature smashing on the front door."))
-        self.after(14000, lambda: self.newChoice(controller, "Yes", "No", "Do you Fight?", self.twoFarmHouseFight, self.twoNoFarmHouseFight))
+        self.after(9000, lambda: self.newChoice(controller, "Yes", "No", "Do you Fight?", self.twoFarmHouseFight, self.twoLeaveFarm))
 
     def twoFarmHouseFight(self,controller):
         self.btnDisbaled()
         self.clearBox()
-        self.after(3000, lambda: controller.showFrame(FightPage))
-        self.after(3001,lambda: controller.frames[FightPage].enemyBattle(3,4,"Mountain Lion", 0))
+        self.after(2000, lambda: controller.showFrame(FightPage))
+        self.after(2001,lambda: controller.frames[FightPage].enemyBattle(3,4,"Falmer", 0))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.twoEnterFarmHouse
 
     def twoEnterFarmHouse(self,controller):
         self.after(3000, lambda: self.updateText("\nA man slowly opens the front door, looking at the dead falmer, and then you."))
-        self.after(3000, lambda: self.updateText("\n\nHe's young, is quite short and looks a bit fragile."))
-        self.after(3000, lambda: self.updateText("\n\nMan: \"Oh wow, you're a big "+Player.sex+"! Thanks for killing this thing.\""))
-        self.after(3000, lambda: self.updateText("\n\nThere's a small safe in here that I can't get open. If you help, I'll give you some gold."))
-        self.after(14000, lambda: self.newChoice(controller, "Yes", "No", "Do you help?", self.twoHelpWithSafe, self.twoNoHelpWithSafe))
+        self.after(10000, lambda: self.updateText("\n\nHe is very skinny, with mismatched gear on."))
+        if Player.height >= 72:
+            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, you're a tall "+Player.sex+"! Thanks for killing this thing.\""))
+        elif 65<= Player.height<72:
+            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, thanks for killing this thing!\""))
+        else:
+            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, you're quite short...Thanks for killing this thing though!\""))
+        self.after(23000, lambda: self.updateText("\n\nThere's a small safe in here that I can't get open. If you help, I'll give you some gold."))
+        self.after(30000, lambda: self.newChoice(controller, "Yes", "No", "Do you help?", self.twoHelpWithSafe, self.twoLeaveFarm))
 
     def twoHelpWithSafe(self,controller):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou follow the man to what seems to be the master bedroom."))
-        self.after(3000, lambda: self.updateText("\n\nThe small safe is bolted into the wall within the walk-in closet."))
-        self.after(3000, lambda: self.updateText("\n\nThe man signals to help pull on the pry bar thats lodged in the safe door."))
-        self.after(3000, lambda: self.updateText("\n\nThe door comes flying open, suprisingly easy."))
-        self.after(3000, lambda: self.updateText("\n\nThe man quickly blocks the view to what's inside."))
-        self.after(3000, lambda: self.updateText("\n\nMan: \"Thanks alot for your help! Here's 50 gold, as promised!\""))
-        self.after(14000, lambda: self.newChoice(controller, "Demand to see whats inside", "Leave the property", "What do you do?", self.twoDemandSafe, self.twoLeaveHouse))
+        self.after(9000, lambda: self.updateText("\n\nThe small safe is bolted into the wall within the walk-in closet."))
+        self.after(15000, lambda: self.updateText("\n\nThe man signals to help pull on the pry bar thats lodged in the safe door."))
+        self.after(22000, lambda: self.updateText("\n\nThe door comes flying open, suprisingly easy."))
+        self.after(28000, lambda: self.updateText("\n\nThe man quickly blocks the view to what's inside."))
+        self.after(33000, lambda: self.updateText("\n\nMan: \"Thanks alot for your help! Here's 50 gold, as promised!\""))
+        Bag.gold+=50
+        self.after(34000, self.updateInfo)
+        self.after(39000, lambda: self.newChoice(controller, "Demand to see what's inside", "Leave the property", "What do you do?", self.twoDemandSafe, self.twoLeaveHouse))
 
     def twoDemandSafe(self,controller):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nMan: \"That wasn't part of the deal friend...Please, I don't want any trouble.\""))
-        self.after(3000, lambda: self.updateText("\n\nThe man nervously holds up the pry bar."))
+        self.after(9000, lambda: self.updateText("\n\nThe man nervously holds up the pry bar."))
         self.after(14000, lambda: self.newChoice(controller, "Attack", "Leave the property", "What do you do?", self.twoAttackSafe, self.twoLeaveHouse))
         
     def twoAttackSafe(self,controller):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou lunge at the man, knocking the pry bar away and tackling him to the ground"))
-        self.after(14000, lambda: self.newChoice(controller, "Gouge out his eyes", "Reach for the pry-bar", "What do you do?", self.twoAttackEyes, self.twoReachPryBar))
+        self.after(9000, lambda: self.newChoice(controller, "Gouge out his eyes", "Reach for the pry-bar", "What do you do?", self.twoAttackEyes, self.twoReachPryBar))
 
     def twoAttackEyes(self,controller):
         self.btnDisbaled()
         self.after(3000, lambda: self.updateText("\n\nYou body weight pins the man to the ground."))
-        self.after(3000, lambda: self.updateText("\n\nHe's grabbing at your clothes, trying to pull you off."))
-        self.after(3000, lambda: self.updateText("\n\nYou plant your hands on either side of his face, pushing your thumbs into his eye sockets."))
-        self.after(3000, lambda: self.updateText("\n\nHe starts screaming, flailing his arms around, trying to hit you."))
-        self.after(3000, lambda: self.updateText("\n\nYou transfer your body weight to your hands, driving your thumbs deeper, feeling inside his skull."))
-        self.after(3000, lambda: self.updateText("\n\nThe man stops screaming and his body goes limp, twitching a few times afterwards."))
-        self.after(3000, self.clearBox)
+        self.after(9000, lambda: self.updateText("\n\nHe's grabbing at your clothes, trying to pull you off."))
+        self.after(15000, lambda: self.updateText("\n\nYou plant your hands on either side of his face, pushing your thumbs into his eye sockets."))
+        self.after(23000, lambda: self.updateText("\n\nHe starts screaming, flailing his arms around trying to hit you."))
+        self.after(30000, lambda: self.updateText("\n\nYou transfer your body weight to your hands, driving your thumbs deeper, feeling inside his skull."))
+        self.after(38000, lambda: self.updateText("\n\nThe man stops screaming and his body goes limp, twitching a few times afterwards."))
+        self.after(45000, lambda: self.twoTakeMansLoot(controller))
 
     def twoReachPryBar(self,controller):
         self.btnDisbaled()
         self.after(3000, lambda: self.updateText("\n\nYou shift your body to the right, trying to reach for the pry bar."))
-        self.after(3000, lambda: self.updateText("\n\nThe man takes the opportunity to push you off of him."))
-        self.after(3000, lambda: self.updateText("\n\nThe man scrambles on the ground towards his bag."))
-        self.after(3000, lambda: self.updateText("\n\nYou quickly stand up with the pry bar and smash it on the back of his skull."))
-        self.after(3000, lambda: self.updateText("\n\nThe man slowly rolls over, with blood pooling on the floor underneath of him."))
-        self.after(3000, lambda: self.updateText("\n\nMan: \"Please please! Take everything, take my bag, please dont do this.\""))
-        self.after(14000, lambda: self.newChoice(controller, "Kill him", "Let him live", "What do you do?", self.twoAttackEyes, self.twoReachPryBar))
+        self.after(9000, lambda: self.updateText("\n\nThe man takes the opportunity to push you off of him."))
+        self.after(15000, lambda: self.updateText("\n\nThe man scrambles on the ground towards his bag."))
+        self.after(21000, lambda: self.updateText("\n\nYou quickly stand up with the pry bar and smash it on the back of his skull."))
+        self.after(29000, lambda: self.updateText("\n\nThe man slowly rolls over, with blood pooling on the floor underneath of him."))
+        self.after(36000, lambda: self.updateText("\n\nMan: \"Please please! Take everything, take my bag, please don't do this.\""))
+        self.after(43000, lambda: self.newChoice(controller, "Kill him", "Let him live", "What do you do?", self.twoKillPryBar, self.twoTakeMansLoot))
 
-        #his daughter is outside
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def twoKillPryBar(self,controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nYou raise the Pry bar above your head and smash it into his skull repeatedly."))
+        self.after(10000, lambda: self.updateText("\n\nAfter the third hit, his arms go limp, and his body twitches."))
+        self.after(18000, lambda: self.twoTakeMansLoot(controller))
         
+    def twoTakeMansLoot(self,controller):
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nYou make your way over to the safe."))
+        self.after(9000, self.eventGold(200, 500))
+        self.after(15000, lambda: self.updateText("\n\nAfter taking the gold, you move to the mans bag and look inside."))
+        self.after(22000, self.eventAmmo("large"))
+        self.after(28000, lambda: self.twoLeaveHouse(controller))
+
+    def twoLeaveHouse(self,controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nMoving quickly, you leave the house."))
+        self.after(9000, lambda: self.twoLeaveFarm(controller))
+
+    def twoLeaveFarm(self,controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nThe farms driveway must lead back to the main road."))
+        self.after(9000, lambda: self.updateText("\n\nYou make your way towards it, being mindful of your surroundings."))
+        self.after(15000, lambda: self.updateText("\n\nNot long after, a young girl, about 6 years old comes around the corner."))
+        self.after(22000, lambda: self.updateText("\n\nShe freezes when she sees you."))
+        self.after(26000, lambda: self.updateText("\n\nA woman appears soon after, putting herself in front of the girl."))
+        self.after(32000, lambda: self.updateText("\n\nWoman: \"We dont want any trouble, just on our way back to my husband.\""))
+        self.after(40000, self.clearBox)
+        self.after(41000, lambda: self.updateText("\nThe woman and child walk by you, towards the farm."))
+        self.after(47000, lambda: self.updateText("\n\nYou continue walking, seeing the main road once you get around the corner."))
+        self.after(53000, lambda: self.updateText("\n\nThere's a creature just off the road, it must've been stocking the woman."))
+        self.after(61000, lambda: controller.showFrame(FightPage))
+        self.after(2001,lambda: controller.frames[FightPage].enemyBattle(3,4,"Dilophosaurus", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.two4
+
+    def two4(self,controller):
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nThe noise seemed to have attracted something else..."))
+        self.after(9000, lambda: controller.showFrame(FightPage))
+        self.after(9001,lambda: controller.frames[FightPage].enemyBattle(3,4,"random", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.two5
+
+    def two5(self,controller):
+        self.clearBox()
+        self.after(3000, lambda: self.updateText("\nAs you continue heading down the main road, you notice the change in environment."))
+        self.after(10000, lambda: self.updateText("\n\nLarge areas of forest are burnt to ash, and vehicles arent just abandoned, but destroyed."))
+        self.after(17000, lambda: self.updateText("\n\nThe calming sounds of wildlife are replaced with eerie groans."))
+        self.after(23000, lambda: self.updateText("\n\nYour thoughts are interrupted by the sound of a vehicle from behind."))
+        self.after(29000, lambda: self.updateText("\n\nYou start to head off the road, but stop once the vehicle comes into view."))
+        self.after(35000, lambda: self.updateText("\n\nYou see a black Jeep, with a circular emblem on the hood."))
+        self.after(41000, self.clearBox)
+        self.after(42000, lambda: self.updateText("\nIt's more soldiers from the Republic..."))
+        self.after(47000, lambda: self.updateText("\n\nThe vehicle comes to a stop a few feet in front of you."))
+        self.after(52000, lambda: self.updateText("\n\nTwo men get out, dressed in black tactical gear."))
+        self.after(58000, lambda: self.updateText("\n\nYou recognize them. They were new recruits when you left."))
+        self.after(64000, self.clearBox)
+        self.after(65000, lambda: self.updateText("\nMcNeil: \""+Player.name+"! I never thought I'd see you again!\""))
+        self.after(71000, lambda: self.updateText("\n\nMcNeil: \"We saw your truck off the road a while back. There were some bodies and assumed you were all gone...\""))
+        self.after(80000, lambda: self.updateText("\n\nGodfrey: \"I'm glad we were wrong though... We could use an extra gun right now.\""))
+        self.after(87000, lambda: self.updateText("\n\nGodfrey: \"We got a distress call from another team. They're held up a few clicks from here.\""))
+        self.after(93000, lambda: self.updateText("\n\nGodfrey: \""+Player.name+" you got shotgun. Let's get going.\""))
+        self.after(98000, self.clearBox)
+        self.after(99000, lambda: self.updateText("\nAfter 15 minutes, you pull into a parking lot of a small warehouse."))
+        self.after(104000, lambda: self.updateText("\n\nThe building has a picture of a smiling pig on it wearing an apron."))
+        self.after(110000, lambda: self.updateText("\n\n As Godfrey and McNeil start unloading their gear from the vehicle, you hear a hissing noise from the woods..."))
+        self.after(118000, lambda: controller.showFrame(FightPage))
+        self.after(118001,lambda: controller.frames[FightPage].enemyBattle(3,4,"Velociraptor", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.two6
+
+    def two6(self,controller):
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nYou turn around to see Godfrey and McNeil making quick work of the other Raptor."))
+        self.after(10000, lambda: self.updateText("\n\nGodfrey: \"Remember, the distress call only provided the location, we're going in blind.\""))
+        self.after(16000, lambda: self.updateText("\n\nMcNeil: \"You two take the front, I'll circle around the back.\""))
+        self.after(23000, lambda: self.updateText("\n\nMcNeil heads around the building while you and Godfrey get to the front door."))
+        self.after(30000, lambda: self.updateText("\n\nYou open the door quickly as Godfrey moves in with his gun raised."))
+        self.after(35000, lambda: self.updateText("\n\nHe immediately gets swatted across the room, getting knocked unconscious"))
+        self.after(42000, lambda: controller.showFrame(FightPage))
+        self.after(42001,lambda: controller.frames[FightPage].enemyBattle(3,4,"Frost Troll", 0))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.two7
+
+    def two7(self,controller):
+        self.after(2000, lambda: self.updateText("\nYou rush over to Godfrey, kneeling down to check for a pulse."))
+        self.after(9000, lambda: self.updateText("\n\nYou look up to check your surroundings as something hits your head. Everything goes dark."))
+        self.after(16000, self.clearBox)
+        self.after(18000, lambda: self.updateText("\nWhile dazed, you open your eyes, seeing McNeil and Godfreys tied up bodies being thrown in a large truck."))
+        self.after(26000, lambda: self.updateText("\n\nYou're legs and arms are tied aswell, with tape over your mouth."))
+        self.after(32000, lambda: self.updateText("\n\nYour getting dragged towards the truck. The woman next to it smiles as she sees you."))
+        self.after(39000, lambda: self.updateText("\n\nWoman: \"Well look who it is! I should've guessed as soon as the odour of shit filled my nose.\""))
+        self.after(47000, lambda: self.updateText("\n\nYou recognize her. Shes the woman from the gas station."))
+        self.after(52000, self.clearBox)
+        self.after(53000, lambda: self.updateText("\n\nWoman: \"We were just out here rounding up some more entertainment\"."))
+        self.after(60000, lambda: self.updateText("\n\nWoman: \"You wouldn't believe how many of you do-good soldiers fall for the ol' \'distress call\'\"."))
+        self.after(68000, lambda: self.updateText("\n\nThe woman walks towards you and squats down to be face-to-face."))
+        self.after(73000, lambda: self.updateText("\n\nWoman: \"But I guess you stupid "+Player.color+"'s fall for anything."))
+        self.after(81000, lambda: self.updateText("\n\nYour eyes get heavy, and you fall out of consciousness."))
+        self.after(86000, self.clearBox)
+        self.after(68000, lambda: self.updateText("\nYou wake up to the sounds of cheering and applause."))
+        self.after(68000, lambda: self.updateText("\n\nYou're seated in the dirt, held up by the wall behind you."))
+        self.after(68000, lambda: self.updateText("\n\nThere are a few men and women seated near you, none of which you recognize."))
+        self.after(68000, lambda: self.updateText("\n\nYou seem to be in some kind of cage."))
+        self.after(68000, lambda: self.updateText("\n\nYou stand up to look through the metal bars. It's an old bull-riding stadium..."))
+        self.after(68000, lambda: self.updateText("\n\nThe walls are built up high, and see dozens of people cheering in the bleachers."))
+        self.after(86000, self.clearBox)
+        self.after(68000, lambda: self.updateText("\nAs your vision gets better, you look to the center of the stadium to see Godfrey fighting a large cyclops."))
+        self.after(68000, lambda: self.updateText("\n\nGodfrey only has a spear, which he used to stab at the cyclops."))
+        self.after(68000, lambda: self.updateText("\n\nIn an instant, the cyclops grabs the spear, throwing Godfrey to the ground."))
+        self.after(68000, lambda: self.updateText("\n\nIt picks up Godfrey's frantic body, grabbing his torso in one hand, and legs in the other."))
+        self.after(68000, lambda: self.updateText("\n\nThe cyclops rips Godfrey in half, throwing his seperated body into the crowd."))
+        self.after(68000, lambda: self.updateText("\n\nThe roar of the crowd gets louder."))
+        self.after(86000, self.clearBox)
+        self.after(68000, lambda: self.updateText("\nA older man comes up beside you."))
+        self.after(68000, lambda: self.updateText("\nMan: \"I'm sorry about your friend. I saw you get brought in together.\""))
+        self.after(68000, lambda: self.updateText("\nThe man looks malnourished, with ragged clothes and an unkept beard."))
+        self.after(30000, lambda: self.newChoice(controller, "Where's McNeil?", "What is this place?", "What do you ask?", self.twoPitMcNeil, self.twoPitInfo))
+
+    def twoPitMcNeil(self,controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(68000, lambda: self.updateText("\nMan: \"I take it that was your other friend...\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"He and a few others got put up against a Xenomorph... It was a quick death.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"They like capturing soldiers here, it makes for a more exciting fight.\""))
+        self.after(3000, lambda: self.two8(controller))
+        
+    def twoPitInfo(self,controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(68000, lambda: self.updateText("\nMan: \"In a world of chaos, you will always have those that benefit from the absence of laws.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"This place welcomes those who get turned away from the more civilized towns.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"And in your case, they will pay a high price for new fighters\""))
+        self.after(3000, lambda: self.two8(controller))
+
+    def two8(self, controller):
+        self.clearBox()
+        self.after(68000, lambda: self.updateText("\nMan: \"Thankfully I'm too frail to put on a good show for them. They keep me aroud for other reasons though.\""))
+        self.after(68000, lambda: self.updateText("\n\nYou look back into the stadium to see the Cyclops get shot with tranquilizing darts."))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"I've been here a long time, and have talked to many soldiers like yourself...\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"That facility you're supposed to secure, AgriTech, that's where I used to work.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"I Know the Republic doesn't tell you much about it. So ask away, What do you want to know?\""))
+        self.after(30000, lambda: self.newChoice(controller, "What is AgriTech?", "Why are you here?", "What do you ask?", self.twoPitTech, self.twoPitOther))
+
+    def twoPitTech(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(68000, lambda: self.updateText("\nMan: \"Our population was growing out of control, resulting in food shortages around the world.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"AgriTech was the leading company in agricultural innovation, and worked towards solving this problem.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"They created a machine that could generate a fully mature crop simply from it's DNA.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"They improved this process, being able to generate whole yields of crop within seconds.\""))
+        self.after(30000, lambda: self.newChoice(controller, "Where did it go wrong?", "What else did they do?", "What do you ask?", self.twoPitWrong, self.twoPitElse))
+
+    def twoPitWrong(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(68000, lambda: self.updateText("\nMan: \"The problem was with what they did afterwards, the experiments.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"If they can grow a vegetable instantaneously from its DNA, why not an animal?\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"They started small, and then progressed to larger ones like cattle.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"Unfortunately, they decided to expand their scope by using the DNA of extinct animals.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"After a few months, they successfully created a Dilophosaurus.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"It wasn't long until they were creating creatures from mythology and fiction, which brings us to now.\""))
+        self.after(3000, lambda: self.two9(controller))
 
 
+    def twoPitElse(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(68000, lambda: self.updateText("\nMan: \"They did the same but with a variety of animals.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"Unfortunately, they decided to expand their scope by using the DNA of extinct animals too.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"After a few months, they successfully created a Dilophosaurus.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"It wasn't long until they were creating creatures from mythology and fiction, which brings us to now.\""))
+        self.after(3000, lambda: self.two9(controller))
+        
+    def twoPitOther(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(68000, lambda: self.updateText("\nMan: \"AgriTech's machines can produce life instantaneously, but are a bit complicated to operate.\""))
+        self.after(68000, lambda: self.updateText("\n\nMan: \"The inbreds that run this place wouldn't have a clue on how to use them, which is why they keep me here.\""))
+        self.after(3000, lambda: self.two9(controller))
 
+    def two9(self,controller):
+        self.after(68000, lambda: self.updateText("\n"))
 
-
-
+        #interrupted by yelling, monster is going bezerk in the arena, gaurd leves the cage youre in
 
 
 class FightPage(tk.Frame):
