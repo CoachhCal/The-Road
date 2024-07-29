@@ -122,7 +122,7 @@ playerWeapons[0] = weapons_list[4]
 # playerWeapons[2] = weapons_list[11]
 playerWeapons[3] = weapons_list[19]
 # playerWeapons[4] = weapons_list[21]
-# playerWeapons[5] = weapons_list[22]
+playerWeapons[5] = weapons_list[22]
 GameInfo = GameClass(1, "none", "road", "none")
 Enemy = EnemyClass
 Armor = ArmorClass
@@ -182,12 +182,12 @@ class SplashPage(tk.Frame):
 
     def yup(self, controller):
         # controller.showFrame(StartPage)
-        # controller.showFrame(FightPage) #Take this out to make it work
-        # controller.frames[FightPage].updateWeapons()
-        # controller.frames[FightPage].updateInfo()
-        # controller.frames[FightPage].enemyBattle(1,4,"Cyclopes", 0)
-        controller.showFrame(MainPage)
-        controller.frames[MainPage].three1(controller)
+        controller.showFrame(FightPage)
+        controller.frames[FightPage].updateWeapons()
+        controller.frames[FightPage].updateInfo()
+        controller.frames[FightPage].enemyBattle(1,4,"Dragon", 0)
+        # controller.showFrame(MainPage)
+        # controller.frames[MainPage].three1(controller)
         # controller.trial(MainPage)
 
         # controller.showFrame(TownPage)
@@ -1567,38 +1567,38 @@ class FightPage(tk.Frame):
         self.fightText.place(relx=.05, rely=.42)
        
         
-        self.btnMelee = tk.Button(self.fightPage, bg="#909090",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, controller))
+        self.btnMelee = tk.Button(self.fightPage, bg="#909090",text="Melee", cursor="hand2", command=lambda: self.playerAttack(0, False, controller))
         self.btnMelee.place(relx=.05, rely=.76)
         self.lblMelee = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
         self.lblMelee.place(relx=.037, rely=.88)
 
-        self.btnBow = tk.Button(self.fightPage, bg="#909090",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, controller))
+        self.btnBow = tk.Button(self.fightPage, bg="#909090",text="Bow",cursor="hand2", command=lambda: self.playerAttack(1, False, controller))
         self.btnBow.place(relx=.188, rely=.76)
         self.lblBow = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
         self.lblBow.place(relx=.179, rely=.8925)
 
-        self.btnSmallCal = tk.Button(self.fightPage, bg="#909090",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, controller))
+        self.btnSmallCal = tk.Button(self.fightPage, bg="#909090",text= "Sidearm",cursor="hand2", command=lambda: self.playerAttack(2, False, controller))
         self.btnSmallCal.place(relx=.318, rely=.76)
         self.lblSmallCal = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
         self.lblSmallCal.place(relx=.309, rely=.88)
 
-        self.btnMedCal = tk.Button(self.fightPage, bg="#909090",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, controller))
+        self.btnMedCal = tk.Button(self.fightPage, bg="#909090",text="Rifle",cursor="hand2", command=lambda: self.playerAttack(3, False, controller))
         self.btnMedCal.place(relx=.448, rely=.76)
         self.lblMedCal = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
         self.lblMedCal.place(relx=.439, rely=.88)
 
-        self.btnGrenade = tk.Button(self.fightPage, bg="#909090",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, controller))
+        self.btnGrenade = tk.Button(self.fightPage, bg="#909090",text="Grenade",cursor="hand2", command=lambda: self.playerAttack(4, False, controller))
         self.btnGrenade.place(relx=.578, rely=.76)
         self.lblGren = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
         self.lblGren.place(relx=.569, rely=.88)
 
-        self.btnSpecial = tk.Button(self.fightPage, bg="#909090",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, controller))
+        self.btnSpecial = tk.Button(self.fightPage, bg="#909090",text="Special",cursor="hand2", command=lambda: self.playerAttack(5, False, controller))
         self.btnSpecial.place(relx=.712, rely=.76)
         self.lblSpec = tk.Label(self.fightPage, width = 14, height=4, bg = "#1a1a1a", fg="white", font="Arial 12")
         self.lblSpec.place(relx=.703, rely=.88)
 
-        self.btnFlee = tk.Button(self.fightPage, width=13, height=5,cursor="hand2",text="Flee", bg="grey")
-        self.btnFlee.place(relx=.845, rely=.76)
+        self.btnSkip = tk.Button(self.fightPage, width=8, height=3,cursor="hand2",text="Skip\nTurn",font="Arial 15", bg="grey",fg="white", command=lambda: self.playerAttack(6, True, controller))
+        self.btnSkip.place(relx=.845, rely=.765)
 
         self.btnHealth = tk.Button(self.fightPage, width=13, height=5,cursor="hand2", bg="#909090", command= self.healthPotion)
         try:
@@ -1656,71 +1656,76 @@ class FightPage(tk.Frame):
         Enemy.reward = goldAmt
         Enemy.picture = enemy[13]
 
-    def playerAttack(self,index, controller):
+    def playerAttack(self,index,skip,controller):
         self.buttonState("disabled", "x_cursor")
         successfulAttack = False
-        if playerWeapons[index][1] == "":
+        if skip == False:
+            if playerWeapons[index][1] == "":
+                self.clearText()
+                self.updateText("\nEmpty weapon slot")
+            elif index == 0: #if weapon is melee
+                if Player.stamina < playerWeapons[index][5]:
+                    self.clearText()
+                    self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
+                else:
+                    successfulAttack = True
+                    damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                    Player.stamina -= playerWeapons[index][5]
+                    self.displayAttack(index, damage)
+            elif index == 1:
+                if Player.stamina < playerWeapons[index][5]:
+                    self.clearText()
+                    self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
+                elif Bag.arrows < playerWeapons[index][7]:
+                    self.clearText()
+                    self.updateText("\nInsufficient arrows\n\nYou have: "+str(Bag.arrows)+"\nRequired amount: "+str(playerWeapons[1][7]))
+                else:
+                    successfulAttack = True
+                    damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                    Player.stamina -= playerWeapons[index][5]
+                    Bag.arrows -= playerWeapons[index][7]
+                    self.displayAttack(index, damage)
+            elif index == 2:
+                if Bag.scaliber < playerWeapons[index][7]:
+                    self.clearText()
+                    self.updateText("\nInsufficient 9mm rounds\n\nYou have: "+str(Bag.scaliber)+"\nRequired amount: "+str(playerWeapons[2][7]))
+                else:
+                    successfulAttack = True
+                    damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                    Bag.scaliber -= playerWeapons[index][7]
+                    self.displayAttack(index, damage)
+            elif index == 3:
+                if Bag.lcaliber < playerWeapons[index][7]:
+                    self.clearText()
+                    self.updateText("\nInsufficient 7.62mm rounds\n\nYou have: "+str(Bag.lcaliber)+"\nRequired amount: "+str(playerWeapons[3][7]))
+                else:
+                    successfulAttack = True
+                    damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                    Bag.lcaliber -= playerWeapons[index][7]
+                    self.displayAttack(index, damage)
+            elif index == 4:
+                if Bag.grenades < 1:
+                    self.clearText()
+                    self.updateText("\nInsufficient grenades\n\nYou have: "+str(Bag.grenades)+"\nRequired amount: "+str(playerWeapons[4][7]))
+                else:
+                    successfulAttack = True
+                    damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                    Bag.grenades -= playerWeapons[index][7]
+                    self.displayAttack(index, damage)
+            elif index == 5:
+                if playerWeapons[5][1] == "": #does the player have a speical attack in their inventory?
+                    self.clearText()
+                    self.updateText("\n\nYou do not own a special attack")
+                else:
+                    successfulAttack = True
+                    damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
+                    self.displayAttack(index, damage)
+                    playerWeapons[5] = ["", "", "", "", "", "", "", "", "", ""] #If the player does have a special attack, this will remove it after they use it - to ensure the player cant stack multiple special attacks
+        else:
+            successfulAttack = True
             self.clearText()
-            self.updateText("\nEmpty weapon slot")
-        elif index == 0: #if weapon is melee
-            if Player.stamina < playerWeapons[index][5]:
-                self.clearText()
-                self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
-            else:
-                successfulAttack = True
-                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
-                Player.stamina -= playerWeapons[index][5]
-                self.displayAttack(index, damage)
-        elif index == 1:
-            if Player.stamina < playerWeapons[index][5]:
-                self.clearText()
-                self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
-            elif Bag.arrows < playerWeapons[index][7]:
-                self.clearText()
-                self.updateText("\nInsufficient arrows\n\nYou have: "+str(Bag.arrows)+"\nRequired amount: "+str(playerWeapons[1][7]))
-            else:
-                successfulAttack = True
-                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
-                Player.stamina -= playerWeapons[index][5]
-                Bag.arrows -= playerWeapons[index][7]
-                self.displayAttack(index, damage)
-        elif index == 2:
-            if Bag.scaliber < playerWeapons[index][7]:
-                self.clearText()
-                self.updateText("\nInsufficient 9mm rounds\n\nYou have: "+str(Bag.scaliber)+"\nRequired amount: "+str(playerWeapons[2][7]))
-            else:
-                successfulAttack = True
-                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
-                Bag.scaliber -= playerWeapons[index][7]
-                self.displayAttack(index, damage)
-        elif index == 3:
-            if Bag.lcaliber < playerWeapons[index][7]:
-                self.clearText()
-                self.updateText("\nInsufficient 7.62mm rounds\n\nYou have: "+str(Bag.lcaliber)+"\nRequired amount: "+str(playerWeapons[3][7]))
-            else:
-                successfulAttack = True
-                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
-                Bag.lcaliber -= playerWeapons[index][7]
-                self.displayAttack(index, damage)
-        elif index == 4:
-            if Bag.grenades < 1:
-                self.clearText()
-                self.updateText("\nInsufficient grenades\n\nYou have: "+str(Bag.grenades)+"\nRequired amount: "+str(playerWeapons[4][7]))
-            else:
-                successfulAttack = True
-                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
-                Bag.grenades -= playerWeapons[index][7]
-                self.displayAttack(index, damage)
-        elif index == 5:
-            if playerWeapons[5][1] == "": #does the player have a speical attack in their inventory?
-                self.clearText()
-                self.updateText("\n\nYou do not own a special attack")
-            else:
-                successfulAttack = True
-                damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
-                self.displayAttack(index, damage)
-                playerWeapons[5] = ["", "", "", "", "", "", "", "", "", ""] #If the player does have a special attack, this will remove it after they use it - to ensure the player cant stack multiple special attacks
-        
+            self.updateText("\nYou miss your opportunity to attack")
+
         self.updateInfo()
 
         if successfulAttack == False:
@@ -1831,8 +1836,10 @@ class FightPage(tk.Frame):
         self.btnMedCal.configure(state=text, cursor=curs)
         self.btnGrenade.configure(state=text, cursor=curs)
         self.btnSpecial.configure(state=text, cursor=curs)
+        self.btnSkip.configure(state=text, cursor=curs)
         self.btnHealth.configure(state=text, cursor=curs)
         self.btnStamina.configure(state=text, cursor=curs)
+        
 
     def updateInfo(self):
         self.lblEnemyHealth.configure(text="Health: "+str(Enemy.health))
