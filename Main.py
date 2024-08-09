@@ -187,7 +187,7 @@ class SplashPage(tk.Frame):
         # controller.frames[FightPage].updateInfo()
         # controller.frames[FightPage].enemyBattle(1,4,"Dragon", 0)
         controller.showFrame(MainPage)
-        controller.frames[MainPage].three1(controller)
+        controller.frames[MainPage].three10(controller)
         # controller.trial(MainPage)
 
         # controller.showFrame(TownPage)
@@ -1005,7 +1005,7 @@ class MainPage(tk.Frame):
         self.after(45000, lambda: self.updateText("\n\nMan 1: \"If getting your limbs chewed off by boars is considered fine, then yes, we'll be fine....\""))
         self.after(53000, lambda: self.updateText("\n\nMan 3: \"I wouldn't worry about that. I'm sure they're well fed with all the soldiers getting sent up here.\""))
         self.after(61000, lambda: self.updateText("\n\nMan 2: \"And the Republic will keep sending more. Anything to get what they want.\""))
-        self.after(67000, lambda: self.updateText("\n\nMan 3: \"It's understandable though, what's in that facility will get society back on track.\""))
+        self.after(67000, lambda: self.updateText("\n\nMan 3: \"What's in that facility will get society back on track though.\""))
         self.after(75000, lambda: self.updateText("\n\nMan 1: \"No, it will just give the Republic more power. People like us will still have to fight to survive.\""))
         self.after(83000, self.clearBox)
         self.after(85000, lambda: self.updateText("\nThe men are too far away to listen any longer."))
@@ -1733,53 +1733,107 @@ class MainPage(tk.Frame):
         GameInfo.nextFunction = self.three6
 
     def three6(self,controller):
-        self.after(30000, lambda: self.updateText("\nOnce going through the door, you head up a few flights of stairs ."))
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nThrough the door, there is a large room filled with furniture and equipment."))
+        self.after(18000, lambda: self.updateText("\n\nFurther into the room there's a corpse just outside a locked metal door."))
+        self.after(24000, lambda: self.updateText("\n\nYou try the door, but it is far to strong to be forced open."))
+        if Bag.grenades >=1:
+            self.after(30000, lambda: self.updateText("\n\nA grenade should blow the door open. You have "+Bag.grenades+" grenades."))
+            self.after(34000, lambda: self.newChoice(controller, "Yes", "No", "Use a grenade?", self.threeBlowDoor, self.three7))
+        else:
+            self.after(30000, lambda: self.updateText("\n\nA grenade would've worked if you had one."))
+            self.after(35000, lambda: self.three7(controller))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def threeBlowDoor(self,controller):
+        self.btnDisbaled()
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nOnce behind cover, you roll a live grenade towards the door."))
+        self.after(8000, lambda: self.updateText("\n\nThe blast was enough to open it up."))
+        self.after(14000, lambda: self.updateText("\n\nOnce inside the door, you see several more corpses in lab coats, with a stockpile of supplies."))
+        self.after(22000, lambda: self.updateText("\n\nThey must've tried to escape when things went south here."))
+        self.after(28000, lambda: self.updateText("\n\nYou find a box with 4 grenades, as well as a crate full of health potions."))
+        Bag.grenades+=4
+        Bag.healthPotion+=15
+        self.after(29000, self.updateInfo)
+        self.after(2000, lambda: self.three7(controller))
         
+    def three7(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(2000, lambda: self.updateText("\nYou make your way over to the elevator doors on the other side of the room."))
+        self.after(2000, lambda: self.updateText("\n\nThe inside of the elevetor is stained red, with paper scattered around the floor."))
+        self.after(2000, lambda: self.updateText("\n\nThis should take you up to the main level of the facility."))
+        self.after(2000, lambda: self.updateText("\n\nOnce you're up there, you'll need to locate the power generators and shut them off."))
+        self.after(2000, lambda: self.updateText("\n\nAfter getting to the main level, the doors open to reveal a destroyed lobby."))
+        self.after(2000, lambda: self.updateText("\n\nThe front of the building has falllen apart, with very little wall left seperating the inside from the out."))
+        self.after(2000, self.clearBox)
+        self.after(2000, lambda: self.updateText("\nAs you exit the elevator, a chimp swings from the ceiling towards you."))
+        self.after(79000,lambda: controller.frames[FightPage].enemyBattle(3,4,"Chimpanzee", 0))
+        self.after(80000, lambda: controller.showFrame(FightPage))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.three8
+
+        self.after(2000, lambda: self.updateText("\n\nAs you open the door, a high-pitched screech rings throughout your ears, followed by intense gusts of wind."))
+        self.after(2000, lambda: self.updateText("\n\nA large creature lands just outside the building, blocking your path."))
+        self.after(79000,lambda: controller.frames[FightPage].enemyBattle(3,4,"Dragon", 0))
+        self.after(80000, lambda: controller.showFrame(FightPage))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.three8
+
+    def three8(self,controller):
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nOn one of the walls in the lobby, you find a map of the property."))
+        self.after(2000, lambda: self.updateText("\n\nThere's a building out back that is marked with a lightning bolt."))
+        self.after(2000, lambda: self.updateText("\n\nThat must be where the generators are."))
+        self.after(2000, lambda: self.updateText("\n\nTo avoid whats outside, you naviagte your way through the facililty towards the back exit."))
+        self.after(2000, lambda: self.updateText("\n\nNearly to the door, you feel a slight pinch on your leg."))
+        self.after(79000,lambda: controller.frames[FightPage].enemyBattle(3,4,"Dragon", 0))
+        self.after(80000, lambda: controller.showFrame(FightPage))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.three9
+
+    def three9(self,controller):
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nLooking through the window in the back door, you see the electrical building only 50 meters away."))
+        self.after(2000, lambda: self.updateText("\n\nYou're entire mission, everything you've been through, was to get to this point."))
+        self.after(2000, lambda: self.updateText("\n\nAs you open the door, a high-pitched screech rings throughout your ears, followed by intense gusts of wind."))
+        self.after(2000, lambda: self.updateText("\n\nA large creature lands just outside the building, blocking your path."))
+        self.after(79000,lambda: controller.frames[FightPage].enemyBattle(3,4,"Dragon", 0))
+        self.after(80000, lambda: controller.showFrame(FightPage))
+        controller.frames[FightPage].updateWeapons()
+        GameInfo.nextFunction = self.three10
+
+    def three10(self,controller):
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nYou quickly make it into the electrical building and shut the door behind you."))
+        self.after(2000, lambda: self.updateText("\n\nLooking at the various panels around the room, you locate the one powering the labs."))
+        self.after(2000, lambda: self.updateText("\n\nYou turn it off, being sure to keep all other power on in the facility."))
+        self.after(2000, lambda: self.updateText("\n\nAs you begin to head back into the main building to look for a radio, you stop in your tracks."))
+        self.after(2000, self.clearBox)
+        self.after(2000, lambda: self.updateText("\nYou are supposed to radio in to the Republic, reporting on your success."))
+        self.after(2000, lambda: self.updateText("\n\nWith no more creatures being generated, the Republic can make it here in a few days."))
+        self.after(2000, lambda: self.updateText("\n\nOnce arrived, they'll take control of the facility, and send you back to the city."))
+        self.after(2000, lambda: self.updateText("\n\nYour mind goes to the conversation you overheard on the road a while back."))
+        self.after(2000, lambda: self.updateText("\n\nThe group of men at night speaking about the the Republic."))
+        self.after(2000, lambda: self.updateText("\n\nHow controlling this facility will just make them more powerful. How the people will still have to fight to survive."))
+        self.after(2000, self.clearBox)
+        self.after(2000, lambda: self.updateText("\nYou're hopeful the Republic will do the right thing, but can't know for sure."))
+        self.after(2000, lambda: self.updateText("\n\nWhat if you didn't radio them, but rather created your own community here?"))
+        self.after(2000, lambda: self.updateText("\n\nYou could recruit people from the surrounding towns to help rebuild."))
+        self.after(2000, lambda: self.updateText("\n\nThe agricultural machines in the facility will provide unlimited food."))
+        self.after(2000, lambda: self.updateText("\n\nUnfortunately, the Republic would surely attack when they found out..."))
+        self.after(2000, lambda: self.updateText("\n\nThere's no right answer. You'll just have to go with your gut feeling."))
+        self.after(2000, lambda: self.newChoice(controller, "Radio the Republic", "Build your own\ncommunity", "How will your\nstory end?", self.threeRepublic, self.threeCommunity))
+
+    def threeRepublic(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(2000, lambda: self.updateText("\nYou're hopeful the Republic will do the right thing, but can't know for sure."))
         
-
-
-
-
-
-
-
-        
-
-
-        
-        
-
-
-        
-
-
-        
-
-
-
-
-
-
-
-
-
-
+    def threeCommunity(self,controller):
+        self.clearBox()
+        self.btnDisbaled()
+        self.after(2000, lambda: self.updateText("\nYou're hopeful the Republic will do the right thing, but can't know for sure."))
 
 #endregion
 
