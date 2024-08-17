@@ -157,26 +157,25 @@ class SplashPage(tk.Frame):
         initialPage.pack()
         initialPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/title2.jpg"))
-        lblTitlePicture = tk.Label(initialPage,height=800, width=1100,image=titlePicture)
-        initialPage.image=titlePicture
+        self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/title.jpg"))
+        lblTitlePicture = tk.Label(initialPage,height=800, width=1100,image=self.titlePicture)
         lblTitlePicture.place(x=0, y=0)
 
         #if image doesnt work:
         # lblTitlePicture = tk.Label(initialPage,height=800, width=1100,bg="black")
         # lblTitlePicture.pack()
 
-        lblGameName = tk.Label(initialPage, text="The Road", font="Arial 50", bg='#c5c5c5')
-        lblGameName.place(relx=0.5, rely=0.1, anchor="center")
+        # lblGameName = tk.Label(initialPage, text="The Road", font="Arial 50", fg="white", bg='black')
+        # lblGameName.place(relx=0.5, rely=0.1, anchor="center")
 
-        lblCreatorName = tk.Label(initialPage, text="By: Calvin Murray", font="Arial 36", bg="grey")
-        lblCreatorName.place(relx=0.01,rely= .95, anchor="w")
+        # lblCreatorName = tk.Label(initialPage, text="By: Calvin Murray",width=38, font="Arial 36",fg="white", bg="black", anchor="w")
+        # lblCreatorName.place(relx=0.0,rely= .961, anchor="w")
 
-        lblDate = tk.Label(initialPage, text="2024", font="Arial 36", bg="grey")
-        lblDate.place(relx = .96, rely= .95, anchor="e")
+        # lblDate = tk.Label(initialPage, text="2024", font="Arial 36",fg="white", bg="black")
+        # lblDate.place(relx = .895, rely= .962, anchor="w")
 
-        btnBegin = tk.Button(initialPage, text="Click to Start", font="Arial 36", relief="solid", bg="grey",cursor="hand2", command=lambda: self.yup(controller))
-        btnBegin.place(relx=.5, rely=.6, anchor="center")
+        btnBegin = tk.Button(initialPage, text="Begin", font="Arial 32", relief="solid", bg="grey",fg="black",cursor="hand2", command=lambda: self.yup(controller))
+        btnBegin.place(relx=.52, rely=.6, anchor="center")
 
     def yup(self, controller):
         # controller.showFrame(StartPage)
@@ -2296,7 +2295,7 @@ class TownPage(tk.Frame):
         lblTitlePicture.place(x=0, y=0)
 
         self.btnBack = tk.Button(self.townPage, width=10, height=1, text="Exit", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: self.exit(controller))
-        self.btnBack.place(relx=.03, rely=.03)
+        self.btnBack.place(relx=.86, rely=.03)
 
         self.lblWelcome = tk.Label(self.townPage, height=1, width=22, bg="black", fg="white", font="Arial 30",highlightbackground="#5a5a5a", highlightthickness=2, text="Welcome to the Town!")
         self.lblWelcome.place(relx=.5, rely=.15, anchor="center")
@@ -3934,8 +3933,8 @@ class CasinoPage(tk.Frame):
         btnBlack = tk.Button(self.casinoPage, bg="black", fg="white", height=1, width=20, text="Blackjack", cursor="hand2", font="Arial 25", command=lambda: self.blackFunction(controller))
         btnBlack.place(relx=.5, rely=.35, anchor="center")
 
-        btnCasino = tk.Button(self.casinoPage, bg="black", fg="white", height=1, width=20, text="Slots", cursor="hand2", font="Arial 25", command=lambda: self.slotsFunction(controller))
-        btnCasino.place(relx=.5, rely=.55, anchor="center")
+        self.btnSlots = tk.Button(self.casinoPage, bg="black", fg="white", height=1, width=20, text="Slots", cursor="hand2", font="Arial 25", command=lambda: self.slotsFunction(controller))
+        self.btnSlots.place(relx=.5, rely=.55, anchor="center")
 
     def blackFunction(self,controller):
         controller.frames[BlackPage].resetPage()
@@ -3943,6 +3942,7 @@ class CasinoPage(tk.Frame):
     
     def slotsFunction(self,controller):
         controller.showFrame(SlotsPage)
+        controller.frames[SlotsPage].resetPage()
 
 class BlackPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -4048,7 +4048,7 @@ class BlackPage(tk.Frame):
     def checkBet(self):
         """checks if bet is good"""
         if Bag.gold < 1:
-            self.badBet.configure(text="Please exit the Casino")
+            self.badBet.configure(text="Lack of funds. Please exit the Casino")
         elif self.betVar.get() == "":
             self.badBet.configure(text="Invalid bet amount")
         else:
@@ -4056,7 +4056,7 @@ class BlackPage(tk.Frame):
             if bet < 1:
                 self.badBet.configure(text="Invalid bet amount")
             elif Bag.gold < bet:
-                self.badBet.configure(text="Lack of funds to place bet")
+                self.badBet.configure(text="Insufficient funds")
             else:
                 self.badBet.configure(text="Bet's good")
                 self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
@@ -4377,21 +4377,38 @@ class SlotsPage(tk.Frame):
         self.lblTitle = tk.Label(self.slotsPage, height=1, width=15, bg="black", highlightbackground="white", highlightcolor="gold", highlightthickness=2, fg="white", font="Arial 20", text='Slots')
         self.lblTitle.place(relx=.29, rely=.055, anchor="center")
 
-        self.slotMachinePicture = ImageTk.PhotoImage(Image.open("pictures/slotmachine.jpg"))
+        try:
+            self.slotMachinePicture = ImageTk.PhotoImage(Image.open("pictures/slotmachine.jpg"))
+            self.redCircle = ImageTk.PhotoImage(Image.open("pictures/redcircle.jpg"))
+            self.arrowPicture = ImageTk.PhotoImage(Image.open("pictures/arrowslots.jpg"))
+            self.lblWhiteImage = ImageTk.PhotoImage(Image.open("pictures/white.jpg"))
+            self.bananaPicture = ImageTk.PhotoImage(Image.open("pictures/banana.jpg"))
+            self.cherryPicture = ImageTk.PhotoImage(Image.open("pictures/cherry.jpg"))
+            self.grapesPicture = ImageTk.PhotoImage(Image.open("pictures/grapes.jpg"))
+        except: #if pictures don't load, player will be unable to play slots
+            print("error")
+            self.slotMachinePicture = ""
+            self.redCircle = ""
+            self.arrowPicture = ""
+            self.lblWhiteImage = ""
+            self.bananaPicture = ""
+            self.cherryPicture = ""
+            self.grapesPicture = ""
+            controller.frames[CasinoPage].btnSlots.configure(state="disabled", text="Slots (Unavailable)") #disables button to play slots on casino page
+
+
         lblMachinePicture = tk.Label(self.slotsPage,height=590, width=583,image=self.slotMachinePicture)
         lblMachinePicture.place(relx=.01, rely=.18)
 
-        self.redCircle = ImageTk.PhotoImage(Image.open("pictures/redcircle.jpg"))
-        self.btnRedCircle = tk.Button(self.slotsPage, bg="black",width=60, height=50, fg="white", font="Arial 15",activebackground="white",cursor="hand2", relief="solid", image=self.redCircle)
+        self.btnRedCircle = tk.Button(self.slotsPage, bg="black",width=60, height=50, fg="white", font="Arial 15",activebackground="white",cursor="hand2", relief="solid", image=self.redCircle, command=self.checkBet)
         self.btnRedCircle.place(relx=.477, rely=.29)
 
         self.lblGold = tk.Label(self.slotsPage, height=1, width=27, bg="black", highlightbackground="white", highlightthickness=1, fg="gold", font="Arial 20", text="You're Gold: "+str(Bag.gold))
         self.lblGold.place(relx=.072, rely=.91)
 
-        self.lblInvalid = tk.Label(self.slotsPage, height=1, width=22, bg="#f7fdfc", fg="black", font="Arial 20 bold", text="You win 1456000 Gold!")
-        self.lblInvalid.place(relx=.102, rely=.26)
+        self.lblOutcome = tk.Label(self.slotsPage, height=1, width=22, bg="#f7fdfc", fg="black", font="Arial 20 bold",text="Place your bet below!")
+        self.lblOutcome.place(relx=.102, rely=.26)
 
-        self.arrowPicture = ImageTk.PhotoImage(Image.open("pictures/arrowslots.jpg"))
         self.lblarrow = tk.Label(self.slotsPage, bg="#f2f2f2",width=65, height=40, fg="white", font="Arial 15",image=self.arrowPicture)
         self.lblarrow.place(relx=.55, rely=.29)
 
@@ -4405,15 +4422,12 @@ class SlotsPage(tk.Frame):
         entBet = tk.Entry(self.slotsPage, width=8, bg="white", font="Arial 20", textvariable=self.betVar,validate="key", validatecommand=(textChecker,'%P', 5))
         entBet.place(relx=.285, rely=.797)
 
-        self.bananaPicture = ImageTk.PhotoImage(Image.open("pictures/banana.jpg"))
         self.lblIcon1 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.bananaPicture)
         self.lblIcon1.place(relx=.1225, rely=.48)
 
-        self.cherryPicture = ImageTk.PhotoImage(Image.open("pictures/cherry.jpg"))
         self.lblIcon2 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.cherryPicture)
         self.lblIcon2.place(relx=.235, rely=.48)
 
-        self.grapesPicture = ImageTk.PhotoImage(Image.open("pictures/grapes.jpg"))
         self.lblIcon3 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.grapesPicture)
         self.lblIcon3.place(relx=.345, rely=.48)
 
@@ -4424,7 +4438,7 @@ class SlotsPage(tk.Frame):
         self.lblBanana3 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.bananaPicture)
         self.lblBanana3.place(relx=.75, rely=.5)
 
-        self.lblBananaWin = tk.Label(self.slotsPage, height=1, width=4, bg="black", fg="white", font="Arial 40", text="= 1x")
+        self.lblBananaWin = tk.Label(self.slotsPage, height=1, width=4, bg="black", fg="white", font="Arial 40", text="= 5x")
         self.lblBananaWin.place(relx=.83, rely=.513)
 
         self.lblGrapes1 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.grapesPicture)
@@ -4434,7 +4448,7 @@ class SlotsPage(tk.Frame):
         self.lblGrapes3 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.grapesPicture)
         self.lblGrapes3.place(relx=.75, rely=.625)
 
-        self.lblGrapesWin = tk.Label(self.slotsPage, height=1, width=4, bg="black", fg="white", font="Arial 40", text="= 3x")
+        self.lblGrapesWin = tk.Label(self.slotsPage, height=1, width=4, bg="black", fg="white", font="Arial 40", text="= 25x")
         self.lblGrapesWin.place(relx=.83, rely=.638)
 
         self.lblCherry1 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.cherryPicture)
@@ -4444,14 +4458,84 @@ class SlotsPage(tk.Frame):
         self.lblCherry3 = tk.Label(self.slotsPage, bg="#f2f2f2",width=80, height=80, fg="white", font="Arial 15",image=self.cherryPicture)
         self.lblCherry3.place(relx=.75, rely=.75)
 
-        self.lblCherryWin = tk.Label(self.slotsPage, height=1, width=5, bg="black", fg="white", font="Arial 40", text="= 10x")
+        self.lblCherryWin = tk.Label(self.slotsPage, height=1, width=5, bg="black", fg="white", font="Arial 40", text="= 100x")
         self.lblCherryWin.place(relx=.83, rely=.763)
+
+        self.Icons = [["banana", self.bananaPicture, 5],["Grapes", self.grapesPicture, 25],["Cherry", self.cherryPicture, 100]] #these are the fruit images, and their relative rewards
     
     def validInput(self, text, maxLength):
         """Ensures player can only enter whole numbers to bet"""
         if text:
             return len(text) <= int(maxLength) and text.isdigit()
         return True
+    
+    def checkBet(self):
+        self.lblOutcome.configure(text="")
+        if Bag.gold == 0:
+            self.lblOutcome.configure(text="Please exit the Casino")
+        elif self.betVar.get() == "":
+            self.lblOutcome.configure(text="Invalid bet amount")
+        elif Bag.gold < int(self.betVar.get()):
+            self.lblOutcome.configure(text="Insufficient funds")
+        elif int(self.betVar.get()) < 1:
+            self.lblOutcome.configure(text="Invalid bet amount")
+        else:
+            self.thePlay()
+
+    def thePlay(self):
+        self.lblIcon1.configure(image=self.lblWhiteImage) #replaces images on slot machine to blank picture
+        self.lblIcon2.configure(image=self.lblWhiteImage)
+        self.lblIcon3.configure(image=self.lblWhiteImage)
+        self.btnState("disabled", "x_cursor") #disbales buttons so players cant leave mid-play are hit the play button rapidly
+        outcome = []
+        for x in range(3): #this loop will generate 3 random numbers. The numbers are associated with a specific fruit, which is added to the outcome list (resulting in the list having three fruits)
+            ranNum = random.randint(1,9)
+            if 1<= ranNum <5:
+                outcome.append(self.Icons[0])
+            elif 5<= ranNum <8:
+                outcome.append(self.Icons[1])
+            else:
+                outcome.append(self.Icons[2])
+
+        if outcome[0][0] == outcome[1][0] and outcome[0][0] == outcome[2][0]: #if all fruits match in the outcome list, the player wins
+            playersWinnings =  int(self.betVar.get()) * outcome[0][2] #calculates how much the player wins based on thier bet and matching fruit
+            Bag.gold+=playersWinnings
+            self.after(3000, lambda: self.lblOutcome.configure(text="You Won "+str(playersWinnings)+" Gold!"))
+            self.after(3000, lambda: self.lblGold.configure(text="Your Gold: "+str(Bag.gold)))
+        else:
+            Bag.gold-=int(self.betVar.get())
+            self.after(3000, lambda: self.lblOutcome.configure(text="Better luck next time!"))
+            self.after(3000, lambda: self.lblGold.configure(text="Your Gold: "+str(Bag.gold)))
+
+        self.displayOutcome(outcome)
+        self.after(3010, lambda: self.btnState("normal", "hand2")) #play is over, so buttons work again and player can leave the casino or play again
+
+    def displayOutcome(self,outcomeList):
+        """Displays the three fruits on the slot machine, 1 second apart"""
+        self.after(1000, lambda: self.changeIcon(0, outcomeList[0][1]))
+        self.after(2000, lambda: self.changeIcon(1, outcomeList[1][1]))
+        self.after(3000, lambda: self.changeIcon(2, outcomeList[2][1]))
+
+    def changeIcon(self, spot, icon): #changes the icons on the slot machine 
+        if spot == 0:
+            self.lblIcon1.configure(image=icon)
+        elif spot == 1:
+            self.lblIcon2.configure(image=icon)
+        else:
+            self.lblIcon3.configure(image=icon)
+
+    def btnState(self, newState, newCursor):
+        """Changes button states and cursor style"""
+        self.btnBack.configure(state=newState, cursor=newCursor)
+        self.btnRedCircle.configure(state=newState, cursor=newCursor)
+
+    def resetPage(self):
+        """updates player gold, outcome message, and icons in the slot machine"""
+        self.lblIcon1.configure(image=self.bananaPicture)
+        self.lblIcon2.configure(image=self.grapesPicture)
+        self.lblIcon3.configure(image=self.cherryPicture)
+        self.lblGold.configure(text="Your Gold: "+str(Bag.gold))
+        self.lblOutcome.configure(text="Place your bet below!")
 
 class EndPage(tk.Frame):
     def __init__(self, parent, controller):
