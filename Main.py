@@ -4,6 +4,7 @@ except ImportError:
     import Tkinter as tk
 from PIL import ImageTk, Image
 import random
+import copy
 
 class PlayerClass:
     def __init__(self, name, age, color, height, weight, sex, armor, maxHealth, health, stamina, maxStamina):
@@ -157,24 +158,23 @@ class SplashPage(tk.Frame):
         initialPage.pack()
         initialPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/title.jpg"))
-        lblTitlePicture = tk.Label(initialPage,height=800, width=1100,image=self.titlePicture)
-        lblTitlePicture.place(x=0, y=0)
 
-        #if image doesnt work:
-        # lblTitlePicture = tk.Label(initialPage,height=800, width=1100,bg="black")
-        # lblTitlePicture.pack()
 
-        # lblGameName = tk.Label(initialPage, text="The Road", font="Arial 50", fg="white", bg='black')
-        # lblGameName.place(relx=0.5, rely=0.1, anchor="center")
+        try:
+            self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/title.jpg"))
+            lblTitlePicture = tk.Label(initialPage,height=800, width=1100, bg= "black", image=self.titlePicture)
+            lblTitlePicture.place(x=0, y=0)
+        except:
+            lblGameName = tk.Label(initialPage, text="The Road", font="Arial 50", fg="white", bg='black')
+            lblGameName.place(relx=0.515, rely=0.1, anchor="center")
 
-        # lblCreatorName = tk.Label(initialPage, text="By: Calvin Murray",width=38, font="Arial 36",fg="white", bg="black", anchor="w")
-        # lblCreatorName.place(relx=0.0,rely= .961, anchor="w")
+            lblCreatorName = tk.Label(initialPage, text="By: Calvin Murray",width=38, font="Arial 36",fg="white", bg="black", anchor="w")
+            lblCreatorName.place(relx=0.0,rely= .961, anchor="w")
 
-        # lblDate = tk.Label(initialPage, text="2024", font="Arial 36",fg="white", bg="black")
-        # lblDate.place(relx = .895, rely= .962, anchor="w")
+            lblDate = tk.Label(initialPage, text="2024", font="Arial 36",fg="white", bg="black")
+            lblDate.place(relx = .895, rely= .962, anchor="w")
 
-        btnBegin = tk.Button(initialPage, text="Begin", font="Arial 32", relief="solid", bg="grey",fg="black",cursor="hand2", command=lambda: self.yup(controller))
+        btnBegin = tk.Button(initialPage, text="Start", font="Arial 32", relief="solid", bg="#909090",fg="black",cursor="hand2", command=lambda: self.yup(controller))
         btnBegin.place(relx=.52, rely=.6, anchor="center")
 
     def yup(self, controller):
@@ -2285,15 +2285,17 @@ class FightPage(tk.Frame):
 class TownPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        self.townPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.townPage = tk.Frame(self,width=1100, height=800)
         self.townPage.pack()
         self.townPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/town.jpg"))
-        lblTitlePicture = tk.Label(self.townPage,height=800, width=1100,image=titlePicture)
-        self.townPage.image=titlePicture
-        lblTitlePicture.place(x=0, y=0)
-
+        try:
+            self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/town.jpg"))
+            lblTitlePicture = tk.Label(self.townPage,height=800, width=1100,image=self.titlePicture)
+            lblTitlePicture.place(x=0, y=0)
+        except:
+            self.townPage.configure(bg="#1a1a1a")
+            
         self.btnBack = tk.Button(self.townPage, width=10, height=1, text="Exit", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: self.exit(controller))
         self.btnBack.place(relx=.86, rely=.03)
 
@@ -2324,14 +2326,16 @@ class TownPage(tk.Frame):
 class ArenaPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        self.arenaPage = tk.Frame(self,width=1100, height=800, bg="black")
+        self.arenaPage = tk.Frame(self,width=1100, height=800)
         self.arenaPage.pack()
         self.arenaPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/pitsimage.jpg"))
-        lblTitlePicture = tk.Label(self.arenaPage,height=800, width=1100,image=titlePicture)
-        self.arenaPage.image=titlePicture
-        lblTitlePicture.place(x=0, y=0)
+        try:
+            self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/pitsimage.jpg"))
+            lblTitlePicture = tk.Label(self.arenaPage,height=800, width=1100,image=self.titlePicture)
+            lblTitlePicture.place(x=0, y=0)
+        except:
+            self.arenaPage.configure(bg="black")
 
         lblWelcome = tk.Label(self.arenaPage, height=2, width=49, bg="black", fg="white", font="Arial 28", text="Fighting Pits")
         lblWelcome.place(relx=.5, rely=.055, anchor="center")
@@ -2506,14 +2510,16 @@ class ArenaPage(tk.Frame):
 class ShopPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        self.shopPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
+        self.shopPage = tk.Frame(self,width=1100, height=800)
         self.shopPage.pack()
         self.shopPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/shop.jpg"))
-        lblTitlePicture = tk.Label(self.shopPage,height=800, width=1100,image=titlePicture)
-        self.shopPage.image=titlePicture
-        lblTitlePicture.place(x=0, y=0)
+        try:
+            self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/shop.jpg"))
+            lblTitlePicture = tk.Label(self.shopPage,height=800, width=1100,image=self.titlePicture)
+            lblTitlePicture.place(x=0, y=0)
+        except:
+            self.shopPage.configure(bg="#1a1a1a")
 
         self.btnBack = tk.Button(self.shopPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: self.backFunction(controller))
         self.btnBack.place(relx=.03, rely=.03)
@@ -3918,11 +3924,12 @@ class CasinoPage(tk.Frame):
         self.casinoPage = tk.Frame(self,width=1100, height=800, bg="#1a1a1a")
         self.casinoPage.pack()
         self.casinoPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
-
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/casino.jpg"))
-        lblTitlePicture = tk.Label(self.casinoPage,height=800, width=1100,image=titlePicture)
-        self.casinoPage.image=titlePicture
-        lblTitlePicture.place(x=0, y=0)
+        try:
+            self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/casino.jpg"))
+            lblTitlePicture = tk.Label(self.casinoPage,height=800, width=1100,image=self.titlePicture)
+            lblTitlePicture.place(x=0, y=0)
+        except:
+            self.casinoPage.configure(bg="#1a1a1a")
 
         self.btnBack = tk.Button(self.casinoPage, width=10, height=1, text="Return", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: controller.showFrame(TownPage))
         self.btnBack.place(relx=.03, rely=.03)
@@ -3961,7 +3968,15 @@ class BlackPage(tk.Frame):
         self.lblDealerTitle = tk.Label(self.blackPage, height=1, width=25, bg="black", highlightbackground="white", highlightthickness=3, fg="white", font="Arial 20", text="Dealers Hand: ")
         self.lblDealerTitle.place(relx=.023, rely=.16)
 
-        self.lblCard1 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
+        self.lblBJLogo = tk.Label(self.blackPage, height=7, width=11, bg="#08451b", font="Arial 20",)
+        self.lblBJLogo.place(relx=.56, rely=.49)
+        try:
+            self.Logo = ImageTk.PhotoImage(Image.open("pictures/blackjacklogo.jpg"))
+            self.lblBJLogo.configure(width=300, height=130, image=self.Logo)
+        except:
+            self.lblBJLogo.configure(width=11, height=7)
+
+        self.lblCard1 = tk.Label(self.blackPage, bg="#08451b", width=15, height=10)
         self.lblCard1.place(relx=.022, rely=.25)
 
         self.lblCard2 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
@@ -4012,7 +4027,10 @@ class BlackPage(tk.Frame):
         self.lblCard16 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
         self.lblCard16.place(relx=.862, rely=.65)
 
-        self.lblOutcome = tk.Label(self.blackPage, height=1, width=35, bg="black", fg="white", font="Arial 17",highlightthickness=2, highlightbackground="white", padx=33, pady=6)
+        self.lblInfoBJ = tk.Label(self.blackPage, height=1, width=50, bg="#08451b", fg="gold", font="Arial 15", text='DEALER MUST STAND ON 17       BLACKJACK PAYS 3 TO 2')
+        self.lblInfoBJ.place(relx=.463, rely=.915)
+
+        self.lblOutcome = tk.Label(self.blackPage, height=1, width=35, bg="black", fg="white", font="Arial 17", highlightthickness=2, highlightbackground="white", padx=33, pady=6)
         self.lblOutcome.place(relx=.4596, rely=.155)
 
         self.goldTitle = tk.Label(self.blackPage, width=35, height= 3, font="Arial 17", bg="black", fg="gold", text=Player.name+"'s Gold: "+str(Bag.gold), anchor="nw", padx=33, pady = 10, highlightthickness=2, highlightbackground="white")
@@ -4028,13 +4046,13 @@ class BlackPage(tk.Frame):
         self.entLabel = tk.Label(self.blackPage, width = 4, height= 1, bg="black", fg="white",font="Arial 18", text="Bet:")
         self.entLabel.place(relx=.486, rely=.1)
 
-        self.btnHit = tk.Button(self.blackPage, height=1, width=11, font="Arial 20", bg="grey", fg="white", cursor="hand2", state="disabled", text = "Hit", command=self.hitFunction)
+        self.btnHit = tk.Button(self.blackPage, height=1, width=11, font="Arial 20", bg="grey", fg="white", cursor="X_cursor", state="disabled", text = "Hit", command=self.hitFunction)
         self.btnHit.place(relx=.023, rely=.9)
 
-        self.btnStay = tk.Button(self.blackPage, height=1, width=11, font="Arial 20", bg="grey", fg="white", cursor="hand2", state="disabled", text = "Stay", command=self.stayFunction)
+        self.btnStay = tk.Button(self.blackPage, height=1, width=11, font="Arial 20", bg="grey", fg="white", cursor="X_cursor", state="disabled", text = "Stay", command=self.stayFunction)
         self.btnStay.place(relx=.23, rely=.9)
 
-        self.badBet = tk.Label(self.blackPage, width = 20, height=1, font="Arial 15", bg="black", fg="white", anchor="w")
+        self.badBet = tk.Label(self.blackPage, width = 20, height=1, font="Arial 15", bg="black", fg="white")
         self.badBet.place(relx=.7, rely=.043)
 
         self.cardPlaces = (self.lblCard1,self.lblCard2,self.lblCard3,self.lblCard4,self.lblCard5,self.lblCard6,self.lblCard7,self.lblCard8,self.lblCard9,self.lblCard10,self.lblCard11,self.lblCard12,self.lblCard13,self.lblCard14,self.lblCard15, self.lblCard16)
@@ -4048,7 +4066,7 @@ class BlackPage(tk.Frame):
     def checkBet(self):
         """checks if bet is good"""
         if Bag.gold < 1:
-            self.badBet.configure(text="Lack of funds. Please exit the Casino")
+            self.badBet.configure(text="Please exit the Casino")
         elif self.betVar.get() == "":
             self.badBet.configure(text="Invalid bet amount")
         else:
@@ -4062,69 +4080,73 @@ class BlackPage(tk.Frame):
                 self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
                 self.playerCards = []
                 self.dealerCards = []
+                self.btnPlaceBet.configure(state="disabled", cursor="X_cursor")
                 self.thePlay()
 
     def thePlay(self):
         self.resetPage()
-        self.btnBack.configure(state="disabled")
+        self.btnBack.configure(state="disabled", cursor="X_cursor")
         self.playerOutcome = ""
         self.dealerOutcome = ""
-        self.tempDeck = cardsList[:]
-        self.playerCards.append(self.randomCard(self.tempDeck))
+        self.tempDeck = copy.deepcopy(cardsList) #create a copy of the deck to use
+        self.playerCards.append(self.randomCard(self.tempDeck)) #player gets two cards, dealer gets one
         self.playerCards.append(self.randomCard(self.tempDeck))
         self.dealerCards.append(self.randomCard(self.tempDeck))
 
-        self.blackPage.after(1000, lambda: self.displayCard(self.playerCards[0][5],9))
+        self.blackPage.after(1000, lambda: self.displayCard(self.playerCards[0][5],9)) #Displays the cards 
         self.blackPage.after(2000, lambda: self.displayCard(self.playerCards[1][5],10))
         self.blackPage.after(3000, lambda: self.displayCard(self.dealerCards[0][5],1))
-        self.manageAceValue(self.playerCards)
-        self.dealerSum = self.cardsSum(self.dealerCards)
+        self.manageAceValue(self.playerCards) #check to see if they have an ace, and if the value needs to be adjusted from 11 to 1 so the player does not bust
+        self.dealerSum = self.cardsSum(self.dealerCards) #calculates sum of cards
         self.playerSum = self.cardsSum(self.playerCards)
         self.blackPage.after(2000, lambda: self.changePlayerTitle(Player.name+"'s Hand: "+str(self.playerSum)))
         self.blackPage.after(3000, lambda: self.changeDealerTitle("Dealers Hand: "+str(self.dealerSum)))
         if self.playerSum == 21:
-            self.blackPage.after(3100, lambda: self.changeOutcome("You have a Natural!"))
+            self.blackPage.after(3100, lambda: self.changeOutcome("You have Blackjack!"))
             self.playerOutcome = 21
             self.blackPage.after(4000, self.dealerTurn)
         else:
-            self.blackPage.after(3500, lambda: self.btnState("normal"))
+            self.blackPage.after(3500, lambda: self.btnState("normal", "hand2"))
 
     def hitFunction(self):
-        self.btnState("disabled")
-        self.playerCards.append(self.randomCard(self.tempDeck))
-        numPlayerCards = len(self.playerCards)
+        self.btnState("disabled", "X_cursor")
+        self.playerCards.append(self.randomCard(self.tempDeck)) #player gets another card
+        numPlayerCards = len(self.playerCards) #how many cards the player has now
         self.blackPage.after(1000, lambda: self.displayCard(self.playerCards[numPlayerCards-1][5],8+numPlayerCards))
-        self.manageAceValue(self.playerCards)
-        self.playerSum = self.cardsSum(self.playerCards)
+        self.manageAceValue(self.playerCards) #check for ace and change value if needed
+        self.playerSum = self.cardsSum(self.playerCards) #sum of cards
         self.blackPage.after(1000, lambda: self.changePlayerTitle(Player.name+"'s Hand: "+str(self.playerSum)))
-        if self.playerSum < 21:
-            self.blackPage.after(1500, lambda: self.btnState("normal"))
+        if self.playerSum < 21: #if sum is less than 21, player can choose to hit again
+            self.blackPage.after(1500, lambda: self.btnState("normal", "hand2"))
 
-        elif self.playerSum == 21:
+        elif self.playerSum == 21: #if player is at 21, their turn is over
             self.playerOutcome = 21
             self.dealerTurn()
         else:
-            Bag.gold -= int(self.betVar.get())
+            Bag.gold -= int(self.betVar.get()) #player busts
             GameInfo.goldSpent+=int(self.betVar.get())
             self.blackPage.after(3001, lambda: self.changeOutcome("Bust! You lost "+self.betVar.get()+" gold"))
             self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
-            self.btnBack.configure(state="normal")
+            self.btnBack.configure(state="normal", cursor="hand2")
+            self.after(3000, lambda: self.btnPlaceBet.configure(state="normal", cursor="hand2"))
 
     def stayFunction(self):
-        self.btnState("disabled")
+        """player chooses to stay. It's the dealers turn now"""
+        self.btnState("disabled", "X_cursor")
         self.playerOutcome = self.playerSum
         self.dealerTurn()
 
     def dealerTurn(self):
-        self.dealerCards.append(self.randomCard(self.tempDeck))
-        numDealerCards2 = 2
-        displayTime = 2000
+        self.dealerCards.append(self.randomCard(self.tempDeck)) #dealer gets another card
+        numDealerCards2 = 2 
+        displayTime = 2000 #used for spacing out cards gettting displayed
         self.blackPage.after(displayTime, lambda: self.displayCard(self.dealerCards[numDealerCards2-1][5],numDealerCards2))
-        self.manageAceValue(self.dealerCards)
-        dealerSum2 = self.cardsSum(self.dealerCards)
+        self.manageAceValue(self.dealerCards) #adjust value of ace if needed
+        dealerSum2 = self.cardsSum(self.dealerCards) #sum of cards
         self.blackPage.after(displayTime, lambda: self.changeDealerTitle("Dealer's Hand: "+str(dealerSum2)))
 
-        if dealerSum2 < 17:
+        if dealerSum2 < 17: #everything below is the same as above. Using a loop was causing problems to the next few blocks are copy and pasted, but function all the same
+            #if dealers sum of cards is less than 17, they will continue to draw another card
             self.dealerCards.append(self.randomCard(self.tempDeck))
             numDealerCards3 = 3
             displayTime+=2000
@@ -4184,18 +4206,19 @@ class BlackPage(tk.Frame):
         self.blackPage.after(displayTime, self.computeOutcome)
             
     def dealerNewCard(self):
-        self.dealerCards.append(self.randomCard(self.tempDeck))
-        numDealerCards = len(self.dealerCards)
+        self.dealerCards.append(self.randomCard(self.tempDeck)) #dealer gets another card
+        numDealerCards = len(self.dealerCards) #number of cards the dealer currently has
         self.displayCard(self.dealerCards[numDealerCards-1][5],numDealerCards)
-        self.manageAceValue(self.dealerCards)
-        self.dealerSum = self.cardsSum(self.dealerCards)
+        self.manageAceValue(self.dealerCards) #adjusts value of ace if needed
+        self.dealerSum = self.cardsSum(self.dealerCards) #sum of cards
         self.changeDealerTitle("Dealer's Hand: "+str(self.dealerSum))
 
     def computeOutcome(self):
+        """Calculates and displays players rewards or losses based on outcome"""
         bet = int(self.betVar.get())
         if self.playerOutcome == 21 and len(self.playerCards) == 2 and self.dealerOutcome != 21: #if player has a natural, and dealer doesn't have 21
             winning = (bet*1.5)
-            if winning % 1 != 0:
+            if winning % 1 != 0: #used to ensure whole numbers are given
                 winning+= 0.5
             winning = int(winning)
             Bag.gold+=winning
@@ -4210,16 +4233,18 @@ class BlackPage(tk.Frame):
             GameInfo.goldSpent+=bet
             self.lblOutcome.configure(text="You lose "+str(bet)+" Gold")
         elif self.playerOutcome == self.dealerOutcome:
-            self.lblOutcome.configure(text="Push")
+            self.lblOutcome.configure(text="Push. Players bet is returned")
         else:
             Bag.gold += bet
             GameInfo.goldEarned+=bet
             self.lblOutcome.configure(text="You win "+str(bet)+" Gold!")
 
         self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
-        self.btnBack.configure(state="normal")
+        self.btnBack.configure(state="normal", cursor="hand2")
+        self.btnPlaceBet.configure(state="normal", cursor="hand2")
 
     def cardsSum(self, userCards):
+        """Calculate total sum of cards"""
         total = 0
         for x in range(len(userCards)):
             total += userCards[x][2]
@@ -4228,21 +4253,20 @@ class BlackPage(tk.Frame):
     def manageAceValue(self, userCards):
         aceIndex = -1
         for x in range(len(userCards)):
-            if userCards[x][2] == 11:
-                aceIndex = x
-                print(aceIndex)
+            if userCards[x][2] == 11: #ace by default has a value of 11. This line checks to see if a player has an ace with a value of 11
+                aceIndex = x #this will tell the next if statement that the player/dealer has an ace with value 11
                 break
         if self.cardsSum(userCards) > 21 and aceIndex != -1: # if players cards sum is over 21, and they have an ace with a value of 11
-            print("ace is changing. value is: "+str(self.cardsSum(userCards)))
-            userCards[aceIndex][2] = 1 #changes the value of an acce from an 11 to a 1
+            userCards[aceIndex][2] = 1 #changes the value of an ace from an 11 to a 1
     
-    def btnState(self, newState):
-        self.btnHit.configure(state=newState)
-        self.btnStay.configure(state=newState)
+    def btnState(self, newState, newCursor):
+        """Changes button state"""
+        self.btnHit.configure(state=newState, cursor=newCursor)
+        self.btnStay.configure(state=newState, cursor=newCursor)
 
     def resetPage(self):
         for x in self.cardPlaces:
-            x.configure(image="", highlightbackground="#08451b")
+            x.configure(image="", highlightbackground="#08451b", width=11, height=7)
         self.goldTitle.configure(text=Player.name+"'s Gold: "+ str(Bag.gold))
         self.lblDealerTitle.configure(text="Dealers Hand: ")
         self.lblPlayerTitle.configure(text=Player.name+"'s Hand: ")
@@ -4361,8 +4385,8 @@ class BlackPage(tk.Frame):
         ranNum = random.randint(0, len(listOfCards)-1)
         card = listOfCards[ranNum]
         del listOfCards[ranNum]
-        return card #the index value of the selected card
-
+        return card
+    
 class SlotsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
@@ -4378,6 +4402,7 @@ class SlotsPage(tk.Frame):
         self.lblTitle.place(relx=.29, rely=.055, anchor="center")
 
         try:
+            self.logo = ImageTk.PhotoImage(Image.open("pictures/slotslogo.jpg"))
             self.slotMachinePicture = ImageTk.PhotoImage(Image.open("pictures/slotmachine.jpg"))
             self.redCircle = ImageTk.PhotoImage(Image.open("pictures/redcircle.jpg"))
             self.arrowPicture = ImageTk.PhotoImage(Image.open("pictures/arrowslots.jpg"))
@@ -4387,6 +4412,7 @@ class SlotsPage(tk.Frame):
             self.grapesPicture = ImageTk.PhotoImage(Image.open("pictures/grapes.jpg"))
         except: #if pictures don't load, player will be unable to play slots
             print("error")
+            self.logo = ""
             self.slotMachinePicture = ""
             self.redCircle = ""
             self.arrowPicture = ""
@@ -4396,6 +4422,8 @@ class SlotsPage(tk.Frame):
             self.grapesPicture = ""
             controller.frames[CasinoPage].btnSlots.configure(state="disabled", text="Slots (Unavailable)") #disables button to play slots on casino page
 
+        self.lblSlotsLogo = tk.Label(self.slotsPage, height=130, width=300, bg="black", font="Arial 20", image=self.logo)
+        self.lblSlotsLogo.place(relx=.72, rely=.05)
 
         lblMachinePicture = tk.Label(self.slotsPage,height=590, width=583,image=self.slotMachinePicture)
         lblMachinePicture.place(relx=.01, rely=.18)
