@@ -73,7 +73,7 @@ class EnemyClass:
     def attack(attackList):
         return random.randint(attackList[1], attackList[2])
 
-def list_from_csv(file, access_mode):
+def listFromCsv(file, access_mode):
     """Convert CSV to a list"""
     import csv
     with open(file, access_mode) as current_file:
@@ -96,7 +96,7 @@ def random_monster(p_monster_list):
     random_number = random.randint(1,len(p_monster_list)-1) #chooses a numbr between 1 and however many monsters there are in the list
     return p_monster_list[random_number] #return the monsters index value
 
-def create_player_weapon_list():
+def createPlayerWeaponList():
     """Creates 6 empty weapon slots (2D list) """
     list = []
     for x in range(6):
@@ -105,29 +105,27 @@ def create_player_weapon_list():
             list[x].append("")
     return list
 
-# try:
-monsterList = list_from_csv("csvFiles/monster_list.csv", "r")
-weapons_list = list_from_csv("csvFiles/weapons_list.csv", "r")
-ammoList = list_from_csv("csvFiles/ammo_list.csv", "r")
-armorList = list_from_csv("csvFiles/armor_list.csv", "r")
-potionList = list_from_csv("csvFiles/potions_list.csv", "r")
-cardsList = list_from_csv("csvFiles/cards_list.csv", "r")
-# except:
+monsterList = listFromCsv("csvFiles/monster_list.csv", "r")
+weapons_list = listFromCsv("csvFiles/weapons_list.csv", "r")
+ammoList = listFromCsv("csvFiles/ammo_list.csv", "r")
+armorList = listFromCsv("csvFiles/armor_list.csv", "r")
+potionList = listFromCsv("csvFiles/potions_list.csv", "r")
+cardsList = listFromCsv("csvFiles/cards_list.csv", "r")
 
-
-playerWeapons = create_player_weapon_list()
-playerWeapons[0] = weapons_list[4]
-playerWeapons[1] = weapons_list[10]
-playerWeapons[2] = weapons_list[11]
-playerWeapons[3] = weapons_list[19]
-playerWeapons[4] = weapons_list[21]
-playerWeapons[5] = weapons_list[23]
-GameInfo = GameClass(2, "none", "road", "none",0,0,0,0,0,0,0,0,0,0,0,0)
 Enemy = EnemyClass
 Armor = ArmorClass
 
-Player = PlayerClass("Calvin", 26, "white", 70, 152, "man", "none", 500, 500, 100, 100)
-Bag = Inventory(1000, 0, 300, 400, 9, 50, 0)
+# playerWeapons[0] = weapons_list[0]
+# playerWeapons[1] = weapons_list[10]
+# playerWeapons[2] = weapons_list[11]
+# playerWeapons[3] = weapons_list[19]
+# playerWeapons[4] = weapons_list[21]
+# playerWeapons[5] = weapons_list[23]
+
+GameInfo = GameClass(1, "none", "road", "none",0,0,0,0,0,0,0,0,0,0,0,0)
+Player = PlayerClass("Name", 26, "color", 70, 152, "sex", "none", 100, 100, 100, 100)
+playerWeapons = createPlayerWeaponList()
+Bag = Inventory(0, 0, 0, 0, 0, 0, 0)
 
 class GameApp(tk.Tk):
 
@@ -178,7 +176,7 @@ class SplashPage(tk.Frame):
         btnBegin.place(relx=.52, rely=.6, anchor="center")
 
     def yup(self, controller):
-        # controller.showFrame(StartPage)
+        controller.showFrame(StartPage)
         # controller.showFrame(FightPage)
         # controller.frames[FightPage].updateWeapons()
         # controller.frames[FightPage].updateInfo()
@@ -188,7 +186,7 @@ class SplashPage(tk.Frame):
         # controller.trial(MainPage)
 
         # controller.showFrame(TownPage)
-        controller.showFrame(CasinoPage)
+        # controller.showFrame(CasinoPage)
 
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -312,17 +310,61 @@ class StartPage(tk.Frame):
             if var[x].cget("fg") == "green": #if text is green (entry is correct)
                 count+=1 #add to counter.
             if count == 6 and rbValue != "": # if all entrys correct
-                Player = PlayerClass(nameVar, int(ageVar), skinVar, (int(heightVarFt) * 12) + int(heightVarIn), int(weightVar), "man", "none", 100, 100, 100, 100)
+                playerWeapons = createPlayerWeaponList() #this next bit is assigning new values to objects
+                Player.name = nameVar
+                Player.age = int(ageVar)
+                Player.color = skinVar
+                Player.height = (int(heightVarFt) * 12) + int(heightVarIn)
+                Player.weight = int(weightVar)
+                Player.armor = "none"
+                Player.health = 100
+                Player.maxHealth = 100
+                Player.stamina = 100
+                Player.maxStamina = 100
                 if int(rbValue) == 1:
                     Player.sex = "man"
                 elif int(rbValue) == 2:
                     Player.sex = "woman"
-                GameInfo = GameClass(btnValue, "none", "none", "none",0,0,0,0,0,0,0,0,0,0,0,0)
+                Bag.arrows = 0
+                Bag.gold = 0
+                Bag.grenades = 0
+                Bag.healthPotion = 0
+                Bag.lcaliber = 0
+                Bag.scaliber = 0
+                Bag.staminaPotion = 0
+                GameInfo.mode = btnValue
+                GameInfo.arrows=0
+                GameInfo.damDealt=0
+                GameInfo.damTaken = 0
+                GameInfo.enemies = 0
+                GameInfo.goldEarned = 0
+                GameInfo.goldSpent = 0
+                GameInfo.grenades = 0
+                GameInfo.hPotion = 0
+                GameInfo.sPotion
+                GameInfo.mCal = 0
+                GameInfo.sCal = 0
+                GameInfo.special = 0
+                GameInfo.choice = "blank"
+                print(Player.sex)
                 if btnValue == 1:
                     GameInfo.location = "road"
                     controller.showFrame(MainPage)
                     controller.frames[MainPage].one1(controller)
                 elif btnValue == 2:
+                    playerWeapons[0] = weapons_list[0] #give player weapons and ammo
+                    playerWeapons[1] = weapons_list[10]
+                    playerWeapons[2] = weapons_list[11]
+                    playerWeapons[3] = weapons_list[19]
+                    playerWeapons[4] = weapons_list[21]
+                    playerWeapons[5] = weapons_list[23]
+                    Bag.arrows+=10
+                    Bag.grenades+=1
+                    Bag.healthPotion+=5
+                    Bag.staminaPotion+=5
+                    Bag.lcaliber+=200
+                    Bag.scaliber+=200
+                    Bag.gold+=5000
                     GameInfo.location = "town"
                     controller.showFrame(TownPage)
                 
@@ -435,13 +477,13 @@ class MainPage(tk.Frame):
 
 #region Random Events
 
-    def eventRandom(self, lowerBound, upperBound, ammoQuant, size):
+    def eventRandom(self, lowerBound, upperBound, ammoQuant, size, controller):
         """Randomly chooses a good or bad event"""
         num = random.randint(1,3)
         if num == 1:
             self.eventGood(lowerBound, upperBound, ammoQuant)
         elif num == 2:
-            self.eventBad(size)
+            self.eventBad(size, controller)
         else:
             self.after(1000, lambda: self.updateText("\n\nYou don't find anything of value in there."))
 
@@ -527,7 +569,7 @@ class MainPage(tk.Frame):
             self.after(1000, lambda: self.updateText(f"\n\nA goblin stole {str(theftNum)} gold from you!"))
         self.after(1500, self.updateInfo)
 
-    def eventDamage(self, size):
+    def eventDamage(self, size, controller):
         """Randomly chooses an animal (within specified size) to deal damage to the player"""
         damageAmt = random.randint(1, 12)
         Player.health -= damageAmt
@@ -538,38 +580,44 @@ class MainPage(tk.Frame):
             if Player.health <= 0: #Added incase the small amount of damage kills the player
                 Player.health = 0
                 self.after(1000, lambda: self.updateText(f"\n\nA {list[animalNum]} bites you for {str(damageAmt)} damage!"))
-                print("\n\nYou have no health remaining. This small yet fierece animal put an end to your journey. No one will sing songs about you.")
-                print("Game over")
+                self.after(9000, self.clearBox)
+                self.after(10000, lambda: self.updateText("You succumb to your injuries..."))
+                self.after(16000, controller.frames[EndPage].updateInfo)
+                self.after(16000, controller.frames[EndPage].playerDied)
+                self.after(17000, lambda: controller.showFrame(EndPage))
             else:
                 self.after(1000, lambda: self.updateText(f"\n\nA {list[animalNum]} bit you for {str(damageAmt)} damage!")) #Says what hurt them and for how much damage
         else:
             list = ["racoon bites you and runs off", "rabid cat scratches you", "debris falls ontop of you"]
             sec_num = random.randint(0, len(list)-1)
             if Player.health <= 0:
-                Player.health =0
+                Player.health = 0
                 self.after(1000, lambda: self.updateText(f"\n\nA {list[sec_num]}, causing {str(damageAmt)} damage!\n"))
-                print("\n\nYou have no health remaining...This is the worst way ones journey could end. You dishonor your family.\n")
-                print("Game over")
+                self.after(9000, self.clearBox)
+                self.after(10000, lambda: self.updateText("You succumb to your injuries..."))
+                self.after(16000, controller.frames[EndPage].updateInfo)
+                self.after(16000, controller.frames[EndPage].playerDied)
+                self.after(17000, lambda: controller.showFrame(EndPage))
             else:
                 self.after(1000, lambda: self.updateText(f"\n\nA {list[sec_num]}, causing {str(damageAmt)} damage!"))
         self.after(1500, self.updateInfo)
 
-    def eventBad(self, size): #Size is added in because if a player opens a small box, a big animal shouldn't be there
+    def eventBad(self, size, controller): #Size is added in because if a player opens a small box, a big animal shouldn't be there
         """Randomly chooses a bad event"""
         num = random.randint(1,2)
         if num == 1:
-            self.eventDamage(size)
+            self.eventDamage(size, controller)
         elif num == 2 and size != "small":
             self.eventGoblin()
         elif num == 2 and size == "small":
-            self.eventDamage(size)
+            self.eventDamage(size, controller)
 
 #endregion
 
 #region Stage one
 
     def one1(self, controller):
-        self.snapBottom()
+        print(Player.sex)
         self.after(3000, lambda: self.updateText("\nYou wake up, laying face down in the dirt."))
         self.after(7000, lambda: self.updateText("\n\nFinding your footing, you see your flipped truck nearby, still radiating heat."))
         self.after(13000, lambda: self.updateText("\n\nThere are two mangled bodies inside."))
@@ -709,7 +757,7 @@ class MainPage(tk.Frame):
 
     def oneForestCabinSpareRoom(self, controller):
         self.btnDisbaled()
-        self.after(1000, lambda: self.eventBad("large"))
+        self.after(1000, lambda: self.eventBad("large", controller))
         self.after(3000, self.updateInfo)
         self.after(8000, lambda: self.updateText("\n\nIt's just a small bathroom. The medicine cabinet is open, with a few empty pill bottles."))
         self.after(15000, lambda: self.oneForestCabinGoToMainRoom(controller))
@@ -807,7 +855,6 @@ class MainPage(tk.Frame):
         Bag.lcaliber +=200
         self.after(16000, lambda: self.oneForestLeaveHeli(controller))
 
-
     def oneForestPotionHeli(self, controller):
         self.after(3000, lambda: self.updateText("\n\nYou grab the potion crate and leave just before the Helicopter catches fire."))
         GameInfo.choice = "potion"
@@ -889,7 +936,7 @@ class MainPage(tk.Frame):
 
     def oneRiverContainer(self, controller):
         self.btnDisbaled()
-        self.after(3000, lambda: self.eventRandom(10, 50, "small", "small"))
+        self.after(3000, lambda: self.eventRandom(10, 50, "small", "small", controller))
         self.after(9000, lambda: self.oneRiverAfterContainer(controller))
         
     def oneRiverAfterContainer(self, controller):
@@ -899,7 +946,7 @@ class MainPage(tk.Frame):
 
     def oneRiverEnterRV(self, controller):
         self.btnDisbaled()
-        self.after(3000, lambda: self.eventRandom(30, 80, "medium", "large"))
+        self.after(3000, lambda: self.eventRandom(30, 80, "medium", "large", controller))
         self.after(9000, lambda: self.oneRiverAfterRV(controller))
 
     def oneRiverAfterRV(self, controller):
@@ -1838,6 +1885,7 @@ class MainPage(tk.Frame):
 
     def three11(self,controller):
         controller.frames[EndPage].updateInfo()
+        controller.frames[EndPage].playerWon()
         controller.showFrame(EndPage)
 #endregion
 
@@ -1866,37 +1914,37 @@ class FightPage(tk.Frame):
         self.lblInventory = tk.Label(self.fightPage, height=18, width=75, bg="black")
         self.lblInventory.place(relx=.45, rely=.05)
 
-        self.lblInvTitle = tk.Label(self.fightPage, height=1, width=32, bg="black", fg="white", font="Arial 20", text="  "+Player.name + "'s Inventory", anchor='center')
+        self.lblInvTitle = tk.Label(self.fightPage, height=1, width=32, bg="black", fg="white", font="Arial 20", text="Your Inventory", anchor='center')
         self.lblInvTitle.place(relx=.45, rely=.05)
 
-        self.lblArrow = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Arrows: "+str(Bag.arrows), anchor='w')
+        self.lblArrow = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", anchor='w')
         self.lblArrow.place(relx=.48, rely=.12)
 
-        self.lblSCal = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="9mm Rounds: "+str(Bag.scaliber), anchor='w',)
+        self.lblSCal = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", anchor='w',)
         self.lblSCal.place(relx=.48, rely=.18)
 
-        self.lblMCal = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="7.62mm Rounds: "+str(Bag.lcaliber), anchor='w')
+        self.lblMCal = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", anchor='w')
         self.lblMCal.place(relx=.48, rely=.24)
 
-        self.lblGrenade = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Grenades: "+str(Bag.grenades), anchor='w')
+        self.lblGrenade = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", anchor='w')
         self.lblGrenade.place(relx=.48, rely=.30)
 
         self.lblSpecialWord = tk.Label(self.fightPage, height=1, width = 20, bg="black", fg="white", font="Arial 15", text="Special: ", justify="left", anchor='nw')
         self.lblSpecialWord.place(relx=.7, rely=.12)
 
-        self.lblSpecial = tk.Label(self.fightPage, height=2, width=20, bg="black", fg="white", font="Arial 15", text=str(playerWeapons[5][1]), anchor='nw', justify="left", wraplength=220, )
+        self.lblSpecial = tk.Label(self.fightPage, height=2, width=20, bg="black", fg="white", font="Arial 15", anchor='nw', justify="left", wraplength=220)
         self.lblSpecial.place(relx=.72, rely=.17)
 
-        self.lblHealthPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Health Potions: "+str(Bag.healthPotion), anchor='w')
+        self.lblHealthPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", anchor='w')
         self.lblHealthPot.place(relx=.70, rely=.24)
 
-        self.lblStaminaPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", text="Stamina Potions: "+str(Bag.staminaPotion), anchor='w')
+        self.lblStaminaPot = tk.Label(self.fightPage, height=1, width=18, bg="black", fg="white", font="Arial 15", anchor='w')
         self.lblStaminaPot.place(relx=.70, rely=.30)
 
-        self.lblPHealth = tk.Label(self.fightPage, height=1, width=24, bg="#751515", fg="white", font="Arial 15", text="Health: "+str(Player.health)+"/"+str(Player.maxHealth))
+        self.lblPHealth = tk.Label(self.fightPage, height=1, width=24, bg="#751515", fg="white", font="Arial 15")
         self.lblPHealth.place(relx=.45, rely=.359)
 
-        self.lblPStamina = tk.Label(self.fightPage, height=1, width=24, bg="#157528", fg="white", font="Arial 15", text="Stamina: "+str(Player.stamina)+"/"+str(Player.maxStamina))
+        self.lblPStamina = tk.Label(self.fightPage, height=1, width=24, bg="#157528", fg="white", font="Arial 15")
         self.lblPStamina.place(relx=.687, rely=.359)
 
         self.fightText = tk.Text(self.fightPage, height=9, width=60, state="disabled", bg="black", fg="white", font="Arial 18", padx=25, wrap="word")
@@ -2105,6 +2153,9 @@ class FightPage(tk.Frame):
             else: #if player is dead
                 self.fightText.after(9000, self.clearText)
                 self.fightText.after(10000, lambda: self.updateText("\n\nThe "+Enemy.name+" "+Enemy.finalMove))
+                self.after(18000, controller.frames[EndPage].updateInfo)
+                self.after(18000, controller.frames[EndPage].playerDied)
+                self.after(19000, lambda: controller.showFrame(EndPage))
 
         elif Enemy.health < 1:
             if GameInfo.mode == 1: #If playing story mode
@@ -2114,7 +2165,6 @@ class FightPage(tk.Frame):
                     GameInfo.goldEarned+=gold
                     GameInfo.enemies+=1
                     self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and found "+str(gold)+" gold!"))
-                    self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
                     self.fightPage.after(6999, self.clearText)
                     self.fightPage.after(7000, lambda: controller.showFrame(MainPage)) #go back to mainpage and continue story
                     self.fightPage.after(7000, controller.frames[MainPage].updateInfo)
@@ -2125,7 +2175,6 @@ class FightPage(tk.Frame):
                     GameInfo.goldEarned+=gold
                     GameInfo.enemies+=1
                     self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and earned "+str(gold)+" gold!"))
-                    self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
                     self.fightPage.after(6999, self.clearText)
                     controller.frames[ArenaPage].updateInfo()
                     self.fightPage.after(7000, lambda: controller.showFrame(ArenaPage)) 
@@ -2135,7 +2184,6 @@ class FightPage(tk.Frame):
                 GameInfo.goldEarned+=gold
                 GameInfo.enemies+=1
                 self.fightText.after(3000, lambda: self.updateText("\n\nYou've killed the "+Enemy.name+" and earned "+str(gold)+" gold!"))
-                self.fightPage.after(5000, lambda: self.updateText("\n\nExiting..."))
                 self.fightPage.after(6999, self.clearText)
                 controller.frames[ArenaPage].updateInfo()
                 self.fightPage.after(7000, lambda: controller.showFrame(ArenaPage))     
@@ -2295,7 +2343,7 @@ class TownPage(tk.Frame):
             lblTitlePicture.place(x=0, y=0)
         except:
             self.townPage.configure(bg="#1a1a1a")
-            
+
         self.btnBack = tk.Button(self.townPage, width=10, height=1, text="Exit", bg="#909090", fg="white", font="Arial 15", cursor="hand2", command=lambda: self.exit(controller))
         self.btnBack.place(relx=.86, rely=.03)
 
@@ -2346,7 +2394,7 @@ class ArenaPage(tk.Frame):
         self.lblInventory = tk.Label(self.arenaPage, height=12, width=55,font="Arial 20", bg="#1a1a1a",highlightbackground="white", highlightthickness=2,)
         self.lblInventory.place(relx=.095, rely=.15)
 
-        self.lblInvTitle = tk.Label(self.arenaPage, height=1, width=55, bg="#1a1a1a", fg="white", font="Arial 20", highlightbackground="white", highlightthickness=2, text=Player.name + "'s Inventory", anchor='center')
+        self.lblInvTitle = tk.Label(self.arenaPage, height=1, width=55, bg="#1a1a1a", fg="white", font="Arial 20", highlightbackground="white", highlightthickness=2, text="Your Inventory", anchor='center')
         self.lblInvTitle.place(relx=.095, rely=.15)
 
         self.picMelee = tk.Label(self.arenaPage, bg="#909090",text="Melee", highlightbackground="black", highlightthickness="3")
@@ -2575,7 +2623,7 @@ class AmmoPage(tk.Frame):
         self.shopTitle = tk.Label(self.ammoPage, width=15, height=1, font="Arial 28", fg="white", bg="black", text="Ammo Shop")
         self.shopTitle.place(relx=.5, rely=.06, anchor="center")
 
-        self.goldTitle = tk.Label(self.ammoPage, width = 32,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.ammoPage, width = 32,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.03, rely=.12)
 
         self.shopBorder = tk.Label(self.ammoPage, width = 32,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -2644,7 +2692,7 @@ class AmmoPage(tk.Frame):
         self.lblGrenadesName = tk.Label(self.ammoPage, width = 9, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text="Grenades")
         self.lblGrenadesName.place(relx=.113, rely=.93)
 
-        self.inventoryTitle = tk.Label(self.ammoPage, width = 31,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.ammoPage, width = 31,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.5125, rely=.12)
 
         self.inventory = tk.Label(self.ammoPage, width = 31,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -2652,28 +2700,28 @@ class AmmoPage(tk.Frame):
 
         self.lblBowPic = tk.Label(self.ammoPage, bg="#909090", highlightthickness=5, highlightbackground="black")
         self.lblBowPic.place(relx=.57, rely=.2)
-        self.lblBowAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Arrow Count: "+str(Bag.arrows))
+        self.lblBowAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w")
         self.lblBowAmt.place(relx=.70, rely=.243)
-        self.lblBowName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=playerWeapons[1][1])
+        self.lblBowName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
         self.lblBowName.place(relx=.554, rely=.335)
 
         self.lblSCalPic = tk.Label(self.ammoPage, bg="#909090", highlightthickness=5, highlightbackground="black")
         self.lblSCalPic.place(relx=.57, rely=.4)
-        self.lblSCalAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",anchor="w", text="9mm Rounds: "+str(Bag.scaliber))
+        self.lblSCalAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",anchor="w")
         self.lblSCalAmt.place(relx=.70, rely=.443)
-        self.lblSCalGunName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=playerWeapons[2][1])
+        self.lblSCalGunName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
         self.lblSCalGunName.place(relx=.554, rely=.535)
 
         self.lblMCalPic = tk.Label(self.ammoPage, bg="#909090", highlightthickness=5, highlightbackground="black")
         self.lblMCalPic.place(relx=.57, rely=.6)
-        self.lblMCalAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",anchor="w", text="7.62mm Rounds: "+str(Bag.lcaliber))
+        self.lblMCalAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",anchor="w")
         self.lblMCalAmt.place(relx=.70, rely=.643)
-        self.lblMCalGunName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=playerWeapons[3][1])
+        self.lblMCalGunName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15")
         self.lblMCalGunName.place(relx=.554, rely=.735)
 
-        self.lblGrenadesPic = tk.Label(self.ammoPage, bg="#909090", highlightthickness=5, highlightbackground="black", text=playerWeapons[4][1])
+        self.lblGrenadesPic = tk.Label(self.ammoPage, bg="#909090", highlightthickness=5, highlightbackground="black")
         self.lblGrenadesPic.place(relx=.57, rely=.8)
-        self.lblGrenadesAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Grenades: "+str(Bag.grenades))
+        self.lblGrenadesAmt = tk.Label(self.ammoPage, width = 25, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w")
         self.lblGrenadesAmt.place(relx=.70, rely=.843)
         self.lblGrenadesGunName = tk.Label(self.ammoPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text="Grenade")
         self.lblGrenadesGunName.place(relx=.554, rely=.935)
@@ -2770,13 +2818,13 @@ class ArmorPage(tk.Frame):
         self.shopTitle = tk.Label(self.armorPage, width=15, height=1, font="Arial 28", fg="white", bg="black", text="Armor Shop")
         self.shopTitle.place(relx=.5, rely=.06, anchor="center")
 
-        self.goldTitle = tk.Label(self.armorPage, width = 46,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.armorPage, width = 46,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.03, rely=.12)
 
         self.shopBorder = tk.Label(self.armorPage, width = 46,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.shopBorder.place(relx=.03, rely=.17)
 
-        self.inventoryTitle = tk.Label(self.armorPage, width = 17,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.armorPage, width = 17,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.715, rely=.12)
 
         self.inventoryBorder = tk.Label(self.armorPage, width = 17,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -2888,9 +2936,9 @@ class ArmorPage(tk.Frame):
         self.lblPlayerArmor.place(relx=.772, rely=.2)
         self.lblPlayerArmorHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="+"+str(Armor.healthBonus)+" Health")
         self.lblPlayerArmorHealth.place(relx=.768, rely=.475)
-        self.lblHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text=Player.name+"'s Health: ")
+        self.lblHealth = tk.Label(self.armorPage, width = 15, height=1, bg = "#1a1a1a", fg="white", font="Arial 15",justify="left", text="Your Health: ")
         self.lblHealth.place(relx=.768, rely=.7)
-        self.lblPHealth = tk.Label(self.armorPage, height=1, width=20, bg="#751515", fg="white", font="Arial 15", text=str(Player.health)+" / "+str(Player.maxHealth))
+        self.lblPHealth = tk.Label(self.armorPage, height=1, width=20, bg="#751515", fg="white", font="Arial 15")
         self.lblPHealth.place(relx=.74, rely=.75)
 
         self.lblInvalid = tk.Label(self.armorPage, width = 22, height=2, bg="#1a1a1a", fg="#fa6c61", font="Arial 15")
@@ -2965,7 +3013,7 @@ class PotionPage(tk.Frame):
         self.shopTitle = tk.Label(self.potionPage, width=15, height=1, font="Arial 28", fg="white", bg="black", text="Potion Shop")
         self.shopTitle.place(relx=.5, rely=.06, anchor="center")
 
-        self.goldTitle = tk.Label(self.potionPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.potionPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.1, rely=.12)
 
         self.shopBorder = tk.Label(self.potionPage, width = 30,height=19, bg="#1a1a1a", fg="white", font="Arial 20", highlightbackground="white", highlightthickness=3)
@@ -3001,16 +3049,16 @@ class PotionPage(tk.Frame):
         self.lblStaminaCost = tk.Label(self.potionPage, width = 20, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", anchor="w", text="Cost: "+str(potionList[1][2])+" gold")
         self.lblStaminaCost.place(relx=.316, rely=.74)
 
-        self.inventoryTitle = tk.Label(self.potionPage, width = 23,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.potionPage, width = 23,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.5525, rely=.12)
 
         self.inventoryBorder = tk.Label(self.potionPage, width = 23,height=19, bg="#1a1a1a", fg="white", font="Arial 20", highlightbackground="white", highlightthickness=3)
         self.inventoryBorder.place(relx=.5525, rely=.17)
 
-        self.lblPlayerHealthPotion = tk.Label(self.potionPage, width = 20, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Health Potions:   "+str(Bag.healthPotion))
+        self.lblPlayerHealthPotion = tk.Label(self.potionPage, width = 20, height=1, bg = "#1a1a1a", fg="white", font="Arial 17")
         self.lblPlayerHealthPotion.place(relx=.6, rely=.4)
 
-        self.lblPlayerStaminaPotion = tk.Label(self.potionPage, width = 20, height=1, bg = "#1a1a1a", fg="white", font="Arial 17", text="Stamina Potions:   "+str(Bag.staminaPotion))
+        self.lblPlayerStaminaPotion = tk.Label(self.potionPage, width = 20, height=1, bg = "#1a1a1a", fg="white", font="Arial 17")
         self.lblPlayerStaminaPotion.place(relx=.6, rely=.71)
 
     def purchasePotion(self, index):
@@ -3105,7 +3153,7 @@ class MeleePage(tk.Frame):
         self.shopTitle = tk.Label(self.meleePage, width=15, height=1, font="Arial 28", fg="white", bg="black", text="Melee Weapons")
         self.shopTitle.place(relx=.5, rely=.06, anchor="center")
 
-        self.goldTitle = tk.Label(self.meleePage, width = 44,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.meleePage, width = 44,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.03, rely=.12)
 
         self.shopBorder = tk.Label(self.meleePage, width = 44,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3248,7 +3296,7 @@ class MeleePage(tk.Frame):
         self.lblHammerName = tk.Label(self.meleePage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[7][1])
         self.lblHammerName.place(relx=.364, rely=.933)
 
-        self.inventoryTitle = tk.Label(self.meleePage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.meleePage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.685, rely=.12)
 
         self.inventory = tk.Label(self.meleePage, width = 19,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3336,7 +3384,7 @@ class ArcheryPage(tk.Frame):
         self.shopTitle = tk.Label(self.archeryPage, width=15, height=1, font="Arial 25", fg="white", bg="black", text="Archery Weapons")
         self.shopTitle.place(relx=.5, rely=.05, anchor="center")
 
-        self.goldTitle = tk.Label(self.archeryPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.archeryPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.13, rely=.12)
 
         self.shopBorder = tk.Label(self.archeryPage, width = 30,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3399,7 +3447,7 @@ class ArcheryPage(tk.Frame):
         self.lblCrossbowName = tk.Label(self.archeryPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[10][1])
         self.lblCrossbowName.place(relx=.203, rely=.903)
 
-        self.inventoryTitle = tk.Label(self.archeryPage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.archeryPage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.5825, rely=.12)
 
         self.inventory = tk.Label(self.archeryPage, width = 19, height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3479,7 +3527,7 @@ class SidearmPage(tk.Frame):
         self.shopTitle = tk.Label(self.sidearmPage, width=15, height=1, font="Arial 28", fg="white", bg="black", text="Sidearms")
         self.shopTitle.place(relx=.5, rely=.06, anchor="center")
 
-        self.goldTitle = tk.Label(self.sidearmPage, width = 45,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.sidearmPage, width = 45,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.03, rely=.12)
 
         self.shopBorder = tk.Label(self.sidearmPage, width = 45,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3588,7 +3636,7 @@ class SidearmPage(tk.Frame):
         self.lblUMPName = tk.Label(self.sidearmPage, width = 11, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[16][1])
         self.lblUMPName.place(relx=.374, rely=.883)
 
-        self.inventoryTitle = tk.Label(self.sidearmPage, width = 18,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.sidearmPage, width = 18,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.7, rely=.12)
 
         self.inventory = tk.Label(self.sidearmPage, width = 18,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3668,7 +3716,7 @@ class RiflePage(tk.Frame):
         self.shopTitle = tk.Label(self.riflePage, width=15, height=1, font="Arial 25", fg="white", bg="black", text="Firearms")
         self.shopTitle.place(relx=.5, rely=.05, anchor="center")
 
-        self.goldTitle = tk.Label(self.riflePage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.riflePage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.13, rely=.12)
 
         self.shopBorder = tk.Label(self.riflePage, width = 30,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3742,7 +3790,7 @@ class RiflePage(tk.Frame):
         self.lblRPKName = tk.Label(self.riflePage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[20][1])
         self.lblRPKName.place(relx=.203, rely=.933)
 
-        self.inventoryTitle = tk.Label(self.riflePage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.riflePage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.5825, rely=.12)
 
         self.inventory = tk.Label(self.riflePage, width = 19, height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3816,7 +3864,7 @@ class SpecialPage(tk.Frame):
         self.shopTitle = tk.Label(self.specialPage, width=15, height=1, font="Arial 25", fg="white", bg="black", text="Tacticals")
         self.shopTitle.place(relx=.5, rely=.05, anchor="center")
 
-        self.goldTitle = tk.Label(self.specialPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Gold: "+str(Bag.gold))
+        self.goldTitle = tk.Label(self.specialPage, width = 30,height=1, bg="#1a1a1a", fg="gold", font="Arial 20",highlightbackground="white",highlightthickness=3)
         self.goldTitle.place(relx=.13, rely=.12)
 
         self.shopBorder = tk.Label(self.specialPage, width = 30,height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -3867,7 +3915,7 @@ class SpecialPage(tk.Frame):
         self.lblStrikeName = tk.Label(self.specialPage, width = 13, height=1, bg = "#1a1a1a", fg="white", font="Arial 15", text=weapons_list[24][1])
         self.lblStrikeName.place(relx=.203, rely=.903)
 
-        self.inventoryTitle = tk.Label(self.specialPage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text=Player.name+"'s Inventory")
+        self.inventoryTitle = tk.Label(self.specialPage, width = 19,height=1, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3, text="Your Inventory")
         self.inventoryTitle.place(relx=.5825, rely=.12)
 
         self.inventory = tk.Label(self.specialPage, width = 19, height=20, bg="#1a1a1a", fg="white", font="Arial 20",highlightbackground="white",highlightthickness=3)
@@ -4000,7 +4048,7 @@ class BlackPage(tk.Frame):
         self.lblCard8 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
         self.lblCard8.place(relx=.862, rely=.25)
 
-        self.lblPlayerTitle = tk.Label(self.blackPage, height=1, width=25, bg="black", highlightbackground="white", highlightthickness=3, fg="white", font="Arial 20", text=Player.name+"'s Hand: ")
+        self.lblPlayerTitle = tk.Label(self.blackPage, height=1, width=25, bg="black", highlightbackground="white", highlightthickness=3, fg="white", font="Arial 20", text="Your Hand: ")
         self.lblPlayerTitle.place(relx=.023, rely=.56)
 
         self.lblCard9 = tk.Label(self.blackPage, bg="#08451b", activebackground="#909090", width=15, height=10)
@@ -4431,7 +4479,7 @@ class SlotsPage(tk.Frame):
         self.btnRedCircle = tk.Button(self.slotsPage, bg="black",width=60, height=50, fg="white", font="Arial 15",activebackground="white",cursor="hand2", relief="solid", image=self.redCircle, command=self.checkBet)
         self.btnRedCircle.place(relx=.477, rely=.29)
 
-        self.lblGold = tk.Label(self.slotsPage, height=1, width=27, bg="black", highlightbackground="white", highlightthickness=1, fg="gold", font="Arial 20", text="You're Gold: "+str(Bag.gold))
+        self.lblGold = tk.Label(self.slotsPage, height=1, width=27, bg="black", highlightbackground="white", highlightthickness=1, fg="gold", font="Arial 20")
         self.lblGold.place(relx=.072, rely=.91)
 
         self.lblOutcome = tk.Label(self.slotsPage, height=1, width=22, bg="#f7fdfc", fg="black", font="Arial 20 bold",text="Place your bet below!")
@@ -4572,8 +4620,8 @@ class EndPage(tk.Frame):
         self.endPage.pack()
         self.endPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        lblGameName = tk.Label(self.endPage, text="---------------- The End ----------------", font="Arial 50", bg='black', fg="white")
-        lblGameName.place(relx=0.5, rely=0.125, anchor="center")
+        self.lblEndTitle = tk.Label(self.endPage, font="Arial 50", bg='black', fg="white")
+        self.lblEndTitle.place(relx=0.5, rely=0.125, anchor="center")
 
         self.lblEnemies = tk.Label(self.endPage, height=1, width=27, bg="black", fg="white", font="Arial 18")
         self.lblEnemies.place(relx=.125, rely=.27)
@@ -4638,6 +4686,14 @@ class EndPage(tk.Frame):
         self.lblSPotion.configure(text="Stamina Potions Used: "+str(GameInfo.sPotion))
         self.lblGoldEarned.configure(text="Gold Aquired: "+str(GameInfo.goldEarned))
         self.lblGoldSpent.configure(text="Gold Spent: "+str(GameInfo.goldSpent))
+    
+    def playerWon(self):
+        self.btnTown.configure(state="normal", cursor="hand2")
+        self.lblEndTitle.configure(text = "---------------- The End ----------------")
+
+    def playerDied(self):
+        self.btnTown.configure(state="disabled", cursor="X_cursor")
+        self.lblEndTitle.configure(text = "--------------- Game Over ---------------")
 
 game = GameApp()
 
