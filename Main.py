@@ -101,7 +101,7 @@ def createPlayerWeaponList():
     list = []
     for x in range(6):
         list.append([])
-        for y in range(9):
+        for y in range(10):
             list[x].append("")
     return list
 
@@ -254,7 +254,7 @@ class StartPage(tk.Frame):
 
         entHeightIn = tk.Entry(startPage, bg="white", font="Arial 20", width=4, textvariable=heightVarIn,validate="key", validatecommand=(textChecker,'%P', 2, "number"))
         entHeightIn.place(relx=.78, rely=.325)
-        self.validHeightIn = tk.Label(startPage, bg="black",fg="white",text="0-12",font="Arial 10")
+        self.validHeightIn = tk.Label(startPage, bg="black",fg="white",text="0-11",font="Arial 10")
         self.validHeightIn.place(relx=.795, rely=.372)
         lblHeightUnitIn = tk.Label(startPage, text="in", font="Arial 15", fg="white", bg="black")
         lblHeightUnitIn.place(relx=.85, rely=.34)
@@ -298,7 +298,7 @@ class StartPage(tk.Frame):
                 var[x].configure(fg="red")
             elif var[x] == self.validHeightFt and not 3 <= int(val[x]) <= 9 : # if height entry in feet is between 3 and 9
                 var[x].configure(fg="red")
-            elif var[x] == self.validHeightIn and not 0 <= int(val[x]) <= 12 : # if inches entry is between 0 and 12
+            elif var[x] == self.validHeightIn and not 0 <= int(val[x]) <= 11 : # if inches entry is between 0 and 12
                 var[x].configure(fg="red")
             elif var[x] == self.validWeight and 50 > int(val[x]): #if weight is less than 50
                 var[x].configure(fg="red")
@@ -310,7 +310,7 @@ class StartPage(tk.Frame):
             if var[x].cget("fg") == "green": #if text is green (entry is correct)
                 count+=1 #add to counter.
             if count == 6 and rbValue != "": # if all entrys correct
-                playerWeapons = createPlayerWeaponList() #this next bit is assigning new values to objects
+                controller.frames[EndPage].resetInfo(controller) #clears players weapons and images when restarting game
                 Player.name = nameVar
                 Player.age = int(ageVar)
                 Player.color = skinVar
@@ -346,7 +346,6 @@ class StartPage(tk.Frame):
                 GameInfo.sCal = 0
                 GameInfo.special = 0
                 GameInfo.choice = "blank"
-                print(Player.sex)
                 if btnValue == 1:
                     GameInfo.location = "road"
                     controller.showFrame(MainPage)
@@ -421,10 +420,10 @@ class MainPage(tk.Frame):
         self.lblChoice = tk.Label(self.mainPage, height=3, width=78, bg="black", highlightbackground="white", highlightthickness=2, fg="white", font="Arial 15", pady=10)
         self.lblChoice.place(relx=.5, rely=.9, anchor="center")
 
-        self.btnYes = tk.Button(self.mainPage, height=2, width=20,bg="grey",fg="white",state="disabled", relief="sunken", cursor="x_cursor", font="Arial 19")
+        self.btnYes = tk.Button(self.mainPage, height=2, width=20,bg="black",fg="white",state="disabled", relief="sunken", cursor="x_cursor", font="Arial 19")
         self.btnYes.place(relx=.114, rely=.853)
 
-        self.btnNo = tk.Button(self.mainPage, height=2, width=20,bg="grey",fg="white", state="disabled", relief="sunken", cursor="x_cursor", font="Arial 19")
+        self.btnNo = tk.Button(self.mainPage, height=2, width=20,bg="black",fg="white", state="disabled", relief="sunken", cursor="x_cursor", font="Arial 19")
         self.btnNo.place(relx=.604, rely=.853)
 
     def healthPotion(self):
@@ -466,15 +465,15 @@ class MainPage(tk.Frame):
 
     def btnDisbaled(self):
         """Disables the 'choice' buttons"""
-        self.btnYes.configure(state = "disabled", text="", cursor="x_cursor")
-        self.btnNo.configure(state = "disabled", text="", cursor="x_cursor")
+        self.btnYes.configure(state = "disabled", text="", bg="black", cursor="x_cursor")
+        self.btnNo.configure(state = "disabled", text="", bg="black", cursor="x_cursor")
         self.lblChoice.configure(text="")
 
     def newChoice(self, controller, btnOne, btnTwo, newText, cmdOne, cmdTwo):
         """Updates 'choice' buttons"""
         self.lblChoice.configure(text=newText)
-        self.btnYes.configure(state = "normal", text=btnOne, cursor="hand2", command=lambda: cmdOne(controller))
-        self.btnNo.configure(state = "normal", text=btnTwo, cursor="hand2", command=lambda: cmdTwo(controller))
+        self.btnYes.configure(state = "normal", text=btnOne, cursor="hand2", bg="grey", command=lambda: cmdOne(controller))
+        self.btnNo.configure(state = "normal", text=btnTwo, cursor="hand2", bg="grey", command=lambda: cmdTwo(controller))
 
 #region Random Events
 
@@ -584,7 +583,7 @@ class MainPage(tk.Frame):
                 self.after(9000, self.clearBox)
                 self.after(10000, lambda: self.updateText("You succumb to your injuries..."))
                 self.after(16000, controller.frames[EndPage].updateInfo)
-                self.after(16000, controller.frames[EndPage].playerDied)
+                self.after(16000, lambda: controller.frames[EndPage].playerDied(controller))
                 self.after(17000, lambda: controller.showFrame(EndPage))
             else:
                 self.after(1000, lambda: self.updateText(f"\n\nA {list[animalNum]} bit you for {str(damageAmt)} damage!")) #Says what hurt them and for how much damage
@@ -597,7 +596,7 @@ class MainPage(tk.Frame):
                 self.after(9000, self.clearBox)
                 self.after(10000, lambda: self.updateText("You succumb to your injuries..."))
                 self.after(16000, controller.frames[EndPage].updateInfo)
-                self.after(16000, controller.frames[EndPage].playerDied)
+                self.after(16000, lambda: controller.frames[EndPage].playerDied(controller))
                 self.after(17000, lambda: controller.showFrame(EndPage))
             else:
                 self.after(1000, lambda: self.updateText(f"\n\nA {list[sec_num]}, causing {str(damageAmt)} damage!"))
@@ -627,10 +626,10 @@ class MainPage(tk.Frame):
         self.after(32000, lambda: self.updateText("\n\nCautiously making your way over, you see a goose pecking at your bag."))
         self.after(38000, lambda: self.updateText("\n\nWithin seconds, the goose sees you, flaring out its wings."))
         self.after(43000, lambda: self.updateText("\n\nLooking around quickly, you pick up a stick to defend yourself."))
-        playerWeapons[0] = weapons_list[0]
+        playerWeapons[0] = copy.deepcopy(weapons_list[0])
+        self.after(48000, controller.frames[FightPage].updateWeapons)
         self.after(49000, lambda: controller.showFrame(FightPage))
         self.after(49001,lambda: controller.frames[FightPage].enemyBattle(1,2,"Goose", 0))
-        controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.one2
         self.after(50000, self.clearBox)
 
@@ -645,8 +644,8 @@ class MainPage(tk.Frame):
         Bag.staminaPotion +=1
         Bag.arrows +=6
         Bag.grenades +=1
-        playerWeapons[4] = weapons_list[21]
-        playerWeapons[1] = weapons_list[8]
+        playerWeapons[4] = copy.deepcopy(weapons_list[21])
+        playerWeapons[1] = copy.deepcopy(weapons_list[8])
         self.after(22000, self.updateInfo)
         self.after(28000, lambda: self.updateText("\n\nIt's not much, but it will have to do for now."))
         self.after(34000, lambda: self.updateText("\n\nYou head back to the main road and begin your journey."))
@@ -655,9 +654,9 @@ class MainPage(tk.Frame):
         self.after(41000, lambda: self.updateText("\n\nYou spot a carriage abandoned on the road ahead."))
         self.after(46000, lambda: self.updateText("\n\nAs you get closer, a man shouts from inside the carriage."))
         if Player.sex == "man":
-            self.after(51000, lambda: self.updateText("\n\nMan: \"Hey Mister, could you please get this thing away from me!?\""))
+            self.after(51000, lambda: self.updateText("\n\nMan: \"Hey Mister, could you get this thing away from me!?\""))
         else:
-            self.after(51000, lambda: self.updateText("\n\nMan: \"Hey Miss, could you please get this thing away from me!?\""))
+            self.after(51000, lambda: self.updateText("\n\nMan: \"Hey Miss, could you get this thing away from me!?\""))
         self.after(56000, lambda: self.updateText("\n\nA creature slowly crawls out from under the carriage."))
         self.after(60000,lambda: controller.frames[FightPage].enemyBattle(1,2,"Arthropleura", 0))
         self.after(61000, lambda: controller.showFrame(FightPage))
@@ -685,7 +684,7 @@ class MainPage(tk.Frame):
         self.after(12000, lambda: self.updateText("\n\nMan: \"Safe journeys friend, and feel free to stop by my shop when you're in town!\""))
         self.after(17000, self.clearBox)
         self.after(18000, lambda: self.updateText("\n\nAs you continue down the road, the midday sun amplifies the smell of rotting flesh."))
-        self.after(23000, lambda: self.updateText("\n\nHearing a low growling just off the road, you cautiously head toward the noise."))
+        self.after(23000, lambda: self.updateText("\n\nHearing a low growl just off the road, you cautiously head towards the noise."))
         self.after(29000, lambda: self.updateText("\n\nFollowing a beaten down path, you discover a rundown campsite."))
         self.after(35000, lambda: self.updateText("\n\nThere lies a man half dragged out of his tent, with both legs chewed to the bone."))
         self.after(41000, lambda: self.updateText("\n\nA rabid dog is inside, starting to chew away at the mans arms, unbothered by your presence."))
@@ -773,22 +772,22 @@ class MainPage(tk.Frame):
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou take a couple steps back and kick the door open, tearing it away from one of the hinges."))
         self.after(10000, lambda: self.updateText("\n\n An small animal charges you."))
+        self.after(14001,lambda: controller.frames[FightPage].enemyBattle(1,3,"Tasmanian devil", 0))
         self.after(15000, lambda: controller.showFrame(FightPage))
-        self.after(15001,lambda: controller.frames[FightPage].enemyBattle(1,3,"Tasmanian devil", 0))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.oneForestCabinMainRoom2
         self.after(16000, self.clearBox)
 
     def oneForestCabinMainRoom2(self, controller):
-        self.after(3000, lambda: self.updateText("\nThe bedroom is quite small, yet very organized and neat."))
+        self.after(3000, lambda: self.updateText("\nThe bedroom is tidy and well-organized."))
         self.after(10000, lambda: self.updateText("\n\nYou find a health potion in the dresser, and a granola bar beside it."))
         Bag.healthPotion+=1
         self.after(15000, self.updateInfo)
         self.after(15000, lambda: self.updateText("\n\nOn top of the nightstand you find a note."))
         self.after(21000, self.clearBox)
-        self.after(22000, lambda: self.updateText("\nDear Matthew,\n\n\tI'm sorry to end it this way. The area is getting too dangerous and I cant stay here\n\tany longer.\n\n\tJohn is taking me south where it's safer...He's well equipt, and will take good care\n\tof me.\n\n\tYou'll always be my first love. I hope you can find peace without me.\n\n\t\tLove, Annie"))
+        self.after(22000, lambda: self.updateText("\nDear Matthew,\n\n\tI'm sorry to end it this way. The area is getting too dangerous and I can't stay here\n\tany longer.\n\n\tJohn is taking me south where it's safer...He's well equipt, and will take good care\n\tof me.\n\n\tYou'll always be my first love. I hope you can find peace without me.\n\n\t\tLove, Annie"))
         self.after(40000, self.clearBox)
-        self.after(41000, lambda: self.updateText("\nYou set the note back down leave the room."))
+        self.after(41000, lambda: self.updateText("\nYou set the note back down and leave the room."))
         self.after(46000, lambda: self.oneForestCabinExitCabin(controller))
         
     def oneForestCabinExitCabin(self, controller):
@@ -820,7 +819,7 @@ class MainPage(tk.Frame):
         self.btnDisbaled()
         self.after(3000, lambda: self.updateText("\nYou leave the property and continue down the trail."))
         self.after(10000, lambda: self.updateText("\n\nOnly a few minutes later, you hear a whirring sound, rapidly growing louder."))
-        self.after(17000, lambda: self.updateText("\n\nYou look up to see a helicopteer spinning out of control, passing over you."))
+        self.after(17000, lambda: self.updateText("\n\nYou look up to see a helicopter spinning out of control, passing over you."))
         self.after(24000, lambda: self.updateText("\n\nIt looks like one of yours, but this area's a no-fly zone."))
         self.after(31000, lambda: self.updateText("\n\nThings must be getting really bad if they'd take that risk again."))
         self.after(37000, lambda: self.updateText("\n\nThere's a thick smoke trail leading to the crash."))
@@ -829,40 +828,33 @@ class MainPage(tk.Frame):
     def oneForestGoToCrash(self, controller):
         self.clearBox()
         self.btnDisbaled()
-        self.after(2000, lambda: self.updateText("\nYou managed to get to the crash site after about 10 minutes"))
+        self.after(2000, lambda: self.updateText("\nYou managed to get to the crash site after about 10 minutes."))
         self.after(8000, lambda: self.updateText("\n\nThe surrounding area is littered with debris and small fires."))
-        self.after(14000, lambda: self.updateText("\n\nLucky enough, the helicopter is mostly intact."))
-        self.after(20000, lambda: self.updateText("\n\nOne of the pilots is hanging through the front window, the other dead in his seat."))
-        self.after(27000, lambda: self.updateText("\n\nFuel is pouring out of the fuselage. The whole thing will catch fire soon."))
-        self.after(34000, lambda: self.updateText("\n\nQuickly working on the side door, you managed to get it open a few feet."))
-        self.after(40000, lambda: self.updateText("\n\nImmediately, a winged creature crawls out towards you."))
-        self.after(45000, lambda: controller.showFrame(FightPage))
-        self.after(44000,lambda: controller.frames[FightPage].enemyBattle(1,3,"Dimorphodon", 0))
+        self.after(14000, lambda: self.updateText("\n\nOne of the pilots is hanging through the front window, the other dead in his seat."))
+        self.after(22000, lambda: self.updateText("\n\nFuel is pouring out of the fuselage. The whole thing will catch fire soon."))
+        self.after(30000, lambda: self.updateText("\n\nQuickly working on the side door, you managed to get it open a few feet."))
+        self.after(36000, lambda: self.updateText("\n\nImmediately, a winged creature crawls out towards you."))
+        self.after(42000,lambda: controller.frames[FightPage].enemyBattle(1,3,"Dimorphodon", 0))
+        self.after(43000, lambda: controller.showFrame(FightPage))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.oneForestInsideHeli
-        self.after(46000, self.clearBox)
+        self.after(44000, self.clearBox)
 
     def oneForestInsideHeli(self, controller):
         self.after(3000, lambda: self.updateText("\nSqueezing through the door, you see alot of broken gear thrown about."))
-        self.after(10000, lambda: self.updateText("\n\nTheres a couple small crates still intact, but you can only carry one out."))
+        self.after(10000, lambda: self.updateText("\n\nThere's a couple small crates still intact, but you can only carry one out."))
         self.after(15000, lambda: self.newChoice(controller, "Ammo", "Potion", "Which crate do\nyou take?", self.oneForestAmmoHeli, self.oneForestPotionHeli))
 
     def oneForestAmmoHeli(self, controller):
         self.btnDisbaled()
-        self.after(3000, lambda: self.updateText("\n\nYou grab the ammo crate and leave just before the Helicopter catches fire."))
+        self.after(3000, lambda: self.updateText("\n\nYou grab the ammo crate and leave just before the helicopter catches fire."))
         GameInfo.choice = "ammo"
-        self.after(10000, lambda: self.updateText("\n\nAfter getting to a safe area, you open the crate and find 200 7.62mm rounds."))
-        Bag.lcaliber +=200
-        self.after(16000, lambda: self.oneForestLeaveHeli(controller))
+        self.after(10000, lambda: self.oneForestLeaveHeli(controller))
 
     def oneForestPotionHeli(self, controller):
         self.btnDisbaled()
-        self.after(3000, lambda: self.updateText("\n\nYou grab the potion crate and leave just before the Helicopter catches fire."))
+        self.after(3000, lambda: self.updateText("\n\nYou grab the potion crate and leave just before the helicopter catches fire."))
         GameInfo.choice = "potions"
-        self.after(10000, lambda: self.updateText("\n\nAfter getting to a safe area, you open the crate and find 4 health and 2 stamina potions."))
-        Bag.healthPotion +=4
-        Bag.staminaPotion +=2
-        self.after(11000, self.updateInfo)
         self.after(16000, lambda: self.oneForestLeaveHeli(controller))
 
     def oneForestLeaveHeli(self, controller):
@@ -873,42 +865,50 @@ class MainPage(tk.Frame):
 
     def oneForestFightThug(self, controller):
         self.btnDisbaled()
-        self.after(3000, lambda: self.updateText("\n\nThug: \"You gonna learn today...\""))
-        self.after(8000, lambda: controller.showFrame(FightPage))
-        self.after(8001,lambda: controller.frames[FightPage].enemyBattle(1,2,"Thug", 0))
+        self.after(2000, lambda: self.updateText("\n\nThug: \"You gonna learn today...\""))
+        self.after(6001,lambda: controller.frames[FightPage].enemyBattle(1,2,"Thug", 0))
+        self.after(7000, lambda: controller.showFrame(FightPage))
         controller.frames[FightPage].updateWeapons()
-        GameInfo.nextFunction = self.oneForestLeaveForest
-        self.after(9000, self.clearBox)
+        GameInfo.nextFunction = self.oneForestOpenCrate
+        self.after(8000, self.clearBox)
 
     def oneForestGiveCrate(self, controller):
         self.btnDisbaled()
-        self.after(3000, lambda: self.updateText("\n\nThug: \"That's what I thought. And this is what you get for being a lil' bitch..\""))
-        self.after(10000, lambda: self.updateText("\n\nThe thug punches you in the face, knocking you to the ground."))
+        self.after(2000, lambda: self.updateText("\n\nThug: \"That's what I thought. And this is what you get for being a lil' bitch...\""))
+        self.after(9000, lambda: self.updateText("\n\nThe thug punches you in the face, knocking you to the ground."))
         if GameInfo.choice == "ammo":
-            self.after(16000, lambda: self.updateText("\n\nHe takes 200 7.62mm off your pathetic body."))
-            Bag.lcaliber -= 200
+            self.after(16000, lambda: self.updateText("\n\nHe takes the ammo crate off your pathetic body."))
         elif GameInfo.choice == "potions":
-            self.after(16000, lambda: self.updateText("\n\nHe takes 4 health and 2 stamina potions off your pathetic body."))
-            Bag.healthPotion -=4
-            Bag.staminaPotion -=2
-        self.after(16100, lambda: self.updateInfo)
-        self.after(23000, lambda: self.oneForestLeaveForest(controller))
+            self.after(16000, lambda: self.updateText("\n\nHe takes the potion crate off your pathetic body."))
+        self.after(22000, lambda: self.oneForestLeaveForest(controller))
 
-    def oneForestLeaveForest(self, controller):
-        self.after(3000, lambda: self.updateText("\n\nYou find your back to the trail, continuing your hike back to the main road."))
-        self.after(10000, lambda: self.updateText("\n\nAfter an hour, you see the road up ahead. You suddenly hear a noise behind you and quickly turn around."))
-        self.after(17000, lambda: controller.showFrame(FightPage))
-        self.after(17001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
+    def oneForestOpenCrate(self, controller):
+        if GameInfo.choice == "ammo":
+            self.after(2000, lambda: self.updateText("\n\nAfter getting to a safe area, you open the crate and find 200 7.62mm rounds."))
+            Bag.lcaliber +=200
+        else:
+            self.after(2000, lambda: self.updateText("\n\nAfter getting to a safe area, you open the crate and find 4 health and 2 stamina potions."))
+            Bag.healthPotion +=4
+            Bag.staminaPotion +=2
+        self.after(3000, self.updateInfo)
+        self.after(9000, lambda: self.oneForestLeaveForest(controller))
+
+    def oneForestLeaveForest(self,controller):
+        self.clearBox()
+        self.after(2000, lambda: self.updateText("\nYou continue on down the trail."))
+        self.after(8000, lambda: self.updateText("\n\nAfter an hour, you see the road up ahead just as you hear a noise behind you."))
+        self.after(13001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
+        self.after(14000, lambda: controller.showFrame(FightPage))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.one6
-        self.after(18000, self.clearBox)
+        self.after(15000, self.clearBox)
     
     def oneForestSkipCrash(self, controller):
         self.clearBox()
         self.btnDisbaled()
         self.after(3000, lambda: self.updateText("\nContinuing along the trail, you come across a large sea container. Something is inside..."))
+        self.after(10001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
         self.after(11000, lambda: controller.showFrame(FightPage))
-        self.after(11001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.oneForestSeaCan
         self.after(12000, self.clearBox)
@@ -920,8 +920,8 @@ class MainPage(tk.Frame):
         self.after(23000, lambda: self.updateText("\n\nYou leave the container and get back on the trail."))
         self.after(28000, self.clearBox)
         self.after(29000, lambda: self.updateText("\nAfter an hour, you see the road up ahead. You suddenly hear a noise from behind."))
+        self.after(35001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
         self.after(36000, lambda: controller.showFrame(FightPage))
-        self.after(36001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.one6
         self.after(37000, self.clearBox)
@@ -998,26 +998,23 @@ class MainPage(tk.Frame):
 
     def oneRiverEnterBasement(self, controller):
         self.after(3000, lambda: self.updateText("\nYou drag the childs body away from the floor hatch."))
-        self.after(9000, lambda: self.updateText("\n\nThere is ladder to get down."))
+        self.after(9000, lambda: self.updateText("\n\nThere's a ladder to get down."))
         self.after(17000, lambda: self.updateText("\n\nOnce you get into the cellar, you see a dining table in the center of the room."))
         self.after(25000, lambda: self.updateText("\n\nThere are several chairs around it, three of which have rotting corpses seated in them."))
         self.after(33000, lambda: self.updateText("\n\nThe candles have done well with masking the smell."))
         self.after(40000, lambda: self.updateText("\n\nThe clothes on the bodies look clean, as if they were put on after their deaths..."))
         self.after(48000, self.clearBox)
-        self.after(49000, lambda: self.updateText("\nThe table is set with a mix of plastic and moldy food."))
-        self.after(54000, lambda: self.updateText("\n\nThe bodies all have pins stuck into their chests."))
-        self.after(62000, lambda: self.updateText("\n\nThey read \"Best Dad\", \"Best Mom\", and \"Best Brother\"."))
-        self.after(68000, lambda: self.updateText("\n\nIt could be that childs family, but you see black tactical gear piled in the corner."))
-        self.after(76000, lambda: self.updateText("\n\nThat must be the team from the boat..."))
-        self.after(82000, lambda: self.updateText("\n\nThankfully, there's still useful gear scattered around the room."))
-        self.after(90000, lambda: self.updateText("\n\nYou grab a couple health potions, a few arrows, and a pouch of gold."))
+        self.after(49000, lambda: self.updateText("\n\nThey could be that childs family, but you see black tactical gear piled in the corner."))
+        self.after(57000, lambda: self.updateText("\n\nThat must be the team from the boat..."))
+        self.after(62000, lambda: self.updateText("\n\nThankfully, there's still useful gear scattered around the room."))
+        self.after(68000, lambda: self.updateText("\n\nYou grab a couple health potions, a few arrows, and a pouch of gold."))
         Bag.healthPotion+=2
         Bag.arrows +=4
         Bag.gold +=74
-        self.after(92000, self.updateInfo)
-        self.after(98000, self.clearBox)
-        self.after(99000, lambda: self.updateText("\nYou head back up to the main floor."))
-        self.after(103000, lambda: self.newChoice(controller, "Yes", "No", "Do you explore\nthe back of the\nproperty?", self.oneRiverBackYard, self.oneRiverLeaveShack))
+        self.after(68000, self.updateInfo)
+        self.after(75000, self.clearBox)
+        self.after(76000, lambda: self.updateText("\nYou head back up to the main floor."))
+        self.after(80000, lambda: self.newChoice(controller, "Yes", "No", "Do you explore\nthe back of the\nproperty?", self.oneRiverBackYard, self.oneRiverLeaveShack))
 
     def oneRiverBackYard(self, controller):
         self.btnDisbaled()
@@ -1052,17 +1049,17 @@ class MainPage(tk.Frame):
         self.after(30000, self.clearBox)
         self.after(31000, lambda: self.updateText("\nMan 1: \"The cabin is a couple hours from here, we'll sleep once we get there.\""))
         self.after(39000, lambda: self.updateText("\n\nMan 2: \"It's late, I'm sure we'll be fine to hold up here for the night.\""))
-        self.after(45000, lambda: self.updateText("\n\nMan 1: \"If getting your limbs chewed off by boars is considered fine, then yes, we'll be fine....\""))
+        self.after(45000, lambda: self.updateText("\n\nMan 1: \"If getting your limbs chewed off by boars is considered fine, then yes, we'll be fine.\""))
         self.after(53000, lambda: self.updateText("\n\nMan 3: \"I wouldn't worry about that. I'm sure they're well fed with all the soldiers getting sent up here.\""))
         self.after(61000, lambda: self.updateText("\n\nMan 2: \"And the Republic will keep sending more. Anything to get what they want.\""))
         self.after(67000, lambda: self.updateText("\n\nMan 3: \"What's in that facility will get society back on track though.\""))
         self.after(75000, lambda: self.updateText("\n\nMan 1: \"No, it will just give the Republic more power. People like us will still have to fight to survive.\""))
         self.after(83000, self.clearBox)
         self.after(85000, lambda: self.updateText("\nThe men are too far away to listen any longer."))
-        self.after(89000, lambda: self.updateText("\n\nYou start to think about what the men were saying, but they dont know how bad it is in the city."))
+        self.after(89000, lambda: self.updateText("\n\nYou start to think about what the men were saying, but they don't know how bad it is in the city."))
         self.after(97000, lambda: self.updateText("\n\nFood is running out. People are starved on the streets."))
         self.after(103000, lambda: self.updateText("\n\nThat's why they've sent so many soldiers here recently, including yourself."))
-        self.after(109000, lambda: self.updateText("\n\nYour thoughts get interupted by something..."))
+        self.after(109000, lambda: self.updateText("\n\nYour thoughts get interrupted by something..."))
         self.after(117000, lambda: controller.showFrame(FightPage))
         self.after(117001,lambda: controller.frames[FightPage].enemyBattle(1,2,"random", 0))
         controller.frames[FightPage].updateWeapons()
@@ -1170,7 +1167,7 @@ class MainPage(tk.Frame):
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nThe barn door is open. It looks like it used to house cattle."))
         self.after(10000, lambda: self.updateText("\n\nNear the entrance, you see an opened firearm safe."))
-        self.after(16000, lambda: self.updateText("\n\nThere's nothing left inside, but you notice a footprint in the mud infront of it."))
+        self.after(16000, lambda: self.updateText("\n\nThere's nothing left inside, but you notice a fresh footprint infront of it."))
         self.after(24000, lambda: self.updateText("\n\nSomeone must have just looted this place."))
         self.after(28000, lambda: self.updateText("\n\nSuddenly, you hear a loud banging noise."))
         self.after(33000, lambda: self.updateText("\n\nYou exit the barn and head towards the noise. It's coming from the farm house."))
@@ -1180,7 +1177,7 @@ class MainPage(tk.Frame):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou see a deformed human-like creature smashing on the front door."))
-        self.after(9000, lambda: self.newChoice(controller, "Yes", "No", "Do you Fight?", self.twoFarmHouseFight, self.twoLeaveFarm))
+        self.after(9000, lambda: self.newChoice(controller, "Yes", "No", "Do you fight?", self.twoFarmHouseFight, self.twoLeaveFarm))
 
     def twoFarmHouseFight(self,controller):
         self.btnDisbaled()
@@ -1194,11 +1191,11 @@ class MainPage(tk.Frame):
         self.after(3000, lambda: self.updateText("\nA man slowly opens the front door, looking at the dead falmer, and then you."))
         self.after(10000, lambda: self.updateText("\n\nHe is very skinny, with mismatched gear on."))
         if Player.height >= 72:
-            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, you're a tall "+Player.sex+"! Thanks for killing this thing.\""))
+            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, you're a tall "+Player.sex+"! Thanks for killing that thing.\""))
         elif 65<= Player.height<72:
-            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, thanks for killing this thing!\""))
+            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, thanks for killing that thing!\""))
         else:
-            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, you're quite short...Thanks for killing this thing though!\""))
+            self.after(16000, lambda: self.updateText("\n\nMan: \"Oh wow, you're quite short...Thanks for killing that thing though!\""))
         self.after(23000, lambda: self.updateText("\n\nThere's a small safe in here that I can't get open. If you help, I'll give you some gold."))
         self.after(30000, lambda: self.newChoice(controller, "Yes", "No", "Do you help?", self.twoHelpWithSafe, self.twoLeaveFarm))
 
@@ -1206,7 +1203,7 @@ class MainPage(tk.Frame):
         self.btnDisbaled()
         self.clearBox()
         self.after(3000, lambda: self.updateText("\nYou follow the man to the master bedroom."))
-        self.after(9000, lambda: self.updateText("\n\nThe small safe is bolted into the wall within the walk-in closet."))
+        self.after(9000, lambda: self.updateText("\n\nThe small safe is bolted into the wall inside the walk-in closet."))
         self.after(15000, lambda: self.updateText("\n\nYou help the man pull on the pry bar that's lodged in the safe door."))
         self.after(22000, lambda: self.updateText("\n\nThe safe door comes flying open, suprisingly easy."))
         self.after(28000, lambda: self.updateText("\n\nThe man quickly blocks the view to what's inside."))
@@ -1260,7 +1257,7 @@ class MainPage(tk.Frame):
         self.btnDisbaled()
         self.after(3000, lambda: self.updateText("\nYou make your way over to the safe."))
         self.after(9000, lambda: self.eventGold(200, 500))
-        self.after(15000, lambda: self.updateText("\n\nAfter taking the gold, you move to the mans bag and look inside."))
+        self.after(15000, lambda: self.updateText("\n\nAfter taking the gold, you go to the mans bag and look inside."))
         self.after(22000, lambda: self.eventAmmo("large"))
         self.after(28000, lambda: self.twoLeaveHouse(controller))
 
@@ -1362,7 +1359,7 @@ class MainPage(tk.Frame):
         self.after(119000, lambda: self.updateText("\n\nThe walls are built up high, with dozens of people cheering in the bleachers above."))
         self.after(126000, self.clearBox)
         self.after(127000, lambda: self.updateText("\nAs your vision gets better, you look to the center of the stadium to see Godfrey fighting a large cyclops."))
-        self.after(135000, lambda: self.updateText("\n\nGodfrey only has a spear, which he used to stab at the cyclops."))
+        self.after(135000, lambda: self.updateText("\n\nGodfrey only has a spear to defend himself."))
         self.after(141000, lambda: self.updateText("\n\nIn an instant, the cyclops grabs the spear, throwing Godfrey to the ground."))
         self.after(149000, lambda: self.updateText("\n\nIt picks up Godfrey's frantic body, grabbing his torso in one hand, and legs in the other."))
         self.after(157000, lambda: self.updateText("\n\nThe cyclops rips Godfrey in half, throwing his seperated body into the crowd."))
@@ -1386,7 +1383,7 @@ class MainPage(tk.Frame):
         self.clearBox()
         self.after(2000, lambda: self.updateText("\nMan: \"In a world of chaos, you will always have those that benefit from the absence of laws.\""))
         self.after(9000, lambda: self.updateText("\n\nMan: \"This place is a haven for those who aren't welcome in the more civilized towns.\""))
-        self.after(16000, lambda: self.updateText("\n\nMan: \"And in your case, they will pay a high price for new fighters\""))
+        self.after(16000, lambda: self.updateText("\n\nMan: \"And in your case, they will pay a high price for new fighters.\""))
         self.after(22000, lambda: self.two8(controller))
 
     def two8(self, controller):
@@ -1429,9 +1426,10 @@ class MainPage(tk.Frame):
     def twoPitOther(self,controller):
         self.clearBox()
         self.btnDisbaled()
-        self.after(2000, lambda: self.updateText("\nMan: \"AgriTech's machines are a bit complicated to operate.\""))
-        self.after(9000, lambda: self.updateText("\n\nMan: \"The inbreds that run this place wouldn't have a clue on how to use them, which is why they keep me here.\""))
-        self.after(18000, lambda: self.two9(controller))
+        self.after(2000, lambda: self.updateText("\nMan: \"Just like the Republic, the people here want into that facility too.\""))
+        self.after(9000, lambda: self.updateText("\nMan: \"However, AgriTech's machines are a bit complicated to operate.\""))
+        self.after(16000, lambda: self.updateText("\n\nMan: \"So, the inbreds that run this place wouldn't have a clue on how to use them, which is why they'd need me.\""))
+        self.after(25000, lambda: self.two9(controller))
 
     def two9(self,controller):
         self.clearBox()
@@ -1492,10 +1490,10 @@ class MainPage(tk.Frame):
         Bag.gold+=1500
         self.after(2000, self.updateInfo)
         self.after(2000, lambda: self.updateText("\nYou hand over the keys as the man gives you a bag of gold."))
-        self.after(8000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing buisness with you my friend, and incase you didn't know - \""))
+        self.after(8000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing business with you my friend, and incase you didn't know - \""))
         self.after(15000, lambda: self.updateText("\n\nBusinessman: \"There are no more stops after this town, so make sure you stock up on gear.\""))
         self.after(23000, lambda: self.updateText("\n\nYou make your way into the town."))
-        GameInfo.location == "town"
+        GameInfo.location = "town"
         self.after(27000, lambda: controller.showFrame(TownPage))
         self.after(27001, self.clearBox)
         GameInfo.nextFunction = self.three1
@@ -1521,12 +1519,12 @@ class MainPage(tk.Frame):
             self.after(2000, lambda: self.updateText("\nThe coin falls to the ground, bouncing several times before landing."))
             self.after(9000, lambda: self.updateText("\n\nIt's on tails..."))
             self.after(13000, lambda: self.updateText("\n\nYou hand over the keys to the man."))
-            self.after(18000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing buisness with you my friend, and incase you didn't know - \""))
+            self.after(18000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing business with you my friend, and incase you didn't know - \""))
             self.after(24000, lambda: self.updateText("\n\nBusinessman: \"There are no more stops after this town, so make sure you stock up on gear.\""))
             self.after(32000, lambda: self.updateText("\n\nYou make your way into the town."))
             GameInfo.location = "town"
             self.after(36000, lambda: controller.showFrame(TownPage))
-            self.after(36001, self.clearBox)
+            self.after(37001, self.clearBox)
             GameInfo.nextFunction = self.three1
 
     def twoTails(self,controller):
@@ -1543,12 +1541,12 @@ class MainPage(tk.Frame):
             self.after(2000, lambda: self.updateText("\nThe coin falls to the ground, bouncing several times before landing."))
             self.after(9000, lambda: self.updateText("\n\nIt's on heads..."))
             self.after(13000, lambda: self.updateText("\n\nYou hand over the keys to the man."))
-            self.after(18000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing buisness with you my friend, and incase you didn't know - \""))
+            self.after(18000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing business with you my friend, and incase you didn't know - \""))
             self.after(24000, lambda: self.updateText("\n\nBusinessman: \"There are no more stops after this town, so make sure you stock up on gear.\""))
             self.after(32000, lambda: self.updateText("\n\nYou make your way into the town."))
             GameInfo.location = "town"
             self.after(36000, lambda: controller.showFrame(TownPage))
-            self.after(36001, self.clearBox)
+            self.after(37001, self.clearBox)
             GameInfo.nextFunction = self.three1
 
 #endregion
@@ -1574,7 +1572,7 @@ class MainPage(tk.Frame):
         self.after(79000, lambda: self.updateText("\nScavenger: \"I'm glad to see you're stocked up on supplies!\""))
         self.after(85000, lambda: self.updateText("\n\nScavenger: \"Just means there will be another valuable corpse to loot.\""))
         self.after(91000, lambda: self.updateText("\n\nThe man pauses when he hears a distant scream."))
-        self.after(96000, lambda: self.updateText("\n\nScavenger: \"Ou, sounds like my next paycheque.\""))
+        self.after(96000, lambda: self.updateText("\n\nScavenger: \"Ou, sounds like my next score.\""))
         self.after(101000, lambda: self.updateText("\n\nThe man scurries across the bridge towards the screams."))
         self.after(106000, lambda: self.updateText("\n\nThe bridge almost breaks under his weight. Him and his gear must weigh no more 150lbs."))
         self.after(113000, lambda: self.newChoice(controller, "Yes", "No", "Do you cross\nthe bridge?", self.threeCross, self.threeNoCross))
@@ -1635,6 +1633,7 @@ class MainPage(tk.Frame):
         GameInfo.nextFunction = self.threeAfterCoyotes
 
     def threeAfterCoyotes(self,controller):
+        self.clearBox()
         self.after(2000, lambda: self.updateText("\n\nAmongst the bones and animal corpses, you see a pile of dead soldiers."))
         self.after(9000, lambda: self.newChoice(controller, "Yes", "No", "Do you loot them?", self.threeLoot, self.threeSoldierAlive))
 
@@ -1748,8 +1747,8 @@ class MainPage(tk.Frame):
         self.after(15000, lambda: self.updateText("\nOnce you get into the woods, you start to unpack your gear."))
         self.after(21000, lambda: self.updateText("\n\nYou turn around at the sound of a twig snapping to see an outline of a large beast."))
         self.after(27000, lambda: self.updateText("\n\nThe last thing you hear is its roar..."))
-        self.after(36000, lambda: self.updateText("\n\nYou slowly gain consciousness a few hours later. Your head throbs as you slowly open your eyes."))
-        self.after(44000, lambda: self.updateText("\n\nYou're hanging upside down is some cave."))
+        self.after(37000, lambda: self.updateText("\n\nYou slowly gain consciousness a few hours later. Your head throbs as you slowly open your eyes."))
+        self.after(45000, lambda: self.updateText("\n\nYou're hanging upside down is some cave."))
         self.after(51000, self.clearBox)
         self.after(52000, lambda: self.updateText("\nThe cave is dark, but you're still able to see what's around you."))
         self.after(58000, lambda: self.updateText("\n\nThe area is small, filled with bones and carcasses, along with alot of supplies from past kills."))
@@ -1815,19 +1814,19 @@ class MainPage(tk.Frame):
         self.after(9000, lambda: self.updateText("\n\nThe inside of the elevator is stained red, with paper scattered around the floor."))
         self.after(17000, lambda: self.updateText("\n\nYou locate the button that takes you to the main level of the facility."))
         self.after(23000, lambda: self.updateText("\n\nOnce you're up there, you'll need to locate the power generators and shut them off."))
-        self.after(29000, lambda: self.updateText("\n\nAfter getting to the main level, the doors open to reveal a destroyed lobby."))
-        self.after(35000, lambda: self.updateText("\n\nThe front of the building has fallen apart, with almost nothing left to seperate the inside from the out."))
-        self.after(43000, self.clearBox)
-        self.after(44000, lambda: self.updateText("\nAs you exit the elevator, a chimp swings from the ceiling towards you."))
-        self.after(49000,lambda: controller.frames[FightPage].enemyBattle(3,4,"Chimpanzee", 0))
-        self.after(50000, lambda: controller.showFrame(FightPage))
+        self.after(32000, lambda: self.updateText("\n\nAfter getting to the main level, the doors open to reveal a destroyed lobby."))
+        self.after(39000, lambda: self.updateText("\n\nThe front of the building has fallen apart, with almost nothing left to seperate the inside from the out."))
+        self.after(47000, self.clearBox)
+        self.after(48000, lambda: self.updateText("\nAs you exit the elevator, a chimp swings from the ceiling towards you."))
+        self.after(53000,lambda: controller.frames[FightPage].enemyBattle(3,4,"Chimpanzee", 0))
+        self.after(54000, lambda: controller.showFrame(FightPage))
         controller.frames[FightPage].updateWeapons()
         GameInfo.nextFunction = self.three8
 
     def three8(self,controller):
         self.clearBox()
         self.after(2000, lambda: self.updateText("\nOn one of the walls in the lobby, you find a map of the property."))
-        self.after(8000, lambda: self.updateText("\n\nThere's a building out back that is marked with a lightning bolt."))
+        self.after(8000, lambda: self.updateText("\n\nThere's a building out back that's marked with a lightning bolt."))
         self.after(14000, lambda: self.updateText("\n\nThat must be where the generators are."))
         self.after(19000, lambda: self.updateText("\n\nTo avoid what's outside, you navigate your way through the facililty towards the back exit."))
         self.after(26000, lambda: self.updateText("\n\nNearly to the door, you feel a slight pinch on your leg."))
@@ -1891,7 +1890,7 @@ class MainPage(tk.Frame):
 
     def three11(self,controller):
         controller.frames[EndPage].updateInfo()
-        controller.frames[EndPage].playerWon()
+        controller.frames[EndPage].playerWon(controller)
         controller.showFrame(EndPage)
 #endregion
 
@@ -2058,7 +2057,7 @@ class FightPage(tk.Frame):
             elif index == 0: #if weapon is melee
                 if Player.stamina < playerWeapons[index][5]:
                     self.clearText()
-                    self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[1][5]))
+                    self.updateText("\nInsufficient stamina\n\nYou have: "+str(Player.stamina)+"\nRequired amount: "+str(playerWeapons[0][5]))
                 else:
                     successfulAttack = True
                     damage = random.randint(playerWeapons[index][2], playerWeapons[index][3])
@@ -2160,7 +2159,7 @@ class FightPage(tk.Frame):
                 self.fightText.after(9000, self.clearText)
                 self.fightText.after(10000, lambda: self.updateText("\n\nThe "+Enemy.name+" "+Enemy.finalMove))
                 self.after(18000, controller.frames[EndPage].updateInfo)
-                self.after(18000, controller.frames[EndPage].playerDied)
+                self.after(18000, lambda: controller.frames[EndPage].playerDied(controller))
                 self.after(19000, lambda: controller.showFrame(EndPage))
 
         elif Enemy.health < 1:
@@ -2277,7 +2276,6 @@ class FightPage(tk.Frame):
             self.btnMelee.configure(width=100, height=90, image=self.picMelee)
         except:
             self.btnMelee.configure(width=13, height=6, text=playerWeapons[0][1])
-        
         try:
             self.picBow = ImageTk.PhotoImage(Image.open(playerWeapons[1][9]))
             self.btnBow.configure(width=100, height=90, image=self.picBow)
@@ -2302,6 +2300,7 @@ class FightPage(tk.Frame):
         except:
             self.btnGrenade.configure(width=13, height=6, text=playerWeapons[4][1])
 
+
         try:
             self.picSpecial = ImageTk.PhotoImage(Image.open(playerWeapons[5][9]))
             self.btnSpecial.configure(width=100, height=90, image=self.picSpecial)
@@ -2323,6 +2322,20 @@ class FightPage(tk.Frame):
         else:
             self.lblSpec.configure(text="")
             self.btnSpecial.configure(image="") #if player does not have a special attack, this removes the image
+
+    def removePictures(self):
+        self.btnMelee.configure(image="", text="")
+        self.btnBow.configure(image="", text ="")
+        self.btnSmallCal.configure(image="",text = "")
+        self.btnMedCal.configure(image = "",text="")
+        self.btnGrenade.configure(image = "",text="")
+        self.btnSpecial.configure(image="" ,text="")
+        self.lblMelee.configure(text="")
+        self.lblBow.configure(text ="")
+        self.lblSmallCal.configure(text = "")
+        self.lblMedCal.configure(text="")
+        self.lblGren.configure(text="")
+        self.lblSpec.configure(text="")
 
     def updateText(self, text):
         """Updates fight text"""
@@ -2560,6 +2573,14 @@ class ArenaPage(tk.Frame):
         self.lblArrow.configure(text="Arrows: "+str(Bag.arrows))
         self.lblSCal.configure(text="9mm Rounds: "+str(Bag.scaliber))
         self.lblMCal.configure(text="7.62mm Rounds: "+str(Bag.lcaliber))
+
+    def resetImages(self):
+        self.picMelee.configure(image="")
+        self.picBow.configure(image="")
+        self.picSmallCal.configure(image="")
+        self.picMedCal.configure(image="")
+        self.picGrenade.configure(image="")
+        self.picSpecial.configure(image="")
 
 class ShopPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -2954,7 +2975,7 @@ class ArmorPage(tk.Frame):
         self.updateClearColor()
         self.lblInvalid.configure(text="")
         if Armor.healthBonus > armorList[index][1]:
-            self.lblInvalid.configure(text="Current armour is superior")
+            self.lblInvalid.configure(text="Current armor is superior")
         elif Armor.healthBonus == armorList[index][1]:
             self.lblInvalid.configure(text="Already equipped")
         elif Bag.gold < armorList[index][2]: #if player doesnt not have enough gold, they will be notified via color change
@@ -3346,7 +3367,7 @@ class MeleePage(tk.Frame):
         else:
             Bag.gold -= weapons_list[index][8]
             GameInfo.goldSpent+=weapons_list[index][8]
-            playerWeapons[0] = weapons_list[index]
+            playerWeapons[0] = copy.deepcopy(weapons_list[index])
             self.updateInfo()
 
     def updateClearColor(self):
@@ -3492,7 +3513,7 @@ class ArcheryPage(tk.Frame):
         else:
             Bag.gold -= weapons_list[index][8]
             GameInfo.goldSpent+=weapons_list[index][8]
-            playerWeapons[1] = weapons_list[index]
+            playerWeapons[1] = copy.deepcopy(weapons_list[index])
             self.updateInfo()
 
     def updateClearColor(self):
@@ -3680,7 +3701,7 @@ class SidearmPage(tk.Frame):
         else:
             Bag.gold -= weapons_list[index][8]
             GameInfo.goldSpent+=weapons_list[index][8]
-            playerWeapons[2] = weapons_list[index]
+            playerWeapons[2] = copy.deepcopy(weapons_list[index])
             self.updateInfo()
 
     def updateClearColor(self):
@@ -3830,7 +3851,7 @@ class RiflePage(tk.Frame):
         else:
             Bag.gold -= weapons_list[index][8]
             GameInfo.goldSpent+=weapons_list[index][8]
-            playerWeapons[3] = weapons_list[index]
+            playerWeapons[3] = copy.deepcopy(weapons_list[index])
             self.updateInfo()
 
     def updateClearColor(self):
@@ -3948,7 +3969,7 @@ class SpecialPage(tk.Frame):
         else:
             Bag.gold -= weapons_list[index][8]
             GameInfo.goldSpent+=weapons_list[index][8]
-            playerWeapons[5] = weapons_list[index]
+            playerWeapons[5] = copy.deepcopy(weapons_list[index])
             self.updateInfo()
 
     def updateClearColor(self):
@@ -4693,13 +4714,22 @@ class EndPage(tk.Frame):
         self.lblGoldEarned.configure(text="Gold Aquired: "+str(GameInfo.goldEarned))
         self.lblGoldSpent.configure(text="Gold Spent: "+str(GameInfo.goldSpent))
     
-    def playerWon(self):
+    def playerWon(self, controller):
         self.btnTown.configure(state="normal", cursor="hand2")
         self.lblEndTitle.configure(text = "---------------- The End ----------------")
 
-    def playerDied(self):
+    def playerDied(self, controller):
         self.btnTown.configure(state="disabled", cursor="X_cursor")
         self.lblEndTitle.configure(text = "--------------- Game Over ---------------")
+
+    def resetInfo(self, controller):
+        controller.frames[FightPage].clearText()
+        controller.frames[MainPage].clearBox()
+        controller.frames[FightPage].removePictures()
+        controller.frames[ArenaPage].resetImages()
+        for weapon in range(6):
+            for detail in range(10):
+                playerWeapons[weapon][detail] = ""
 
 game = GameApp()
 

@@ -8,7 +8,7 @@ Level,Name,Health,Attack 1,Min Damage,Max Damage,Attack 2,Min Damage,Max Damage,
 2,Stray Dog,50,bites your arm,18,25,bites your leg,20,24,bites your face,24,28,chews through your face,pictures/dog.jpg
 2,Arthropleura,50,bites you,19,23,spits acid at you,20,25,bites you,18,23,lays eggs in your body,pictures/arthropleura.jpg
 2,Zombie,70,hits you across the face,20,27,bites your neck,28,32,chews on your arm,23,26,tears out your intestines,pictures/zombie.jpg
-2,Anorexic Crackwhore,65,stabs you with a needle,25,32,bites your face,21,27,vomits on your shoes,20,24,harvests your kidney for crack money,pictures/anorexic.jpg
+2,Junkie,65,stabs you with a needle,25,32,bites your face,21,27,vomits on your shoes,20,24,harvests your kidney for crack money,pictures/anorexic.jpg
 2,Mudcrab,75,crushes your arm in its claw,15,20,bites your leg,25,30,stabs you with its leg,18,22,breaks your legs and drags you into the river,pictures/mudcrab.jpg
 2,Tasmanian devil,60,gnaws on your leg,15,22,scratches you,17,24,bites your arm,20,29,chews through your torso,pictures/devil.jpg
 3,Wolf,90,bites your arm,35,40,bites your thigh,40,43,bites your face,35,45,rips through your guts,pictures/wolf.jpg

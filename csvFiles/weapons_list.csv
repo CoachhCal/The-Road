@@ -5,21 +5,21 @@ slot number,name,damage lower, damage upper,Stamina cost, cost stamina,ammo type
 1,Machete,17,23,Stamina,8,,,45,pictures/machete.jpg
 1,Spear,25,30,Stamina,8,,,60,pictures/spear.jpg
 1,Battle Axe,25,35,Stamina,10,,,70,pictures/axe.jpg
-1,Dual Swords,30,45,Stamina,15,,,90,pictures/swords.jpg
+1,Swords,30,45,Stamina,15,,,90,pictures/swords.jpg
 1,Warhammer,50,70,Stamina,40,,,150,pictures/hammer.jpg
 2,Compound Bow,40,50,Stamina,5,Arrows,1,60,pictures/compound.jpg
-2,Recurve Bow,50,70,Stamina,20,Arrows,1,80,pictures/recurve.jpg
-2,Crossbow,60,90,Stamina,8,Arrows,1,120,pictures/crossbow.jpg
-3,Sig P369,35,50,,,9mm,5,70,pictures/sig.jpg
-3,Glock 19,50,65,,,9mm,10,80,pictures/glock.jpg
-3,Ruger LC9,35,60,,,9mm,8,90,pictures/revolver.jpg
-3,Beretta M12,80,100,,,9mm,30,110,pictures/beretta.jpg
-3,MP5,100,120,,,9mm,45,130,pictures/mp5.jpg
-3,UMP,80,90,,,9mm,20,150,pictures/ump.jpg
+2,Recurve Bow,50,70,Stamina,20,Arrows,1,120,pictures/recurve.jpg
+2,Crossbow,60,90,Stamina,15,Arrows,1,250,pictures/crossbow.jpg
+3,Sig P369,45,60,,,9mm,5,70,pictures/sig.jpg
+3,Glock 19,70,90,,,9mm,10,100,pictures/glock.jpg
+3,Ruger LC9,60,80,,,9mm,5,120,pictures/revolver.jpg
+3,Beretta M12,80,100,,,9mm,30,130,pictures/beretta.jpg
+3,MP5,60,140,,,9mm,45,150,pictures/mp5.jpg
+3,UMP,100,120,,,9mm,20,180,pictures/ump.jpg
 4,SKS,90,110,,,7.62mm,10,120,pictures/sks.jpg
 4,SR-47,120,150,,,7.62mm,30,180,pictures/sr47.jpg
 4,AK-47,150,180,,,7.62mm,45,200,pictures/ak47.jpg
-4,RPK,180,225,,,7.62mm,75,300,pictures/rpk.jpg
+4,RPK,180,250,,,7.62mm,75,300,pictures/rpk.jpg
 5,Grenade,200,300,,,Grenade:,1,0,pictures/grenade.jpg
 6,Molotov,300,400,,,Special,1,350,pictures/molotov.jpg
 6,VX Nerve Agent,400,550,,,Special,1,500,pictures/gas.jpg
