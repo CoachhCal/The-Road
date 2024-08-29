@@ -28,15 +28,15 @@ Level,Name,Health,Attack 1,Min Damage,Max Damage,Attack 2,Min Damage,Max Damage,
 5,Frost Troll,275,throws you across the ground,60,90,clobbers you with its fists,80,110,bites your arm,80,100,rips off your arms,pictures/frosttroll.jpg
 5,Pack of Coyotes,290,take turns nibbling on your ankles,40,60,maul you,90,120,jump on you taken chunks of flesh,80,110,tear you limb from limb,pictures/coyotes.jpg
 6,Group of Vikings,350,throw their spears at you,120,140,attacks with their axes,130,150,bash you with their shields,80,110,cut off your head and mount it on a spike,pictures/vikings.jpg
-6,Wampa,300,bashes you across the face,100,115,bites a chunk out of your arm,100,130,rips into your flesh with its claws,130,140,drags you into their ice cave for a future meal,pictures/wampa.jpg
+6,Wampa,300,bashes you across the face,100,115,bites a chunk out of your arm,100,130,rips into your flesh with its claws,130,140,slowly eats you piece by piece,pictures/wampa.jpg
 6,Tusken Raiders,250,shoot you,100,160,club you repeatedly,100,112,sic their dogs on you,120,140,take you as a slave,pictures/tusken.jpg
 6,Saber-Toothed Tiger,425,takes a chunk of flesh,80,90,rips its claws down your back,95,120,impales your arm with its teeth,100,120,lunges at your neck and breaks it,pictures/tiger.jpg
 6,Werewolf,450,throws you across the ground,100,110,slashes you with its claws,130,150,sinks its fangs into your torso,130,150,snaps your body in two,pictures/werewolf.jpg
 7,Reek,550,hits you,20,180,tramples you,80,120,impales you with its tusk,90,170,crushes your skull,pictures/reek.jpg
-7,Cyclopes,600,smashes you with its bone club,120,200,kicks you across the ground,50,110,wacks you in the body,70,130,rips your head off its shoulders,pictures/cyclopes.jpg
+7,Cyclopes,600,smashes you with its club,120,200,kicks you across the ground,50,110,wacks you in the body,70,130,rips your head off its shoulders,pictures/cyclopes.jpg
 7,Allosaurus,700,bites you,120,150,hits you with its head,70,90,bites you,70,150,crushes your body with its foot,pictures/allo.jpg
 7,Xenomorph,450,bites you with its little mouth,60,80,bleeds acid on you,90,140,slices you with its tail,80,120,lays an egg in your chest,pictures/xenomorph.jpg
 7,Mammoth,1000,hits you with its tusk,50,90,throws you with its trunk,30,90,runs over you,80,120,impales your body with its tusk,pictures/mammoth.jpg
-7,Indoraptor,600,claws your back,100,200,whips you with its tail,70,100,bites you,120,170,,pictures/indoraptor.jpg
+7,Indoraptor,600,claws your back,100,200,whips you with its tail,70,100,bites you,120,170,bites your body in half,pictures/indoraptor.jpg
 7,Rancor,900,throws you through the air,100,160,hits you with its fist,90,150,slams you on the ground,110,160,chews you up,pictures/rancor.jpg
 8,Dragon,2000,spits fire at you,180,250,whips you with its tail,100,120,swats you with its talons,130,170,burns you alive as you scream in agony,pictures/dragon.jpg

@@ -1,3 +1,5 @@
+#region Setup
+
 try:
     import tkinter as tk
 except ImportError:
@@ -91,10 +93,10 @@ def listFromCsv(file, access_mode):
                         list[x][y] = float(list[x][y])
     return list
 
-def random_monster(p_monster_list):
-    """Chooses a random monster from a 2D list"""
-    random_number = random.randint(1,len(p_monster_list)-1) #chooses a numbr between 1 and however many monsters there are in the list
-    return p_monster_list[random_number] #return the monsters index value
+# def random_monster(p_monster_list):
+#     """Chooses a random monster from a 2D list"""
+#     random_number = random.randint(1,len(p_monster_list)-1) #chooses a numbr between 1 and however many monsters there are in the list
+#     return p_monster_list[random_number] #return the monsters index value
 
 def createPlayerWeaponList():
     """Creates 6 empty weapon slots (2D list) """
@@ -115,17 +117,12 @@ cardsList = listFromCsv("csvFiles/cards_list.csv", "r")
 Enemy = EnemyClass
 Armor = ArmorClass
 
-# playerWeapons[0] = weapons_list[0]
-# playerWeapons[1] = weapons_list[10]
-# playerWeapons[2] = weapons_list[11]
-# playerWeapons[3] = weapons_list[19]
-# playerWeapons[4] = weapons_list[21]
-# playerWeapons[5] = weapons_list[23]
-
 GameInfo = GameClass(2, "none", "road", "none",0,0,0,0,0,0,0,0,0,0,0,0)
 Player = PlayerClass("Calvin", 26, "color", 70, 149, "sex", "none", 100, 100, 100, 100)
 playerWeapons = createPlayerWeaponList()
 Bag = Inventory(0, 0, 0, 0, 30, 20, 0)
+
+#endregion
 
 class GameApp(tk.Tk):
 
@@ -134,7 +131,8 @@ class GameApp(tk.Tk):
         window = tk.Frame(self, height=800, width=1100, bg="black")
         super().minsize(1100, 800) #super refers to the window
         window.pack(side="top", fill = "both", expand=True)
-
+        tk.Tk.wm_title(self, "The Road") #change title of tkinter menu bar
+        
         self.frames = {} #the below loop creates all the "tk.Frames" for the game
         for F in (SplashPage, StartPage, MainPage, FightPage, TownPage, ArenaPage, ShopPage, AmmoPage, ArmorPage, PotionPage, WeaponPage, MeleePage, ArcheryPage, SidearmPage, RiflePage, SpecialPage, CasinoPage, SlotsPage, BlackPage, EndPage):
             frame = F(window, self)
@@ -156,24 +154,24 @@ class SplashPage(tk.Frame):
         initialPage.pack()
         initialPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-
-
         try:
             self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/title.jpg"))
             lblTitlePicture = tk.Label(initialPage,height=800, width=1100, bg= "black", image=self.titlePicture)
-            lblTitlePicture.place(x=0, y=0)
         except:
+            lblTitlePicture = tk.Label(initialPage,height=800, width=1100, bg= "black")
             lblGameName = tk.Label(initialPage, text="The Road", font="Arial 50", fg="white", bg='black')
             lblGameName.place(relx=0.515, rely=0.1, anchor="center")
 
-            lblCreatorName = tk.Label(initialPage, text="By: Calvin Murray",width=38, font="Arial 36",fg="white", bg="black", anchor="w")
+            lblCreatorName = tk.Label(initialPage, text="By: Calvin Murray",width=38, font="Arial 24",fg="white", bg="black", anchor="w")
             lblCreatorName.place(relx=0.0,rely= .961, anchor="w")
 
-            lblDate = tk.Label(initialPage, text="2024", font="Arial 36",fg="white", bg="black")
+            lblDate = tk.Label(initialPage, text="2024", font="Arial 24",fg="white", bg="black")
             lblDate.place(relx = .895, rely= .962, anchor="w")
 
-        btnBegin = tk.Button(initialPage, text="Start", font="Arial 32", relief="solid", bg="#909090",fg="black",cursor="hand2", command=lambda: self.yup(controller))
-        btnBegin.place(relx=.52, rely=.6, anchor="center")
+        lblTitlePicture.place(x=0, y=0)
+
+        btnBegin = tk.Button(initialPage, text="Start", font="Arial 32", width=15, relief="solid", bg="#909090",fg="black",cursor="hand2", command=lambda: self.yup(controller))
+        btnBegin.place(relx=.51, rely=.6, anchor="center")
 
     def yup(self, controller):
         # playerWeapons[4] = weapons_list[21]
@@ -352,12 +350,12 @@ class StartPage(tk.Frame):
                     controller.frames[MainPage].updateInfo()
                     controller.frames[MainPage].one1(controller)
                 elif btnValue == 2:
-                    playerWeapons[0] = weapons_list[0] #give player weapons and ammo
-                    playerWeapons[1] = weapons_list[10]
-                    playerWeapons[2] = weapons_list[11]
-                    playerWeapons[3] = weapons_list[19]
-                    playerWeapons[4] = weapons_list[21]
-                    playerWeapons[5] = weapons_list[23]
+                    playerWeapons[0] = copy.deepcopy(weapons_list[0])
+                    playerWeapons[1] = copy.deepcopy(weapons_list[10])
+                    playerWeapons[2] = copy.deepcopy(weapons_list[11])
+                    playerWeapons[3] = copy.deepcopy(weapons_list[19])
+                    playerWeapons[4] = copy.deepcopy(weapons_list[21])
+                    playerWeapons[5] = copy.deepcopy(weapons_list[23])
                     Bag.arrows+=10
                     Bag.grenades+=1
                     Bag.healthPotion+=5
@@ -384,9 +382,11 @@ class MainPage(tk.Frame):
         self.mainPage.pack()
         self.mainPage.pack_propagate(0) #prevents frame from shrinking to fit widgets
 
-        titlePicture = ImageTk.PhotoImage(Image.open("pictures/title2.jpg"))
-        lblTitlePicture = tk.Label(self.mainPage,height=800, width=1100,image=titlePicture)
-        self.mainPage.image=titlePicture
+        try:
+            self.titlePicture = ImageTk.PhotoImage(Image.open("pictures/title2.jpg"))
+        except:
+            self.titlePicture = ""
+        lblTitlePicture = tk.Label(self.mainPage,height=790,bg="#1a1a1a", width=1100,image=self.titlePicture)
         lblTitlePicture.place(x=0, y=0)
 
         self.lblHealth = tk.Label(self.mainPage, height=2, width=30,highlightbackground="white", highlightthickness=2, bg="black",fg="white", font="Arial 15",anchor="w",padx=20, pady=20, text="Health : "+str(Player.health)+"/"+str(Player.maxHealth)+"\n\nHealth potions: "+str(Bag.healthPotion)+" (+"+str(potionList[0][1])+")")
@@ -640,6 +640,7 @@ class MainPage(tk.Frame):
         self.after(15000, lambda: self.updateText("\n\nYou gather the remaining supplies scattered around your bag:"))
         self.after(21000, lambda: self.updateText("\n\nA few potions, a pouch of gold, a bow and arrows, along with a single grenade."))
         Bag.gold +=120
+        GameInfo.goldEarned+=120
         Bag.healthPotion +=2
         Bag.staminaPotion +=1
         Bag.arrows +=6
@@ -1011,6 +1012,7 @@ class MainPage(tk.Frame):
         Bag.healthPotion+=2
         Bag.arrows +=4
         Bag.gold +=74
+        GameInfo.goldEarned+=74
         self.after(68000, self.updateInfo)
         self.after(75000, self.clearBox)
         self.after(76000, lambda: self.updateText("\nYou head back up to the main floor."))
@@ -1115,6 +1117,7 @@ class MainPage(tk.Frame):
         if Bag.gold >= 50:
             self.after(3000, lambda: self.updateText("\n\nYou give the man 50 gold and carry on your way."))
             Bag.gold-=50
+            GameInfo.goldSpent-=50
             self.after(3500, self.updateInfo)
             self.after(9000, lambda: self.two2(controller))
 
@@ -1273,7 +1276,7 @@ class MainPage(tk.Frame):
         self.after(3000, lambda: self.updateText("\nThe farms driveway must lead back to the main road."))
         self.after(9000, lambda: self.updateText("\n\nYou make your way towards it, being mindful of your surroundings."))
         self.after(15000, lambda: self.updateText("\n\nNot long after, a young girl, about 6 years old comes around the corner."))
-        self.after(22000, lambda: self.updateText("\n\nShe freezes when she sees you."))
+        self.after(22000, lambda: self.updateText("\n\nShe freezes at the sight of you."))
         self.after(26000, lambda: self.updateText("\n\nA woman appears soon after, putting herself in front of the girl."))
         self.after(32000, lambda: self.updateText("\n\nWoman: \"We dont want any trouble, just on our way back to my husband.\""))
         self.after(40000, self.clearBox)
@@ -1456,7 +1459,7 @@ class MainPage(tk.Frame):
     def two10(self,controller):
         self.after(2000, lambda: self.updateText("\n\nThe man gets in the drivers seat of the "+GameInfo.choice+" while you throw your gear in the back."))
         self.after(10000, lambda: self.updateText("\n\nOnce you're in, the man slams on the gas, avoiding the escaped prisoners as you exit the parking lot."))
-        self.after(18000, lambda: self.updateText("\n\nThe "+GameInfo.choice+"'s clock reads 2:13am."))
+        self.after(18000, lambda: self.updateText("\n\nThe "+GameInfo.choice+"s clock reads 2:13am."))
         self.after(23000, lambda: self.updateText("\n\nMan: \"The next town is only a few hours from here. We should have enough gas to make it.\""))
         self.after(31000, lambda: self.updateText("\n\nYou decide to lean your seat back and rest."))
         self.after(37000, lambda: self.two11(controller))
@@ -1479,7 +1482,7 @@ class MainPage(tk.Frame):
     def twoMore(self,controller):
         self.clearBox()
         self.btnDisbaled()
-        self.after(2000, lambda: self.updateText("\n\nBusinessman: \"Don't get too greedy now, you dont have much of a choice ya know.\""))
+        self.after(2000, lambda: self.updateText("\n\nBusinessman: \"Don't get too greedy now, you don't have much of a choice ya know.\""))
         self.after(8000, lambda: self.updateText("\n\nBusinessman: \"Tell you what, we'll flip a coin for it...\""))
         self.after(14000, lambda: self.updateText("\n\nBusinessman: \"If you call it right, I'll give you 3000. If you're wrong, it's free.\""))
         self.after(18000, lambda: self.newChoice(controller, "Deal", "I'll take the $1500", "What do you say?", self.twoFlip, self.twoDeal))
@@ -1488,6 +1491,7 @@ class MainPage(tk.Frame):
         self.btnDisbaled()
         self.clearBox()
         Bag.gold+=1500
+        GameInfo.goldEarned+=1500
         self.after(2000, self.updateInfo)
         self.after(2000, lambda: self.updateText("\nYou hand over the keys as the man gives you a bag of gold."))
         self.after(8000, lambda: self.updateText("\n\nBusinessman: \"Pleasure doing business with you my friend, and incase you didn't know - \""))
@@ -1514,6 +1518,7 @@ class MainPage(tk.Frame):
             self.after(2000, lambda: self.updateText("\nThe coin falls to the ground, bouncing several times before landing."))
             self.after(8000, lambda: self.updateText("\n\nIt's on heads!"))
             Bag.gold+=1500
+            GameInfo.goldEarned+=1500
             self.after(14000, lambda: self.twoDeal(controller))
         else:
             self.after(2000, lambda: self.updateText("\nThe coin falls to the ground, bouncing several times before landing."))
@@ -1536,6 +1541,7 @@ class MainPage(tk.Frame):
             self.after(2000, lambda: self.updateText("\nThe coin falls to the ground, bouncing several times before landing."))
             self.after(8000, lambda: self.updateText("\n\nIt's on tails!"))
             Bag.gold+=1500
+            GameInfo.goldEarned+=1500
             self.after(14000, lambda: self.twoDeal(controller))
         else:
             self.after(2000, lambda: self.updateText("\nThe coin falls to the ground, bouncing several times before landing."))
@@ -1747,7 +1753,7 @@ class MainPage(tk.Frame):
         self.after(15000, lambda: self.updateText("\nOnce you get into the woods, you start to unpack your gear."))
         self.after(21000, lambda: self.updateText("\n\nYou turn around at the sound of a twig snapping to see an outline of a large beast."))
         self.after(27000, lambda: self.updateText("\n\nThe last thing you hear is its roar..."))
-        self.after(37000, lambda: self.updateText("\n\nYou slowly gain consciousness a few hours later. Your head throbs as you slowly open your eyes."))
+        self.after(37000, lambda: self.updateText("\n\nYou slowly gain consciousness a few hours later. Your head throbs as you open your eyes."))
         self.after(45000, lambda: self.updateText("\n\nYou're hanging upside down is some cave."))
         self.after(51000, self.clearBox)
         self.after(52000, lambda: self.updateText("\nThe cave is dark, but you're still able to see what's around you."))
@@ -4603,10 +4609,12 @@ class SlotsPage(tk.Frame):
         if outcome[0][0] == outcome[1][0] and outcome[0][0] == outcome[2][0]: #if all fruits match in the outcome list, the player wins
             playersWinnings =  int(self.betVar.get()) * outcome[0][2] #calculates how much the player wins based on thier bet and matching fruit
             Bag.gold+=playersWinnings
+            GameInfo.goldEarned+=playersWinnings
             self.after(3000, lambda: self.lblOutcome.configure(text="You Won "+str(playersWinnings)+" Gold!"))
             self.after(3000, lambda: self.lblGold.configure(text="Your Gold: "+str(Bag.gold)))
         else:
             Bag.gold-=int(self.betVar.get())
+            GameInfo.goldSpent+=int(self.betVar.get())
             self.after(3000, lambda: self.lblOutcome.configure(text="Better luck next time!"))
             self.after(3000, lambda: self.lblGold.configure(text="Your Gold: "+str(Bag.gold)))
 
@@ -4732,5 +4740,4 @@ class EndPage(tk.Frame):
                 playerWeapons[weapon][detail] = ""
 
 game = GameApp()
-
 game.mainloop()
