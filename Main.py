@@ -205,7 +205,7 @@ class StartPage(tk.Frame):
         lblSkinColor.place(relx=.075, rely=.325)
         entSkinColor = tk.Entry(startPage, bg="white", font="Arial 20", width=20, textvariable=skinVar,validate="key", validatecommand=(textChecker,'%P', 10, "letter"))
         entSkinColor.place(relx=.22, rely=.325)
-        self.validSkin = tk.Label(startPage, bg="black",fg="white",text="3-10 letters. No whitespaces",font="Arial 10")
+        self.validSkin = tk.Label(startPage, bg="black",fg="white",text="3-10 letters. No spaces",font="Arial 10")
         self.validSkin.place(relx=.28, rely=.372)
 
         rbValue = tk.StringVar()
