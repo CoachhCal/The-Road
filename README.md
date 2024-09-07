@@ -3,7 +3,7 @@
 
 There are two modes:
 *  **Quick play**: The best option to test out the games features and understand how it works. You'll be provided with a preset inventory so you can immediately shop for different gear, gamble in the casino, or fight enemies in the pits
-*  **Story mode**: Starting wih minimal gear, you'll slowly discover your characters mission as the game progresses. Often, you'll have to make choices that will directly impact you and the story ahead
+*  **Story mode**: Starting with minimal gear, you'll slowly discover your characters mission as the game progresses. Often, you'll have to make choices that will directly impact you and the story ahead
 
 # How to play
 The easiest way to play is by downloading the game as an executable by following this link: https://github.com/CoachhCal/The-Road/releases/tag/v0.1 
