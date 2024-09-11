@@ -4315,7 +4315,7 @@ class BlackPage(tk.Frame):
             GameInfo.goldEarned+=bet
             self.lblOutcome.configure(text="You win "+str(bet)+" Gold!")
 
-        self.goldTitle.configure(text = Player.name+"'s Gold: "+ str(Bag.gold))
+        self.goldTitle.configure(text = "Your Gold: "+ str(Bag.gold))
         self.btnBack.configure(state="normal", cursor="hand2")
         self.btnPlaceBet.configure(state="normal", cursor="hand2")
 
