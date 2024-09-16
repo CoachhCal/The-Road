@@ -20,3 +20,6 @@ The game takes values from the various csv files, so you can easily change thing
 
 
 The game was built in a Windows environment. Unfortunately, the formatting with Tkinter is messed up when trying to run it on Mac.
+
+
+To view the entire application, you'll need a screen size of at least 1100x800 px
